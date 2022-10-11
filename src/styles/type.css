@@ -1,0 +1,144 @@
+.inventory-button {
+  position: absolute;
+  right: 120px;
+  bottom: 120px;
+  color: #999999;
+  cursor: pointer;
+  z-index: 10;
+}
+.inventory-modal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 900px;
+  height: 100%;
+  top: 0;
+  z-index: 5;
+}
+#inventory_top_left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#inventory_top_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#inventory_bottom_right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+#inventory_bottom_left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.inventory-content {
+  display: flex;
+  height: 100%;
+  padding: 0 30px;
+  border-radius: 20px;
+  opacity: 0.9;
+  border: 1px solid rgb(110, 110, 110);
+  box-shadow: 16px 16px 32px 0px rgb(17 17 17 / 35%);
+  color: black;
+  overflow: auto;
+  touch-action: auto;
+  backdrop-filter: blur(50px);
+}
+
+.inventory-panel {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  width: 450px;
+  color: white;
+  flex-direction: column;
+}
+
+.inventory-text {
+  margin: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.inventory-items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.inventory-paginationBtn:hover {
+  cursor: pointer;
+}
+.inventory-disable {
+  opacity: 0.3;
+}
+
+.inventory-item {
+  filter: drop-shadow(0px 11.2376px 11.2376px rgba(0, 0, 0, 0.25));
+  border-radius: 6.74257px;
+  border: 2px solid rgba(137, 137, 242, 0.53);
+  box-shadow: 0px 11.23762321472168px 11.23762321472168px 0px #00000040;
+}
+.inventory-trade-item {
+  margin: 6px;
+  width: 60px;
+  height: 60px;
+}
+.inventory-user-item {
+  margin: 10px;
+  width: 90px;
+  height: 90px;
+}
+.inventory-item:hover {
+  cursor: pointer;
+}
+.inventory-itemEmpty {
+  border-radius: 8px;
+  border: 2px solid #ffffff61;
+  box-shadow: 0px 11.23762321472168px 11.23762321472168px 0px #00000040;
+  backdrop-filter: blur(50px);
+}
+.inventory-trade-itemEmpty {
+  margin: 6px;
+  width: 60px;
+  height: 60px;
+}
+.inventory-user-itemEmpty {
+  margin: 10px;
+  width: 90px;
+  height: 90px;
+}
+.inventory-itemContent.being-dragged {
+  position: fixed;
+  cursor: grab;
+}
+.inventory-itemContent.being-moved {
+  display: none;
+}
+.inventory-itemInsideContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+.inventory-itemPreview {
+  width: 50px;
+  aspect-ratio: 1.2;
+}
+.inventory-itemName {
+  word-wrap: break-all;
+  text-align: center;
+}
+.inventory-trade-result-text {
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #2e7d32;
+}

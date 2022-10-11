@@ -1,5 +1,8 @@
 {
   "name": "console",
-  "start_url": "console.glb",
-  "components": []
+  "description": "trade console",
+  "start_url": "index.js",
+  "components": {
+    "activate": true
+  }
 }
