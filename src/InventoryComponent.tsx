@@ -1,40 +1,40 @@
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io"
-import React, { useState, useEffect } from "react"
-import { IconButton, Stack, Button } from "@mui/material"
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import React, { useState, useEffect } from "react";
+import { IconButton, Stack, Button } from "@mui/material";
 
-import ItemSlot from "./Slot"
-import RemoteSlot from "./RemoteSlot"
+import ItemSlot from "./Slot";
+import RemoteSlot from "./RemoteSlot";
 
 const InventoryComponent = (props: any) => {
   const [state, setState] = useState({
     currentPage: 1,
     acceptoffer: false,
-  })
+  });
 
   const goToNextPage = () => {
     setState((prevState) => ({
       ...prevState,
       currentPage: prevState.currentPage + 1,
-    }))
-  }
+    }));
+  };
   const goToPrevPage = () => {
     setState((prevState) => ({
       ...prevState,
       currentPage: prevState.currentPage > 1 ? prevState.currentPage - 1 : 1,
-    }))
-  }
+    }));
+  };
 
   const acceptEvent = () => {
-    console.log("accept")
+    console.log("accept");
     setState((prevState) => ({
       ...prevState,
       acceptoffer: !state.acceptoffer,
-    }))
-  }
+    }));
+  };
 
   const cancelEvent = () => {
-    console.log("cancel")
-  }
+    console.log("cancel");
+  };
 
   return (
     <>
@@ -55,7 +55,7 @@ const InventoryComponent = (props: any) => {
                 key={slot}
                 trade={props.trade}
               />
-            )
+            );
           })}
         </Stack>
 
@@ -118,7 +118,7 @@ const InventoryComponent = (props: any) => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default InventoryComponent
+export default InventoryComponent;

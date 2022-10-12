@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Stack } from "@mui/material"
+import React, { useState } from "react";
+import { Stack } from "@mui/material";
 
 const MainComponent = (props: any) => {
   const ItemSlot = ({ value, slot }: any) => {
@@ -7,7 +7,9 @@ const MainComponent = (props: any) => {
       <Stack
         justifyContent="center"
         alignItems="center"
-        className={`${"inventory-item"} ${props.trade ? "inventory-trade-item" : "inventory-user-item"}`}
+        className={`${"inventory-item"} ${
+          props.trade ? "inventory-trade-item" : "inventory-user-item"
+        }`}
       >
         <div
           id={`item-slot-${slot}`}
@@ -23,15 +25,17 @@ const MainComponent = (props: any) => {
           </div>
         </div>
       </Stack>
-    )
-  }
+    );
+  };
 
   const EmptySlot = ({ slot }: any) => {
     return (
       <Stack
         justifyContent="center"
         alignItems="center"
-        className={`${"inventory-itemEmpty"} ${props.trade ? "inventory-trade-itemEmpty" : "inventory-user-itemEmpty"}`}
+        className={`${"inventory-itemEmpty"} ${
+          props.trade ? "inventory-trade-itemEmpty" : "inventory-user-itemEmpty"
+        }`}
       >
         <div
           className="item-slot empty"
@@ -40,14 +44,14 @@ const MainComponent = (props: any) => {
           data-type={`empty-slot`}
         ></div>
       </Stack>
-    )
-  }
+    );
+  };
 
   return props.value !== null ? (
     <ItemSlot {...props} />
   ) : (
     <EmptySlot {...props} />
-  )
-}
+  );
+};
 
-export default MainComponent
+export default MainComponent;

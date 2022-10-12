@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Stack } from "@mui/material"
+import React, { useState } from "react";
+import { Stack } from "@mui/material";
 
 const RemoteSlotComponent = (props: any) => {
   const ItemSlot = ({ value }: any) => {
@@ -9,9 +9,7 @@ const RemoteSlotComponent = (props: any) => {
         alignItems="center"
         className="inventory-item inventory-trade-item"
       >
-        <div
-          className="inventory-itemContent"
-        >
+        <div className="inventory-itemContent">
           <div className="inventory-itemInsideContent">
             <img className="inventory-itemPreview" src={value.image} />
             <div>
@@ -20,8 +18,8 @@ const RemoteSlotComponent = (props: any) => {
           </div>
         </div>
       </Stack>
-    )
-  }
+    );
+  };
 
   const EmptySlot = () => {
     return (
@@ -35,14 +33,14 @@ const RemoteSlotComponent = (props: any) => {
           style={{ width: "100%", height: "100%" }}
         ></div>
       </Stack>
-    )
-  }
+    );
+  };
 
   return props.value !== null ? (
     <ItemSlot {...props} />
   ) : (
     <EmptySlot {...props} />
-  )
-}
+  );
+};
 
-export default RemoteSlotComponent
+export default RemoteSlotComponent;

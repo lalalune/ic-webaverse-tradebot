@@ -2,10 +2,7 @@
   width: 900px;
   height: 500px;
   background-image: linear-gradient(to bottom, #333, #000);
-  font-family: 'PlazaRegular';
-  color: #FFF;
+  font-family: "PlazaRegular";
+  color: #fff;
   font-size: 36px;
-}
-.iframe {
-  overflow: visible !important;
 }
