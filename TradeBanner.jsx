@@ -32,7 +32,7 @@ const TradeBanner = () => {
 
   return (
     <AvatarInventory
-      items0={items0}
+      NFTs={items0}
       items1={items1}
       background="black"
       dragEvent={onDragEvent}
