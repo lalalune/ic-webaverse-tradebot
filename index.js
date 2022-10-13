@@ -10,6 +10,7 @@ const {
   useDefaultModules,
   useCleanup,
 } = metaversefile;
+import game from '../../game.js';
 
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
@@ -41,25 +42,39 @@ export default (e) => {
       o = o.scene;
       app.add(o);
 
-      // openTradeModal = async (showModal) => {
-      // if (showModal) {
-      {
-        const u = `${baseUrl}trade-banner.react`;
-        reactApp = await metaversefile.createAppAsync({
-          start_url: u,
-        });
-        // } else {
-        //   console.log("live", reactApp);
-
-        //   reactApp.destroy();
-        //   return;
-        // }
-        console.log(reactApp);
-        reactApp.position.y = 2.1;
-        reactApp.rotation.y = -1.57;
-        app.add(reactApp);
-        reactApp.updateMatrixWorld();
+      openTradeModal = async (showModal) => {
+        if (showModal) {
+          const getState = game.toggleTrade();
+          if(getState === "server"){
+            const u = `${baseUrl}trade-banner.react`;
+            reactApp = await metaversefile.createAppAsync({
+              start_url: u,
+            });
+          // } else {
+          //     reactApp.destroy();
+          //     return false;
+            console.log(reactApp);
+            reactApp.position.y = 2.1;
+            reactApp.rotation.y = -1.57;
+            app.add(reactApp);
+            reactApp.updateMatrixWorld();
+          } else if (getState === "client") {
+            const u = `${baseUrl}trade-waiting-banner.react`;
+            reactApp = await metaversefile.createAppAsync({
+              start_url: u,
+            });
+          // } else {
+          //     reactApp.destroy();
+          //     return false;
+            console.log(reactApp);
+            reactApp.position.y = 2.1;
+            reactApp.rotation.y = -1.57;
+            app.add(reactApp);
+            reactApp.updateMatrixWorld();
+          }
+        }
       }
+      
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);

@@ -6,3 +6,36 @@
   color: #fff;
   font-size: 36px;
 }
+
+.waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 517px;
+  height: 216px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+}
+
+.waiting-text {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.waiting-title {
+  font-weight: 700;
+  margin-bottom: 7px;
+  margin-top: 39px;
+}
+
+.waiting-content {
+  font-weight: 400;
+  margin-top: 18px;
+}
+
+.waiting-copy-text {
+  font-weight: 400;
+  margin-top: 9px;
+  color: #0047FF;
+}
