@@ -1,5 +1,5 @@
 {
-  "name": "console",
+  "name": "trade console",
   "description": "trade console",
   "start_url": "index.js",
   "components": {

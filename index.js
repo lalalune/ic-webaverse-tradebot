@@ -1,84 +1,130 @@
-import * as THREE from "three";
-import metaversefile from "metaversefile";
+import * as THREE from 'three';
+// import easing from './easing.js'
+import metaversefile from 'metaversefile';
 const {
   useApp,
   useFrame,
   useActivate,
   useLoaders,
   usePhysics,
-  useWorld,
+  addTrackedApp,
+  useDropManager,
   useDefaultModules,
   useCleanup,
 } = metaversefile;
-import game from '../../game.js';
 
-const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
+const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, '$1');
 
-export default (e) => {
+export default e => {
   const app = useApp();
   const physics = usePhysics();
+  const dropManager = useDropManager();
 
-  app.name = "trade-console";
+  app.name = 'trade-console';
 
-  let openTradeModal = null;
-  let live = false;
+  const activateCb = null;
+  const frameCb = null;
   useActivate(() => {
-    console.log("active is alive");
-    live = !live;
-    console.log("active live", live);
-    openTradeModal && openTradeModal(live);
+    activateCb && activateCb();
+  });
+  useFrame(() => {
+    frameCb && frameCb();
   });
 
+  let live = true;
   let reactApp = null;
-  let physicsIds = [];
+  const physicsIds = [];
   e.waitUntil(
     (async () => {
       const u = `${baseUrl}console.glb`;
       let o = await new Promise((accept, reject) => {
-        const { gltfLoader } = useLoaders();
+        const {gltfLoader} = useLoaders();
         gltfLoader.load(u, accept, function onprogress() {}, reject);
       });
-      // const {animations} = o;
+      if (!live) {
+        o.destroy();
+        return;
+      }
+      const {animations} = o;
       o = o.scene;
       app.add(o);
 
-      openTradeModal = async (showModal) => {
-        if (showModal) {
-          const getState = game.toggleTrade();
-          if(getState === "server"){
-            const u = `${baseUrl}trade-banner.react`;
-            reactApp = await metaversefile.createAppAsync({
-              start_url: u,
-            });
-          // } else {
-          //     reactApp.destroy();
-          //     return false;
-            console.log(reactApp);
-            reactApp.position.y = 2.1;
-            reactApp.rotation.y = -1.57;
-            app.add(reactApp);
-            reactApp.updateMatrixWorld();
-          } else if (getState === "client") {
-            const u = `${baseUrl}trade-waiting-banner.react`;
-            reactApp = await metaversefile.createAppAsync({
-              start_url: u,
-            });
-          // } else {
-          //     reactApp.destroy();
-          //     return false;
-            console.log(reactApp);
-            reactApp.position.y = 2.1;
-            reactApp.rotation.y = -1.57;
-            app.add(reactApp);
-            reactApp.updateMatrixWorld();
-          }
+      {
+        const u = `${baseUrl}inventory.react`;
+        reactApp = await metaversefile.createAppAsync({
+          start_url: u,
+        });
+        if (!live) {
+          reactApp.destroy();
+          return;
         }
+        reactApp.position.y = 2;
+        reactApp.rotation.y = Math.PI / 2;
+        reactApp.scale.set(2, 2, 2);
+        app.add(reactApp);
+        reactApp.updateMatrixWorld();
       }
-      
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);
-    })()
+
+      // const mixer = new THREE.AnimationMixer(o);
+      // const actions = animations.map(animationClip =>
+      //   mixer.clipAction(animationClip),
+      // );
+
+      // const startOffset = 1;
+      // const endOffset = 2;
+      // const dropOffset = 1;
+      // activateCb = () => {
+      //   for (const action of actions) {
+      //     action.reset();
+      //     action.play();
+      //     action.time = startOffset;
+      //   }
+
+      //   let timeAcc = 0;
+      //   let lastUpdateTime = Date.now();
+      //   let dropped = false;
+      //   function animate() {
+      //     const now = Date.now();
+      //     const timeDiff = (now - lastUpdateTime) / 1000;
+      //     lastUpdateTime = now;
+
+      //     timeAcc += timeDiff;
+      //     if (!dropped && timeAcc >= dropOffset) {
+      //       const {moduleUrls} = useDefaultModules();
+
+      //       dropManager.createDropApp({
+      //         type: 'minor',
+      //         start_url: moduleUrls.silk,
+      //         components: [
+      //           {
+      //             key: 'appName',
+      //             value: 'Silk',
+      //           },
+      //           {
+      //             key: 'appUrl',
+      //             value: moduleUrls.silk,
+      //           },
+      //         ],
+      //         position: app.position.clone().add(new THREE.Vector3(0, 0.7, 0)),
+      //         quaternion: app.quaternion,
+      //         scale: app.scale,
+      //       });
+
+      //       dropped = true;
+      //     }
+      //     if (timeAcc >= endOffset) {
+      //       frameCb = null;
+      //     } else {
+      //       mixer.update(timeDiff);
+      //       mixer.getRoot().updateMatrixWorld();
+      //     }
+      //   }
+      //   frameCb = animate;
+      // };
+    })(),
   );
 
   useCleanup(() => {

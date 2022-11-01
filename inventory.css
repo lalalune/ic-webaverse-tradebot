@@ -1,3 +1,16 @@
+.class-inventory {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(to bottom, #333, #000);
+  font-family: "PlazaRegular";
+  color: #fff;
+  font-size: 24px;
+  width: 100%;
+  height: 100%;
+}
+
 .inventory-button {
   position: absolute;
   right: 120px;
@@ -6,32 +19,22 @@
   cursor: pointer;
   z-index: 10;
 }
-.inventory-modal {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 900px;
-  height: 100%;
-  top: 0;
-  z-index: 5;
-}
-#inventory_top_left {
+.class-inventory-top-left {
   position: absolute;
   top: 0;
   left: 0;
 }
-#inventory_top_right {
+.class-inventory-top-right {
   position: absolute;
   top: 0;
   right: 0;
 }
-#inventory_bottom_right {
+.class-inventory-bottom-right {
   position: absolute;
   bottom: 0;
   right: 0;
 }
-#inventory_bottom_left {
+.class-inventory-bottom-left {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -49,8 +52,7 @@
   touch-action: auto;
   backdrop-filter: blur(50px);
 }
-
-.inventory-panel {
+.class-inventory-panel {
   padding: 16px;
   display: flex;
   justify-content: center;
@@ -58,86 +60,82 @@
   color: white;
   flex-direction: column;
 }
-
-.inventory-text {
+.class-inventory-text {
   margin: 0;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
 }
-
-.inventory-items {
+.class-inventory-panel-items {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
 }
-
-.inventory-paginationBtn:hover {
+.class-inventory-pagination-btn:hover {
   cursor: pointer;
 }
-.inventory-disable {
+.class-inventory-disable {
   opacity: 0.3;
 }
-
-.inventory-item {
+.class-inventory-item {
   filter: drop-shadow(0px 11.2376px 11.2376px rgba(0, 0, 0, 0.25));
   border-radius: 6.74257px;
   border: 2px solid rgba(137, 137, 242, 0.53);
   box-shadow: 0px 11.23762321472168px 11.23762321472168px 0px #00000040;
 }
-.inventory-trade-item {
+.class-inventory-trade-item {
   margin: 6px;
   width: 60px;
   height: 60px;
 }
-.inventory-user-item {
+.class-inventory-user-item {
   margin: 10px;
   width: 90px;
   height: 90px;
 }
-.inventory-item:hover {
+.class-inventory-item:hover {
   cursor: pointer;
 }
-.inventory-itemEmpty {
+.class-inventory-item-empty {
   border-radius: 8px;
   border: 2px solid #ffffff61;
   box-shadow: 0px 11.23762321472168px 11.23762321472168px 0px #00000040;
   backdrop-filter: blur(50px);
 }
-.inventory-trade-itemEmpty {
+.class-inventory-trade-item-empty {
   margin: 6px;
   width: 60px;
   height: 60px;
 }
-.inventory-user-itemEmpty {
+.class-inventory-user-item-empty {
   margin: 10px;
   width: 90px;
   height: 90px;
 }
-.inventory-itemContent.being-dragged {
+.class-inventory-item-content.being-dragged {
   position: fixed;
   cursor: grab;
 }
-.inventory-itemContent.being-moved {
+.class-inventory-item-content.being-moved {
   display: none;
 }
-.inventory-itemInsideContent {
+.class-inventory-item-content-inside {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   pointer-events: none;
 }
-.inventory-itemPreview {
+.class-inventory-item-preview {
   width: 50px;
   aspect-ratio: 1.2;
 }
-.inventory-itemName {
+.class-inventory-item-name {
   word-wrap: break-all;
   text-align: center;
 }
-.inventory-trade-result-text {
+.class-inventory-panel-trade-result-text {
   padding: 8px;
   border-radius: 4px;
   background-color: #2e7d32;
