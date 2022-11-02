@@ -3,11 +3,11 @@ import create from 'zustand';
 export const useStore = create(set => ({
   items: [
     {name: '0', image: 'images/item.jpg', slotType: 'inventory', slot: 0},
-    {name: '1', image: 'images/item.jpg', slotType: 'inventory', slot: 3},
-    {name: '2', image: 'images/item.jpg', slotType: 'inventory', slot: 5},
-    {name: '3', image: 'images/item.jpg', slotType: 'inventory', slot: 7},
-    {name: '4', image: 'images/item.jpg', slotType: 'inventory', slot: 8},
-    {name: '5', image: 'images/item.jpg', slotType: 'inventory', slot: 9},
+    {name: '1', image: 'images/item.jpg', slotType: 'inventory', slot: 2},
+    {name: '2', image: 'images/item.jpg', slotType: 'inventory', slot: 4},
+    {name: '3', image: 'images/item.jpg', slotType: 'inventory', slot: 6},
+    {name: '4', image: 'images/item.jpg', slotType: 'inventory', slot: 7},
+    {name: '5', image: 'images/item.jpg', slotType: 'inventory', slot: 8},
     {
       name: '6',
       image: 'images/item.jpg',

@@ -9,9 +9,14 @@ export const InventoryComponent = props => {
 
   const {itemNumPerPage} = useStore();
 
-  let emptyItemNum = itemNumPerPage;
-  if (props.compItems && props.compItems.length)
-    emptyItemNum -= props.compItems.length % itemNumPerPage;
+  let emptyItemNum = 0;
+  const lastPageItemNum = props.compItems.length % itemNumPerPage;
+  if (lastPageItemNum) {
+    emptyItemNum = itemNumPerPage - lastPageItemNum;
+  } else {
+    if (props.compItems.length < itemNumPerPage)
+      emptyItemNum = itemNumPerPage - props.compItems.length;
+  }
 
   const onNextPage = () => {
     const curPage = props.curPage;
@@ -48,8 +53,8 @@ export const InventoryComponent = props => {
           sx={{position: 'relative'}}
         >
           {React.Children.toArray(
-            props.compItems.map(item => (
-              <Item item={item} isTrade={props.isTrade} />
+            Array.from({length: props.compItems.length}).map((empty, index) => (
+              <Item item={props.compItems[index]} isTrade={props.isTrade} />
             )),
           )}
           {React.Children.toArray(
