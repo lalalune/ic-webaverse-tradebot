@@ -1,26 +1,26 @@
-import React, { useEffect } from "react";
-import { useStore } from './utils/store';
+import React, {useEffect} from 'react';
+import {useStore} from './utils/store';
 
-const getLength = (a: any, b: any) => {
+const getLength = (a, b) => {
   const length = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   return length;
 };
 
-const getTopLeft = (pt: any) => {
+const getTopLeft = pt => {
   const inventoryModalRect = document
-    .getElementsByClassName("class-inventory")[0]
+    .getElementsByClassName('class_inventory')[0]
     .getBoundingClientRect();
   const tl = document
-    .getElementsByClassName("class-inventory-top-left")[0]
+    .getElementsByClassName('class_inventory_top_left')[0]
     ?.getBoundingClientRect();
   const tr = document
-    .getElementsByClassName("class-inventory-top-right")[0]
+    .getElementsByClassName('class_inventory_top_right')[0]
     ?.getBoundingClientRect();
   const br = document
-    .getElementsByClassName("class-inventory-bottom-right")[0]
+    .getElementsByClassName('class_inventory_bottom_right')[0]
     ?.getBoundingClientRect();
   const bl = document
-    .getElementsByClassName("class-inventory-bottom-left")[0]
+    .getElementsByClassName('class_inventory_bottom_left')[0]
     ?.getBoundingClientRect();
 
   const topLength = getLength(tl, tr);
@@ -31,36 +31,28 @@ const getTopLeft = (pt: any) => {
   const addHeight = (pt.x - inventoryModalRect.x) / inventoryModalRect.width;
 
   const diffTopY =
-    tl!.y < tr!.y
-      ? Math.abs(((tr!.y - tl!.y) * (pt.x - tl!.x)) / (tr!.x - tl!.x))
-      : Math.abs((tr!.y - tl!.y) * (1 - (pt.x - tl!.x) / (tr!.x - tl!.x)));
-  const diffLeftX = Math.abs(
-    ((bl!.x - tl!.x) * (bl!.y - pt.y)) / (bl!.y - tl!.y)
-  );
+    tl.y < tr.y
+      ? Math.abs(((tr.y - tl.y) * (pt.x - tl.x)) / (tr.x - tl.x))
+      : Math.abs((tr.y - tl.y) * (1 - (pt.x - tl.x) / (tr.x - tl.x)));
+  const diffLeftX = Math.abs(((bl.x - tl.x) * (bl.y - pt.y)) / (bl.y - tl.y));
 
-  const diffAddHeight = tl!.y < tr!.y ? addHeight : 1 - addHeight;
+  const diffAddHeight = tl.y < tr.y ? addHeight : 1 - addHeight;
   const modalHeight =
     Math.min(leftLength, rightLength) +
     Math.abs(leftLength - rightLength) * diffAddHeight;
   const modalWidth =
     Math.min(topLength, bottomLength) +
     (Math.abs(topLength - bottomLength) * (pt.y - inventoryModalRect.y)) /
-    inventoryModalRect.height;
+      inventoryModalRect.height;
 
-  const top = (pt.y - Math.min(tl!.y, tr!.y) - diffTopY) * (500 / modalHeight);
-  const left = (pt.x - tl!.x - diffLeftX) * (900 / modalWidth);
+  const top = (pt.y - Math.min(tl.y, tr.y) - diffTopY) * (500 / modalHeight);
+  const left = (pt.x - tl.x - diffLeftX) * (900 / modalWidth);
 
-  return { top, left };
+  return {top, left};
 };
 
-const DragAndDropAPI = (props: any) => {
-  const {
-    itemNumPerPage, updateItemNumPerPage,
-    nfts, updateNfts, tradeItems,
-    updateTradeItems, items, updateItems,
-    selSlot, updateSelSlot,
-    curPage, updateCurPage,
-  } = useStore()
+export const DragAndDrop = props => {
+  const {selSlot, updateSelSlot} = useStore();
 
   const slotDraggedRef = React.useRef(selSlot);
 
@@ -68,37 +60,36 @@ const DragAndDropAPI = (props: any) => {
     slotDraggedRef.current = selSlot;
   }, [selSlot]);
 
-  const moveElementCloneToMouseCoords = async (x: number, y: number) => {
+  const moveElementCloneToMouseCoords = async (x, y) => {
     const slot = slotDraggedRef.current;
     if (!slot) return false;
-    const insertedChild = document.getElementById(`class-item-slot-ghost-${slot}`);
+    const insertedChild = document.getElementById(`id_item_slot_ghost_${slot}`);
     if (!insertedChild) return false;
     insertedChild.style.left = `${x}px`;
     insertedChild.style.top = `${y}px`;
   };
 
-  const onMouseMove = (event: any) => {
+  const onMouseMove = event => {
     event.preventDefault();
-    const { top, left } = getTopLeft({ x: event.clientX, y: event.clientY });
+    const {top, left} = getTopLeft({x: event.clientX, y: event.clientY});
     moveElementCloneToMouseCoords(left, top);
   };
 
-  const onMouseClick = (event: any) => {
-    event.stopPropagation();
-    event.preventDefault();
-    if (!slotDraggedRef.current) return false;
-    const div = event.target;
-    const slot = div.getAttribute("data-slot");
-    const type = div.getAttribute("data-type");
+  const onMouseClick = event => {
+    // event.stopPropagation();
+    // event.preventDefault();
+    // if (!slotDraggedRef.current) return false;
+    // const div = event.target;
+    // const slot = div.getAttribute('data-slot');
+    // const type = div.getAttribute('data-type');
     // const slotNumber = parseInt(slot);
-
     // if (slot  && type === "item") {
     //   updateSelSlot(slotNumber);
-    //   const itemSelected: any = document.getElementById(`class-item-slot-${slot}`);
+    //   const itemSelected = document.getElementById(`id_item_slot_${slot}`);
     //   const itemList = document.getElementsByClassName("inventory")[0];
     //   const itemClone = itemSelected.cloneNode(true);
     //   itemClone.className += " being-dragged";
-    //   itemClone.id = `class-item-slot-ghost-${slot}`;
+    //   itemClone.id = `id_item_slot_ghost_${slot}`;
     //   itemList.appendChild(itemClone);
     //   const { top, left } = getTopLeft({ x: event.clientX, y: event.clientY });
     //   itemClone.style.top = `${top}px`;
@@ -108,23 +99,21 @@ const DragAndDropAPI = (props: any) => {
     // }
   };
 
-  const onMouseReleased = (event) => {
+  const onMouseReleased = event => {
     // if (slotDraggedRef.current === null) return false;
-
     // event.preventDefault();
     // const { clientX, clientY } = event;
     // const slot = slotDraggedRef.current;
     // if (slot === null) return false;
-    // const itemSlotElement: any = document.getElementById(`class-item-slot-${slot}`);
+    // const itemSlotElement: any = document.getElementById(`id_item_slot_${slot}`);
     // itemSlotElement.className = itemSlotElement.className.replace(
     //   " being-moved",
     //   ""
     // );
     // const itemGhostElement: any = document.getElementById(
-    //   `class-item-slot-ghost-${slot}`
+    //   `id_item_slot_ghost_${slot}`
     // );
     // itemGhostElement.remove();
-
     // const target: any = document.elementFromPoint(clientX, clientY);
     // const targetSlot = target.getAttribute("data-slot");
     // // console.log(targetSlot, slot)
@@ -142,18 +131,16 @@ const DragAndDropAPI = (props: any) => {
   };
 
   useEffect(() => {
-    const element = document.getElementsByClassName(`class-inventory`)[0];
-    element!.addEventListener("mousemove", onMouseMove);
-    element!.addEventListener("click", onMouseClick);
-    element!.addEventListener("mouseup", onMouseReleased);
+    const element = document.getElementsByClassName(`class_inventory`)[0];
+    element.addEventListener('mousemove', onMouseMove);
+    element.addEventListener('click', onMouseClick);
+    element.addEventListener('mouseup', onMouseReleased);
     return () => {
-      element!.removeEventListener("mousemove", onMouseMove);
-      element!.removeEventListener("mouseup", onMouseReleased);
-      element!.removeEventListener("click", onMouseClick);
+      element.removeEventListener('mousemove', onMouseMove);
+      element.removeEventListener('mouseup', onMouseReleased);
+      element.removeEventListener('click', onMouseClick);
     };
   }, []);
 
   return null;
 };
-
-export default DragAndDropAPI;
