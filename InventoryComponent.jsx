@@ -1,9 +1,18 @@
 import React from 'react';
 import {IoIosArrowForward, IoIosArrowBack} from 'react-icons/io';
 import {IconButton, Stack, Button} from '@mui/material';
-import {ItemSlot} from './ItemSlot';
+import {Item} from './Item';
+import {useStore} from './store';
 
 export const InventoryComponent = props => {
+  // console.log('InventoryComponent Render');
+
+  const {itemNumPerPage} = useStore();
+
+  let emptyItemNum = itemNumPerPage;
+  if (props.compItems && props.compItems.length)
+    emptyItemNum -= props.compItems.length % itemNumPerPage;
+
   const onNextPage = () => {
     const curPage = props.curPage;
     const pageNum = props.pageNum;
@@ -39,7 +48,14 @@ export const InventoryComponent = props => {
           sx={{position: 'relative'}}
         >
           {React.Children.toArray(
-            props.compItems.map(item => <ItemSlot item={item} />),
+            props.compItems.map(item => (
+              <Item item={item} isTrade={props.isTrade} />
+            )),
+          )}
+          {React.Children.toArray(
+            Array.from({length: emptyItemNum}).map(val => (
+              <Item isTrade={props.isTrade} />
+            )),
           )}
         </Stack>
 

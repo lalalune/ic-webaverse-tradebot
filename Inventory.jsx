@@ -3,6 +3,8 @@ import {InventoryContent} from './InventoryContent';
 import './inventory.css';
 
 const Inventory = () => {
+  // console.log('Inventory Render');
+
   return (
     <div className="class_inventory">
       <InventoryContent />

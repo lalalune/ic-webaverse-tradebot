@@ -5,23 +5,25 @@ import {InventoryComponent} from './InventoryComponent';
 import {useStore} from './store';
 
 export const InventoryContent = () => {
+  // console.log('InventoryContent Render');
+
   const {items, itemNumPerPage, curInventoryPage, updateCurInventoryPage} =
     useStore();
-  console.log('items: ', items);
-  console.log('itemNumPerPage: ', itemNumPerPage);
-  console.log('curInventoryPage: ', curInventoryPage);
+  // console.log('items: ', items);
+  // console.log('itemNumPerPage: ', itemNumPerPage);
+  // console.log('curInventoryPage: ', curInventoryPage);
   const inventoryItems = items.filter(item => item.slotType === 'inventory');
-  console.log('inventoryItems: ', inventoryItems);
+  // console.log('inventoryItems: ', inventoryItems);
   const tradeItems = items.filter(item => item.isTrade);
-  console.log('tradeItems: ', tradeItems);
+  // console.log('tradeItems: ', tradeItems);
   const remoteItems = items.filter(
     item => item.isTrade && item.slotType === 'remote',
   );
-  console.log('remoteItems: ', remoteItems);
+  // console.log('remoteItems: ', remoteItems);
   const localItems = items.filter(
     item => item.isTrade && item.slotType === 'local',
   );
-  console.log('localItems: ', localItems);
+  // console.log('localItems: ', localItems);
 
   return (
     <>
