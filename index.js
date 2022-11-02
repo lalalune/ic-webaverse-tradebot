@@ -58,7 +58,7 @@ export default e => {
           reactApp.destroy();
           return;
         }
-        reactApp.position.y = 2;
+        reactApp.position.y = 2.05;
         reactApp.rotation.y = Math.PI / 2;
         reactApp.scale.set(2, 2, 2);
         app.add(reactApp);

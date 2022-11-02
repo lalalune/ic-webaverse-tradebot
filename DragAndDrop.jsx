@@ -11,16 +11,16 @@ const getTopLeft = pt => {
     .getElementsByClassName('class_inventory')[0]
     .getBoundingClientRect();
   const tl = document
-    .getElementsByClassName('class_inventory_top_left')[0]
+    .getElementsByClassName('class_inventory_tl')[0]
     ?.getBoundingClientRect();
   const tr = document
-    .getElementsByClassName('class_inventory_top_right')[0]
+    .getElementsByClassName('class_inventory_tr')[0]
     ?.getBoundingClientRect();
   const br = document
-    .getElementsByClassName('class_inventory_bottom_right')[0]
+    .getElementsByClassName('class_inventory_br')[0]
     ?.getBoundingClientRect();
   const bl = document
-    .getElementsByClassName('class_inventory_bottom_left')[0]
+    .getElementsByClassName('class_inventory_bl')[0]
     ?.getBoundingClientRect();
 
   const topLength = getLength(tl, tr);
@@ -85,7 +85,7 @@ export const DragAndDrop = props => {
     // const slotNumber = parseInt(slot);
     // if (slot  && type === "item") {
     //   updateSelSlot(slotNumber);
-    //   const itemSelected = document.getElementById(`id_item_slot_${slot}`);
+    //   const itemSelected = document.getElementById(`id_item_${slot}`);
     //   const itemList = document.getElementsByClassName("inventory")[0];
     //   const itemClone = itemSelected.cloneNode(true);
     //   itemClone.className += " being-dragged";
@@ -105,7 +105,7 @@ export const DragAndDrop = props => {
     // const { clientX, clientY } = event;
     // const slot = slotDraggedRef.current;
     // if (slot === null) return false;
-    // const itemSlotElement: any = document.getElementById(`id_item_slot_${slot}`);
+    // const itemSlotElement: any = document.getElementById(`id_item_${slot}`);
     // itemSlotElement.className = itemSlotElement.className.replace(
     //   " being-moved",
     //   ""

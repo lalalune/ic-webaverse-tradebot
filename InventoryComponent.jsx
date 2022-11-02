@@ -1,10 +1,9 @@
-import {IoIosArrowForward, IoIosArrowBack} from 'react-icons/io';
 import React from 'react';
+import {IoIosArrowForward, IoIosArrowBack} from 'react-icons/io';
 import {IconButton, Stack, Button} from '@mui/material';
-
-import {ItemSlot} from './ItemSlot';
 import {getSlotItem} from './utils/funcs';
 import {useStore} from './utils/store';
+import {ItemSlot} from './ItemSlot';
 
 export const InventoryComponent = props => {
   const {items, curPage, updateCurPage} = useStore();
@@ -26,12 +25,13 @@ export const InventoryComponent = props => {
   };
 
   return (
-    <>
-      <div className="class_inventory_panel_title">{props.title}</div>
-      <div className="class_inventory_panel_items">
+    <div className="class_inventory_panel_component">
+      <div className="class_inventory_panel_component_title">{props.title}</div>
+      <div className="class_inventory_panel_component_content">
         <Stack
           direction="row"
-          justifyContent="center"
+          justifyContent="flex-start"
+          gap="8px"
           flexWrap={'wrap'}
           sx={{position: 'relative'}}
         >
@@ -55,7 +55,7 @@ export const InventoryComponent = props => {
           >
             {props.tradeItems ? (
               props.isAcceptedOffer && (
-                <div className="class_common_result">Accepted</div>
+                <div className="class_common_text">Accepted</div>
               )
             ) : (
               <>
@@ -101,6 +101,6 @@ export const InventoryComponent = props => {
           </Stack>
         )}
       </div>
-    </>
+    </div>
   );
 };

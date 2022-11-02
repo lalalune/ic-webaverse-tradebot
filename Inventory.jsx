@@ -24,10 +24,10 @@ const Inventory = () => {
   return (
     <div className="class_inventory">
       <InventoryContent />
-      <div className="class_inventory_top_left"></div>
-      <div className="class_inventory_top_right"></div>
-      <div className="class_inventory_bottom_right"></div>
-      <div className="class_inventory_bottom_left"></div>
+      <div className="class_inventory_tl"></div>
+      <div className="class_inventory_tr"></div>
+      <div className="class_inventory_br"></div>
+      <div className="class_inventory_bl"></div>
     </div>
   );
 };
