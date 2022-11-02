@@ -1,16 +1,16 @@
 import React from 'react';
 import {Stack} from '@mui/material';
 
-export const RemoteSlot = props => {
-  return props.item ? (
+export const RemoteSlot = ({item}) => {
+  return item ? (
     <Stack
       justifyContent="center"
       alignItems="center"
       className="class_item class_trade_item"
     >
-      <img className="class_item_image" src={props.item.image} />
+      <img className="class_item_image" src={item.image} />
       <div>
-        <span className="class_item_name">{props.item.name}</span>
+        <span className="class_item_name">{item.name}</span>
       </div>
     </Stack>
   ) : (

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useStore} from './utils/store';
+import {useStore} from './store';
 
 const getLength = (a, b) => {
   const length = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
@@ -52,19 +52,14 @@ const getTopLeft = pt => {
 };
 
 export const DragAndDrop = props => {
-  const {selSlot, updateSelSlot} = useStore();
+  const {selItemEl, updateSelItemEl} = useStore();
 
-  const slotDraggedRef = React.useRef(selSlot);
-
-  useEffect(() => {
-    slotDraggedRef.current = selSlot;
-  }, [selSlot]);
-
-  const moveElementCloneToMouseCoords = async (x, y) => {
-    const slot = slotDraggedRef.current;
-    if (!slot) return false;
-    const insertedChild = document.getElementById(`id_item_slot_ghost_${slot}`);
-    if (!insertedChild) return false;
+  const moveElementCloneToMouseCoords = (x, y) => {
+    if (selItemEl < 0) return;
+    const insertedChild = document.getElementById(
+      `id_item_slot_ghost_${selItemEl}`,
+    );
+    if (!insertedChild) return;
     insertedChild.style.left = `${x}px`;
     insertedChild.style.top = `${y}px`;
   };
@@ -76,27 +71,29 @@ export const DragAndDrop = props => {
   };
 
   const onMouseClick = event => {
-    // event.stopPropagation();
-    // event.preventDefault();
-    // if (!slotDraggedRef.current) return false;
-    // const div = event.target;
-    // const slot = div.getAttribute('data-slot');
-    // const type = div.getAttribute('data-type');
-    // const slotNumber = parseInt(slot);
-    // if (slot  && type === "item") {
-    //   updateSelSlot(slotNumber);
-    //   const itemSelected = document.getElementById(`id_item_${slot}`);
-    //   const itemList = document.getElementsByClassName("inventory")[0];
-    //   const itemClone = itemSelected.cloneNode(true);
-    //   itemClone.className += " being-dragged";
-    //   itemClone.id = `id_item_slot_ghost_${slot}`;
-    //   itemList.appendChild(itemClone);
-    //   const { top, left } = getTopLeft({ x: event.clientX, y: event.clientY });
-    //   itemClone.style.top = `${top}px`;
-    //   itemClone.style.left = `${left}px`;
-    //   itemClone.style.zIndex = "50";
-    //   itemSelected.className += " being-moved";
-    // }
+    console.log('onMouseClick');
+    event.preventDefault();
+    event.stopPropagation();
+    const div = event.target;
+    const slot = parseInt(div.getAttribute('data-slot'));
+    console.log('slot: ', slot);
+    const type = div.getAttribute('data-type');
+
+    if (slot && slot >= 0 && type === 'item') {
+      updateSelItemEl(slot);
+      const itemSelected = document.getElementById(`id_item_${slot}`);
+      const inventory = document.getElementsByClassName('class_inventory')[0];
+      const itemClone = itemSelected.cloneNode(true);
+      itemClone.className += ' being-dragged';
+      itemClone.id = `id_item_slot_ghost_${slot}`;
+      inventory.appendChild(itemClone);
+      const {top, left} = getTopLeft({x: event.clientX, y: event.clientY});
+      console.log('onMouseClick: ', top, left);
+      itemClone.style.top = `${top}px`;
+      itemClone.style.left = `${left}px`;
+      itemClone.style.zIndex = '1';
+      itemSelected.className += ' being-moved';
+    }
   };
 
   const onMouseReleased = event => {
@@ -127,7 +124,7 @@ export const DragAndDrop = props => {
     // ) {
     //   props.moveItemToSlot(slot, targetSlot);
     // }
-    // updateSelSlot(null);
+    // updateSelItemEl(null);
   };
 
   useEffect(() => {

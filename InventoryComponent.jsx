@@ -1,19 +1,22 @@
 import React from 'react';
 import {IoIosArrowForward, IoIosArrowBack} from 'react-icons/io';
 import {IconButton, Stack, Button} from '@mui/material';
-import {getSlotItem} from './utils/funcs';
-import {useStore} from './utils/store';
 import {ItemSlot} from './ItemSlot';
 
 export const InventoryComponent = props => {
-  const {items, curPage, updateCurPage} = useStore();
-
   const onNextPage = () => {
-    updateCurPage(curPage + 1);
+    const curPage = props.curPage;
+    const pageNum = props.pageNum;
+    const updatePage = props.updatePage;
+    if (curPage >= pageNum || !updatePage) return;
+    updatePage(curPage + 1);
   };
 
   const onPrevPage = () => {
-    updateCurPage(curPage > 1 ? curPage - 1 : 1);
+    const curPage = props.curPage;
+    const updatePage = props.updatePage;
+    if (curPage <= 1 || !updatePage) return;
+    updatePage(curPage - 1);
   };
 
   const onAccept = () => {
@@ -36,14 +39,7 @@ export const InventoryComponent = props => {
           sx={{position: 'relative'}}
         >
           {React.Children.toArray(
-            props
-              .getSlots()
-              .map(slot => (
-                <ItemSlot
-                  item={getSlotItem(items, slot)}
-                  isTrade={props.isTrade}
-                />
-              )),
+            props.compItems.map(item => <ItemSlot item={item} />),
           )}
         </Stack>
 
@@ -53,10 +49,8 @@ export const InventoryComponent = props => {
             justifyContent="space-around"
             alignItems="center"
           >
-            {props.tradeItems ? (
-              props.isAcceptedOffer && (
-                <div className="class_common_text">Accepted</div>
-              )
+            {props.isAcceptedOffer ? (
+              <div className="class_common_text">Accepted</div>
             ) : (
               <>
                 <Button variant="contained" color="success" onClick={onAccept}>
@@ -77,24 +71,24 @@ export const InventoryComponent = props => {
             <IconButton
               sx={{svg: {color: 'white'}}}
               className={`${'class_pagination_btn'} ${
-                curPage <= 1 ? 'class_common_disable' : ''
+                props.curPage <= 1 ? 'class_common_disable' : ''
               }`}
               onClick={() => onPrevPage()}
-              disabled={curPage < 1}
+              disabled={props.curPage < 1}
             >
               <IoIosArrowBack />
             </IconButton>
             <p className="class_common_text">
-              Page {`${curPage} - ${props.totalPage}`}
+              Page {`${props.curPage} - ${props.pageNum}`}
             </p>
 
             <IconButton
               sx={{svg: {color: 'white'}}}
               className={`${'class_pagination_btn'} ${
-                curPage >= props.totalPage ? 'class_common_disable' : ''
+                props.curPage >= props.pageNum ? 'class_common_disable' : ''
               }`}
               onClick={() => onNextPage()}
-              disabled={curPage >= props.totalPage}
+              disabled={props.curPage >= props.pageNum}
             >
               <IoIosArrowForward />
             </IconButton>

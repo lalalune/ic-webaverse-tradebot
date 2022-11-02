@@ -1,78 +1,63 @@
 import React from 'react';
 import {Stack} from '@mui/material';
-
-import {
-  analyzeInventoryItems,
-  analyzeTradeItems,
-  getSlotItem,
-} from './utils/funcs';
 import {DragAndDrop} from './DragAndDrop';
 import {InventoryComponent} from './InventoryComponent';
-import {useStore} from './utils/store';
+import {useStore} from './store';
 
 export const InventoryContent = () => {
-  const {itemNumPerPage, nfts, items, updateItems, curPage} = useStore();
-
-  const totalPage = Math.ceil(nfts.length / itemNumPerPage);
-
-  const moveItemToSlot = (oldSlot, newSlot) => {
-    const newItems = [...items];
-    const item = getSlotItem(newItems, oldSlot);
-    item.slot = newSlot;
-    updateItems(newItems);
-    console.log('analyzeInventoryItems: ', analyzeInventoryItems(newItems));
-    console.log('analyzeTradeItems: ', analyzeTradeItems(newItems));
-  };
-
-  const getRemoteSlots = () => {
-    const res = [];
-    for (let i = 0; i < itemNumPerPage; i++) res.push(i);
-    return res;
-  };
-
-  const getLocalSlots = () => {
-    const res = [];
-    for (let i = itemNumPerPage; i < itemNumPerPage * 2; i++) res.push(i);
-    return res;
-  };
-
-  const getCurrentSlots = () => {
-    const res = [];
-    const startIndex = (curPage + 1) * itemNumPerPage;
-    const endIndex = startIndex + itemNumPerPage;
-    for (let i = startIndex; i < endIndex; i++) res.push(i);
-    return res;
-  };
+  const {items, itemNumPerPage, curInventoryPage, updateCurInventoryPage} =
+    useStore();
+  console.log('items: ', items);
+  console.log('itemNumPerPage: ', itemNumPerPage);
+  console.log('curInventoryPage: ', curInventoryPage);
+  const inventoryItems = items.filter(item => item.slotType === 'inventory');
+  console.log('inventoryItems: ', inventoryItems);
+  const tradeItems = items.filter(item => item.isTrade);
+  console.log('tradeItems: ', tradeItems);
+  const remoteItems = items.filter(
+    item => item.isTrade && item.slotType === 'remote',
+  );
+  console.log('remoteItems: ', remoteItems);
+  const localItems = items.filter(
+    item => item.isTrade && item.slotType === 'local',
+  );
+  console.log('localItems: ', localItems);
 
   return (
     <>
       <div className="class_inventory_panel">
-        {items.length !== 0 ? (
+        {tradeItems.length ? (
           <>
-            <DragAndDrop moveItemToSlot={moveItemToSlot} />
+            <DragAndDrop />
             <InventoryComponent
               title="Remote Trade"
-              getSlots={getRemoteSlots}
+              compItems={remoteItems}
               isTrade={true}
-              isAcceptedOffer={true}
+              // isAcceptedOffer={true}
             />
             <InventoryComponent
               title="Local Trade"
-              getSlots={getLocalSlots}
+              compItems={localItems}
               isTrade={true}
             />
           </>
         ) : (
-          <Stack>
-            <p className="class_common_text">No Data Found</p>
+          <Stack
+            className="class_common_text"
+            justifyContent="center"
+            alignItems="center"
+          >
+            No Data Found
           </Stack>
         )}
       </div>
       <div className="class_inventory_panel">
         <InventoryComponent
           title="Inventory"
-          totalPage={totalPage}
-          getSlots={getCurrentSlots}
+          compItems={inventoryItems}
+          pageNum={Math.ceil(inventoryItems.length / itemNumPerPage)}
+          curPage={curInventoryPage}
+          updatePage={updateCurInventoryPage}
         />
       </div>
     </>
