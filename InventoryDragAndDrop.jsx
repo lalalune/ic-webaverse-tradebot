@@ -8,7 +8,7 @@ const getLength = (a, b) => {
 
 const getTopLeft = pt => {
   const inventoryModalRect = document
-    .getElementsByClassName('class_inventory')[0]
+    .getElementsByClassName('id_inventory')[0]
     .getBoundingClientRect();
   const tl = document
     .getElementsByClassName('class_inventory_tl')[0]
@@ -51,7 +51,7 @@ const getTopLeft = pt => {
   return {top, left};
 };
 
-export const DragAndDrop = props => {
+export const InventoryDragAndDrop = props => {
   const {selItemEl, updateSelItemEl} = useStore();
 
   const moveElementCloneToMouseCoords = (x, y) => {
@@ -64,16 +64,10 @@ export const DragAndDrop = props => {
     insertedChild.style.top = `${y}px`;
   };
 
-  const onMouseMove = event => {
-    event.preventDefault();
-    const {top, left} = getTopLeft({x: event.clientX, y: event.clientY});
-    moveElementCloneToMouseCoords(left, top);
-  };
-
   const onMouseClick = event => {
     console.log('onMouseClick');
-    event.preventDefault();
     event.stopPropagation();
+    event.preventDefault();
     const div = event.target;
     const slot = parseInt(div.getAttribute('data-slot'));
     console.log('slot: ', slot);
@@ -82,7 +76,7 @@ export const DragAndDrop = props => {
     if (slot && slot >= 0 && type === 'item') {
       updateSelItemEl(slot);
       const itemSelected = document.getElementById(`id_item_${slot}`);
-      const inventory = document.getElementsByClassName('class_inventory')[0];
+      const inventory = document.getElementsByClassName('id_inventory')[0];
       const itemClone = itemSelected.cloneNode(true);
       itemClone.className += ' being-dragged';
       itemClone.id = `id_item_slot_ghost_${slot}`;
@@ -91,9 +85,16 @@ export const DragAndDrop = props => {
       console.log('onMouseClick: ', top, left);
       itemClone.style.top = `${top}px`;
       itemClone.style.left = `${left}px`;
-      itemClone.style.zIndex = '1';
+      itemClone.style.zIndex = '10';
       itemSelected.className += ' being-moved';
     }
+  };
+
+  const onMouseMove = event => {
+    console.log('onMouseMove');
+    event.preventDefault();
+    const {top, left} = getTopLeft({x: event.clientX, y: event.clientY});
+    moveElementCloneToMouseCoords(left, top);
   };
 
   const onMouseReleased = event => {
@@ -128,15 +129,16 @@ export const DragAndDrop = props => {
   };
 
   useEffect(() => {
-    const element = document.getElementsByClassName(`class_inventory`)[0];
+    const element = document.getElementById(`id_inventory`);
+    console.log('id_inventory element: ', element);
     element.addEventListener('mousemove', onMouseMove);
     element.addEventListener('click', onMouseClick);
     element.addEventListener('mouseup', onMouseReleased);
-    return () => {
-      element.removeEventListener('mousemove', onMouseMove);
-      element.removeEventListener('mouseup', onMouseReleased);
-      element.removeEventListener('click', onMouseClick);
-    };
+    // return () => {
+    //   element.removeEventListener('mousemove', onMouseMove);
+    //   element.removeEventListener('mouseup', onMouseReleased);
+    //   element.removeEventListener('click', onMouseClick);
+    // };
   }, []);
 
   return null;

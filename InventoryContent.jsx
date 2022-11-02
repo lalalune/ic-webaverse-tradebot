@@ -1,6 +1,5 @@
 import React from 'react';
 import {Stack} from '@mui/material';
-import {DragAndDrop} from './DragAndDrop';
 import {InventoryComponent} from './InventoryComponent';
 import {useStore} from './store';
 
@@ -30,7 +29,6 @@ export const InventoryContent = () => {
       <div className="class_inventory_panel">
         {tradeItems.length ? (
           <>
-            <DragAndDrop />
             <InventoryComponent
               title="Remote Trade"
               compItems={remoteItems}

@@ -10,6 +10,7 @@
   justify-content: space-between;
   padding: 16px;
   gap: 16px;
+  z-index: 5;
 }
 .class_inventory_tl {
   position: absolute;
