@@ -29,10 +29,37 @@ export const useStore = create(set => ({
   updateItemNumPerPage: newItemNumPerPage =>
     set(state => ({itemNumPerPage: newItemNumPerPage})),
 
+  selItem: null,
+  updateSelItem: newSelItem => set(state => ({selItem: newSelItem})),
+
   selItemEl: null,
   updateSelItemEl: newSelItemEl => set(state => ({selItemEl: newSelItemEl})),
+
+  selCloneItemEl: null,
+  updateSelCloneItemEl: newSelCloneItemEl =>
+    set(state => ({selCloneItemEl: newSelCloneItemEl})),
 
   curInventoryPage: 1,
   updateCurInventoryPage: newCurPage =>
     set(state => ({curInventoryPage: newCurPage})),
+
+  inventoryEl: null,
+  updateInventoryEl: newInventoryEl =>
+    set(state => ({inventoryEl: newInventoryEl})),
+
+  inventoryTLEl: null,
+  updateInventoryTLEl: newInventoryTLEl =>
+    set(state => ({inventoryTLEl: newInventoryTLEl})),
+
+  inventoryTREl: null,
+  updateInventoryTREl: newInventoryTREl =>
+    set(state => ({inventoryTREl: newInventoryTREl})),
+
+  inventoryBREl: null,
+  updateInventoryBREl: newInventoryBREl =>
+    set(state => ({inventoryBREl: newInventoryBREl})),
+
+  inventoryBLEl: null,
+  updateInventoryBLEl: newInventoryBLEl =>
+    set(state => ({inventoryBLEl: newInventoryBLEl})),
 }));

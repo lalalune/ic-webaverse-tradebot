@@ -11,17 +11,23 @@ export const InventoryContent = () => {
   // console.log('items: ', items);
   // console.log('itemNumPerPage: ', itemNumPerPage);
   // console.log('curInventoryPage: ', curInventoryPage);
-  const inventoryItems = getSortedItems(
-    items.filter(item => item.slotType === 'inventory'),
-  );
+  const inventoryItems = getSortedItems({
+    items: items.filter(item => item.slotType === 'inventory'),
+    slotType: 'inventory',
+    itemNumPerPage,
+  });
   // console.log('inventoryItems: ', inventoryItems);
-  const remoteItems = getSortedItems(
-    items.filter(item => item.isTrade && item.slotType === 'remote'),
-  );
+  const remoteItems = getSortedItems({
+    items: items.filter(item => item.isTrade && item.slotType === 'remote'),
+    slotType: 'remote',
+    itemNumPerPage,
+  });
   // console.log('remoteItems: ', remoteItems);
-  const localItems = getSortedItems(
-    items.filter(item => item.isTrade && item.slotType === 'local'),
-  );
+  const localItems = getSortedItems({
+    items: items.filter(item => item.isTrade && item.slotType === 'local'),
+    slotType: 'local',
+    itemNumPerPage,
+  });
   // console.log('localItems: ', localItems);
 
   return (
