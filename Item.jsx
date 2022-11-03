@@ -1,11 +1,9 @@
 import React from 'react';
 import {Stack} from '@mui/material';
 import {useStore} from './store';
-import {getLength, getPosInInventory} from './funcs';
+import {getPosInInventory} from './funcs';
 
 export const Item = ({item, isTrade}) => {
-  // console.log('Item Render');
-
   const {
     items,
     updateItems,
@@ -29,31 +27,24 @@ export const Item = ({item, isTrade}) => {
       className={`class_item ${
         isTrade ? 'class_trade_item' : 'class_user_item'
       }`}
-      data-item-slot={item.slot}
       onMouseDown={e => {
-        if (selItemEl || selCloneItemEl) return;
+        if (selItem || selItemEl || selCloneItemEl) return;
         const itemEl = e.target;
         const cloneItemEl = itemEl.cloneNode(true);
-        itemEl.className += ' selected';
-        cloneItemEl.className += ' virtual';
-        inventoryEl.appendChild(cloneItemEl);
-        // console.log('itemEl: ', itemEl);
-        // console.log('cloneItemEl: ', cloneItemEl);
-        // console.log('onClick Position: ', e.clientX, e.clientY);
-        // console.log('inventoryEl Rect: ', inventoryEl.getBoundingClientRect());
         const {x, y} = getPosInInventory({
           x: e.clientX,
           y: e.clientY,
-          // itemEl,
           inventoryEl,
           inventoryTLEl,
           inventoryTREl,
           inventoryBREl,
           inventoryBLEl,
         });
-        // console.log('top left: ', top, left);
         cloneItemEl.style.left = `${x}px`;
         cloneItemEl.style.top = `${y}px`;
+        inventoryEl.appendChild(cloneItemEl);
+        itemEl.className += ' selected';
+        cloneItemEl.className += ' virtual';
         updateSelItem(item);
         updateSelItemEl(itemEl);
         updateSelCloneItemEl(cloneItemEl);
@@ -75,11 +66,10 @@ export const Item = ({item, isTrade}) => {
         if (!selItem) return;
         const cloneItems = [...items];
         const selItemIndex = cloneItems.findIndex(
-          item =>
-            item.slot === selItem.slot && item.slotType === selItem.slotType,
+          e => e.slot === selItem.slot && e.slotType === selItem.slotType,
         );
-        // console.log('selItemIndex: ', selItemIndex);
         cloneItems[selItemIndex].slot = item.slot;
+        cloneItems[selItemIndex].slotType = item.slotType;
         updateItems(cloneItems);
       }}
     ></Stack>

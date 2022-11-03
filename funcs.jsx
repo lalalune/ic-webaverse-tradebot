@@ -10,7 +10,6 @@ export const getSortedItems = ({items, slotType, itemNumPerPage}) => {
   for (let i = 0; i < length; i++) {
     if (!sortedItems[i]) sortedItems[i] = {slot: i, slotType};
   }
-  // console.log('sortedItems: ', sortedItems);
   return sortedItems;
 };
 

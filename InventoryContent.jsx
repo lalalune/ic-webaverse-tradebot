@@ -4,31 +4,24 @@ import {useStore} from './store';
 import {getSortedItems} from './funcs';
 
 export const InventoryContent = () => {
-  // console.log('InventoryContent Render');
-
   const {items, itemNumPerPage, curInventoryPage, updateCurInventoryPage} =
     useStore();
-  // console.log('items: ', items);
-  // console.log('itemNumPerPage: ', itemNumPerPage);
-  // console.log('curInventoryPage: ', curInventoryPage);
+
   const inventoryItems = getSortedItems({
     items: items.filter(item => item.slotType === 'inventory'),
     slotType: 'inventory',
     itemNumPerPage,
   });
-  // console.log('inventoryItems: ', inventoryItems);
   const remoteItems = getSortedItems({
-    items: items.filter(item => item.isTrade && item.slotType === 'remote'),
+    items: items.filter(item => item.slotType === 'remote'),
     slotType: 'remote',
     itemNumPerPage,
   });
-  // console.log('remoteItems: ', remoteItems);
   const localItems = getSortedItems({
-    items: items.filter(item => item.isTrade && item.slotType === 'local'),
+    items: items.filter(item => item.slotType === 'local'),
     slotType: 'local',
     itemNumPerPage,
   });
-  // console.log('localItems: ', localItems);
 
   return (
     <>
@@ -37,7 +30,7 @@ export const InventoryContent = () => {
           title="Remote Trade"
           compItems={remoteItems}
           isTrade={true}
-          // isAcceptedOffer={true}
+          isAcceptedOffer={false}
         />
         <InventoryComponent
           title="Local Trade"

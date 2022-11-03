@@ -4,8 +4,6 @@ import {IconButton, Stack, Button} from '@mui/material';
 import {Item} from './Item';
 
 export const InventoryComponent = props => {
-  // console.log('InventoryComponent Render');
-
   const onNextPage = () => {
     const curPage = props.curPage;
     const pageNum = props.pageNum;

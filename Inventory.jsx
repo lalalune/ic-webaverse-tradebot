@@ -1,15 +1,12 @@
 import React, {useEffect, useRef} from 'react';
 import {InventoryContent} from './InventoryContent';
-import './inventory.css';
 import {useStore} from './store';
 import {getPosInInventory} from './funcs';
+import './inventory.css';
 
 const Inventory = () => {
-  // console.log('Inventory Render');
-
   const {
-    items,
-    updateItems,
+    updateSelItem,
     selItemEl,
     updateSelItemEl,
     selCloneItemEl,
@@ -33,7 +30,6 @@ const Inventory = () => {
   const inventoryBLRef = useRef();
 
   useEffect(() => {
-    // console.log('Inventory inventoryEl: ', inventoryRef.current);
     updateInventoryEl(inventoryRef.current);
     updateInventoryTLEl(inventoryTLRef.current);
     updateInventoryTREl(inventoryTRRef.current);
@@ -50,7 +46,6 @@ const Inventory = () => {
         const {x, y} = getPosInInventory({
           x: e.clientX,
           y: e.clientY,
-          // itemEl: selCloneItemEl,
           inventoryEl,
           inventoryTLEl,
           inventoryTREl,
@@ -64,6 +59,7 @@ const Inventory = () => {
         if (!selItemEl || !selCloneItemEl) return;
         selItemEl.className = selItemEl.className.replace(' selected', '');
         inventoryEl.removeChild(selCloneItemEl);
+        updateSelItem(null);
         updateSelItemEl(null);
         updateSelCloneItemEl(null);
       }}
