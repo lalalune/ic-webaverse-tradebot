@@ -75,7 +75,6 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: 1px;
-  z-index: 102;
 }
 .class_item:not(.empty):hover {
   cursor: pointer;
