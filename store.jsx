@@ -1,26 +1,32 @@
 import create from 'zustand';
+import {fetchItems, createItem, fetchUsers, createUser} from './ic';
+
+const initialItems = [
+  {name: '0', image: 'images/item.jpg', slotType: 'inventory', slot: 0},
+  {name: '1', image: 'images/item.jpg', slotType: 'inventory', slot: 2},
+  {name: '2', image: 'images/item.jpg', slotType: 'inventory', slot: 4},
+  {name: '3', image: 'images/item.jpg', slotType: 'inventory', slot: 6},
+  {name: '4', image: 'images/item.jpg', slotType: 'inventory', slot: 7},
+  {name: '5', image: 'images/item.jpg', slotType: 'inventory', slot: 8},
+  {name: '6', image: 'images/item.jpg', slotType: 'local', slot: 0},
+  {name: '7', image: 'images/item.jpg', slotType: 'local', slot: 2},
+];
+
+// const saveItems = async () => {
+//   for (let i = 0; i < initialItems.length; i++) {
+//     const item = initialItems[i];
+//     await createItem(item);
+//   }
+// };
+
+// await saveItems();
+// console.log('fetchItems: ', await fetchItems());
+
+// console.log('createUser: ', await createUser({name: `name`}));
+// console.log('fetchUsers: ', await fetchUsers());
 
 export const useStore = create(set => ({
-  items: [
-    {name: '0', image: 'images/item.jpg', slotType: 'inventory', slot: 0},
-    {name: '1', image: 'images/item.jpg', slotType: 'inventory', slot: 2},
-    {name: '2', image: 'images/item.jpg', slotType: 'inventory', slot: 4},
-    {name: '3', image: 'images/item.jpg', slotType: 'inventory', slot: 6},
-    {name: '4', image: 'images/item.jpg', slotType: 'inventory', slot: 7},
-    {name: '5', image: 'images/item.jpg', slotType: 'inventory', slot: 8},
-    {
-      name: '6',
-      image: 'images/item.jpg',
-      slotType: 'local',
-      slot: 0,
-    },
-    {
-      name: '7',
-      image: 'images/item.jpg',
-      slotType: 'local',
-      slot: 2,
-    },
-  ],
+  items: initialItems,
   updateItems: newItems => set(state => ({items: newItems})),
 
   itemNumPerPage: 9,
