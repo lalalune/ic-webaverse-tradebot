@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePlug } from '@raydeck/useplug'
 
 import BagBox from "./BagBox";
 import BagItem from "./BagItem";
 import RemoteBox from "./RemoteBox";
-
-import { bagConfig, tradeSlots } from "../config";
 
 import StyledInventory from "./Inventory.style";
 import Frame from "../frame/Frame";
@@ -20,6 +18,27 @@ function Inventory ( { items, remoteItems, updateItemOrder }) {
     principal, 
     login
 } = usePlug();
+
+const initTradeItems = [0, 1, 2, 3, 4, 5].map(i => {
+  return {
+    id: i,
+    item: null
+  }
+})
+
+const [remoteTradeItems, setRemoteTradeItems] = useState(initTradeItems)
+
+const [tradeItems, setTradeItems] = useState(initTradeItems)
+const [bagBoxes, setBagBoxes] = useState([...Array(18).keys()].map((i) => {
+  return ({ id: i, type: 'all', item: null })
+}))
+
+useEffect(() => {
+  if(!items || items.length === 0) return;
+  setBagBoxes(bagBoxes.map((box, i) => {
+    return { ...box, item: items[i] ?? null }
+  }));
+}, [items]);
 
 console.log('authenticated', authenticated);
 console.log('principal', principal);
@@ -52,22 +71,22 @@ function cancel() {
       <Frame>
       <h2 style={{marginBottom: ".25em"}}>Their Trade</h2>
         <div className="boxes-grid">
-          {tradeSlots.map(slotId => {
+          {remoteTradeItems.map(slot => {
             return (
               <RemoteBox
-                className={`equip-${slotId} equip-item`}
-                bagId={slotId}
+                className={`equip-${slot.id} equip-item`}
+                bagId={slot.id}
                 accept={false}
                 shouldHighlight={false}
                 updateItemOrder={updateItemOrder}
-                key={slotId}
+                key={slot.id}
               >
-                {remoteItems[slotId] && (
+                {slot.item && (
                   <BagItem
                     isForTrade={false}
-                    item={remoteItems[slotId]}
-                    key={slotId}
-                    bagId={slotId}
+                    item={slot.item}
+                    key={slot.id}
+                    bagId={slot.id}
                   />
                 )}
               </RemoteBox>
@@ -78,22 +97,22 @@ function cancel() {
         <Frame>
         <h2 style={{marginBottom: ".25em"}}>Your Trade</h2>
         <div className="boxes-grid">
-            {tradeSlots.map(type => {
+            {tradeItems.map(slot => {
               return (
                 <BagBox
-                  className={`equip-${type} equip-item`}
-                  bagId={type}
+                  className={`equip-${slot.id} equip-item`}
+                  bagId={slot.id}
                   accept={'all'}
                   shouldHighlight={accept}
                   updateItemOrder={updateItemOrder}
-                  key={type}
+                  key={slot.id}
                 >
-                  {items[type] && (
+                  {slot.item && (
                     <BagItem
                       isForTrade
-                      item={items[type].id}
-                      key={type}
-                      bagId={type}
+                      item={slot.item}
+                      key={slot.id}
+                      bagId={slot.id}
                     />
                   )}
                 </BagBox>
@@ -111,10 +130,6 @@ function cancel() {
             {/* numerical input for amount of ICP to add to trade */}
             <label htmlFor="icp" style={{marginRight: ".25em"}}>ICP</label>
             <input type="number" id="icp" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
-            <label htmlFor="wicp" style={{marginRight: ".25em"}}>wICP</label>
-            <input type="number" id="wicp" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
-            <label htmlFor="xtc" style={{marginRight: ".25em"}}>XTC</label>
-            <input type="number" id="xtc" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
             </span>
             <Button variant="contained" onClick={() => {cancel()}} disabled={!accepted} color="error">Cancel</Button>
         </div>
@@ -124,21 +139,22 @@ function cancel() {
         <h2 style={{marginBottom: ".25em"}}>Inventory</h2>
 
           <div className="boxes-grid">
-            {bagConfig.bagBoxes.map(bagId => {
+            {bagBoxes.map(bag => {
               
-              const item = bagId.id;
+              const item = bag.item;
+
               console.log('item', item);
               return (
                 <BagBox
-                  bagId={bagId}
-                  key={bagId}
+                  bagId={bag.id}
+                  key={bag.id}
                   hasItem={!isNullOrEmpty(item)}
                   updateItemOrder={updateItemOrder}
                 >
                   {item && (
                     <BagItem
-                      key={`${bagId}${item.name}`}
-                      bagId={bagId}
+                      key={`${bag.id}${item.name}`}
+                      bagId={bag.id}
                       item={item}
                     />
                   )}

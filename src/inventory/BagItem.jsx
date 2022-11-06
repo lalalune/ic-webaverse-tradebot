@@ -12,6 +12,10 @@ export const PresentationalBagItem = ({
   containerId
 }) => {
   if (!item) return null;
+
+  const json = item.metadata.json.value.TextContent;
+  console.log('json', json)
+  console.log('json.image');
   return (
     <StyledItemTooltip>
       <StyledBagItem
@@ -20,7 +24,8 @@ export const PresentationalBagItem = ({
         data-tip
         data-for={containerId.toString()}
       >
-        <img src={item.image} />
+      ok
+        <img src={json.image} />
       </StyledBagItem>
       {!isDragging && (
         <ReactTooltip
@@ -29,15 +34,9 @@ export const PresentationalBagItem = ({
           border={false}
           className="react-tooltip"
         >
-          <ul>
-            <li>
-              Name: <strong>{item.name}</strong>
-            </li>
-            <li>
-              Type: <strong>{item.type}</strong>
-            </li>
-            
-          </ul>
+              <strong>{json.name}</strong>
+              <br />
+              {json.description}
         </ReactTooltip>
       )}
     </StyledItemTooltip>
@@ -46,8 +45,8 @@ export const PresentationalBagItem = ({
 
 const BagItem = ({ item, bagId, isForTrade }) => {
   console.log('item, bagId, isForTrade', item, bagId, isForTrade)
-  item.bagId = bagId;
   item.isForTrade = isForTrade;
+  item.type = "all";
   const [{ isDragging }, drag, preview] = useDrag({
     item,
     canDrag: true,
@@ -61,7 +60,7 @@ const BagItem = ({ item, bagId, isForTrade }) => {
 
   return (
     <PresentationalBagItem
-      containerId={bagId}
+      containerId={item.id}
       drag={drag}
       isDragging={isDragging}
       item={item}
