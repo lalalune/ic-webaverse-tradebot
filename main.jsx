@@ -6,7 +6,7 @@ import { PlugProvider } from '@raydeck/useplug'
 // The mainnet Router Canister Id
 const canisterId = 'lj532-6iaaa-aaaah-qcc7a-cai'
 // Whitelist the canister id for Plug permissions
-const whitelist = [canisterId];
+const whitelist = [canisterId, 'vlhm2-4iaaa-aaaam-qaatq-cai'];
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

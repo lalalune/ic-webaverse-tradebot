@@ -104,6 +104,13 @@ console.log('principal', principal);
         <Frame>
             {/* two buttons: accept (green) and cancel (red) */}
             <Button variant="contained" color="success">Accept</Button>
+            {/* numerical input for amount of ICP to add to trade */}
+            <label htmlFor="icp">ICP</label>
+            <input type="number" id="icp" defaultValue={0} style={{width: "30px"}}/>
+            <label htmlFor="wicp">wICP</label>
+            <input type="number" id="wicp" defaultValue={0} style={{width: "30px"}}/>
+            <label htmlFor="xtc">XTC</label>
+            <input type="number" id="xtc" defaultValue={0} style={{width: "30px"}}/>
             <Button variant="contained" color="error">Cancel</Button>
         </Frame>
 
