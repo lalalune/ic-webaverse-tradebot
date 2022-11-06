@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {Inventory} from './src/Inventory.jsx'
+import App from './src/App.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Inventory />
+    <App />
   </React.StrictMode>
 )

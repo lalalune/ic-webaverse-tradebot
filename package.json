@@ -23,7 +23,14 @@
     "react-icons": "^4.6.0",
     "sudograph": "^0.4.3",
     "three": "^0.146.0",
-    "zustand": "^4.1.4"
+    "zustand": "^4.1.4",
+    "ramda": "^0.26.1",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-scripts": "3.3.0",
+    "react-tooltip": "^3.11.2",
+    "styled-components": "^4.4.1",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.22",
