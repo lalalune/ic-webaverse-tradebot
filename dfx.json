@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "simple_user_accounts": {
+            "type": "custom",
+            "build": "npx azle trade_canister",
+            "root": "src",
+            "js": "src/trade_canister.js",
+            "candid": "src/trade_canister.did",
+            "wasm": "target/wasm32-unknown-unknown/release/trade_canister.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/trade_canister"
+            }
+        }
+    }
+}

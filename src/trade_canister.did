@@ -1,0 +1,6 @@
+type Trade = record { id : text; tradedata : text };
+service : () -> {
+  create_trade : (text) -> (Trade);
+  get_all_trades : () -> (vec Trade) query;
+  get_trade_by_id : (text) -> (opt Trade) query;
+}
