@@ -11,7 +11,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "azle": "^0.7.0",
     "@dfinity/agent": "^0.14.0",
     "@dfinity/candid": "^0.14.0",
     "@dfinity/principal": "^0.14.0",
@@ -21,6 +20,7 @@
     "@mui/material": "^5.10.12",
     "@psychedelic/dab-js": "^1.5.0",
     "@raydeck/useplug": "^1.0.3",
+    "azle": "^0.7.0",
     "ramda": "^0.26.1",
     "react": "^18.2.0",
     "react-dnd": "^10.0.2",
