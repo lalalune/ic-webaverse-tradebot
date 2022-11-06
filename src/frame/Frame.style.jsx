@@ -45,8 +45,10 @@ const StyledFrame = styled.div`
         padding: 10px;
         border-radius: 3px;
         box-shadow: inset 0px 1px 1px 2px #00000057;
-        background: url("frame/bg.jpg") no-repeat center;
+        background: url("frame/bg.jpg") center center;
+        background-size: cover;
     }
+
 
     `;
 

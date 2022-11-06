@@ -11,9 +11,9 @@ const StyledBagBox = styled.div`
         : "1px solid #0c1e20"};
       position: relative;
 
-      width: 65px;
+      width: 6em;
       display: flex;
-      height: 65px;
+      height: 6em;
       align-items: center;
       justify-content: center;
       background-image: radial-gradient(#0c1e20 0%, #101010 66%);

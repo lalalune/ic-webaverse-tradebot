@@ -40,6 +40,15 @@ useEffect(() => {
   }));
 }, [items]);
 
+useEffect(() => {
+  if(!remoteItems || remoteItems.length === 0) return;
+  setRemoteTradeItems(bagBoxes.map((box, i) => {
+    return { ...box, item: remoteItems[i] ?? null }
+  }));
+}, [remoteItems]);
+
+
+
 console.log('authenticated', authenticated);
 console.log('principal', principal);
 
@@ -56,10 +65,10 @@ function cancel() {
 }
 
     return (
-      <StyledInventory style={{width: "70%", display: "inline-block", height: "100%"}}>
+      <StyledInventory style={{width: "70%", display: "inline-block", height: "100vh", verticalAlign: "middle"}}>
       {!authenticated &&
       <Frame>
-        <div style={{minHeight: "630px"}}>
+        <div style={{minHeight: "100vh"}}>
         {/* center the connect button horizontally and vertically */}
         <Button variant="contained" onClick={() => login()}
         style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>Connect</Button>
@@ -67,10 +76,10 @@ function cancel() {
         </Frame>
       }
       {authenticated &&
-        <div>
+        <div style={{minHeight: "100vh", verticalAlign: "middle"}}>
       <Frame>
       <h2 style={{marginBottom: ".25em"}}>Their Trade</h2>
-        <div className="boxes-grid">
+        <div className="boxes-grid" >
           {remoteTradeItems.map(slot => {
             return (
               <RemoteBox
@@ -94,7 +103,7 @@ function cancel() {
           })}
         </div>
       </Frame>
-        <Frame>
+        <Frame >
         <h2 style={{marginBottom: ".25em"}}>Your Trade</h2>
         <div className="boxes-grid">
             {tradeItems.map(slot => {
@@ -135,7 +144,7 @@ function cancel() {
         </div>
         </Frame>
 
-        <Frame>
+        <Frame  style={{minHeight: "30vh"}}>
         <h2 style={{marginBottom: ".25em"}}>Inventory</h2>
 
           <div className="boxes-grid">

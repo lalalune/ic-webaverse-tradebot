@@ -15,6 +15,7 @@ body {
 body:before {
   content: '';
   background-image: url('./assets/frame/bg-repeat.jpg');
+  background-repeat: repeat;
   position: fixed;
   top:0;
   left: 0;

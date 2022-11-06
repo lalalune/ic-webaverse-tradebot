@@ -31,23 +31,22 @@ useEffect(() => {
     console.log('collections')
     console.log(collections)
     // make an array of all collections[i].tokens
-    const allTokens = [];
-    const t = collections.reduce((acc, collection) => {
-      console.log('acc', acc);
-      return allTokens.concat(collection.tokens);
-    }).map(token => {
-     return token
-    });
-    
     const newTokens = {}
+    let slot = 0;
 
-    t.forEach((token, i) => {
-      newTokens[i.toString()] = token;
-      newTokens[i].id = i
+    // for each token in each collection in collections, add to allTokens
+    collections.forEach((collection) => {
+      if(!collection.name.toLowerCase().includes('cipher'))
+        collection.tokens.forEach((token) => {
+          console.log('token.canister', token.canister)
+          if(!token.canister.includes('6hgw2-nyaaa-aaaai-abkqq-cai')){
+    
+            newTokens[(slot).toString()] = token;
+            newTokens[slot].id = slot
+            slot++;
+          }
+        })
     });
-    console.log('newTokens', newTokens)
-
-
 
     setState({ items: newTokens });
 
@@ -84,8 +83,9 @@ useEffect(() => {
             <Inventory items={state.items} remoteItems={[]} connected={connected} connect={() => {setConnected(true)}} updateItemOrder={updateItemOrder} />
             )}
       <div style={{width: "30%", display: "inline-block", verticalAlign: "top", height: "100%"}}>
-      <Frame>
-      <div style={{height: "100%", minHeight: "630px"}}>
+      <Frame style={{height:"100%"}}>
+      
+      <div style={{height: "100%", minHeight: "100vh"}}>
       <div style={{padding: "10px"}}>
       </div>
       <div style={{padding: "10px"}}>

@@ -2,8 +2,6 @@ import React, { useEffect, memo, Fragment } from "react";
 import { useDrag } from "react-dnd";
 import StyledBagItem from "./BagItem.style";
 import { getEmptyImage } from "react-dnd-html5-backend";
-import ReactTooltip from "react-tooltip";
-import StyledItemTooltip from "./ItemTooltip.style";
 
 export const PresentationalBagItem = ({
   drag,
@@ -12,34 +10,31 @@ export const PresentationalBagItem = ({
   containerId
 }) => {
   if (!item) return null;
-
-  const json = item.metadata.json.value.TextContent;
-  console.log('json', json)
-  console.log('json.image');
+  const [json, setJson] = React.useState(null);
+  useEffect(() => {
+    const j = item.metadata?.json?.value.TextContent
+    let j2;
+    if(j)
+    j2 = JSON.parse(j)
+    if(!j) {
+      setJson({name: item.collection, image: item.url });
+      return
+    }
+      setJson({name: j2, image: j2.image});
+  }, [item]);
   return (
-    <StyledItemTooltip>
       <StyledBagItem
         ref={drag}
         isDragging={isDragging}
         data-tip
         data-for={containerId.toString()}
       >
-      ok
-        <img src={json.image} />
-      </StyledBagItem>
-      {!isDragging && (
-        <ReactTooltip
-          id={containerId.toString()}
-          effect="solid"
-          border={false}
-          className="react-tooltip"
-        >
-              <strong>{json.name}</strong>
-              <br />
-              {json.description}
-        </ReactTooltip>
+      {json && json.image && json.image.includes('mp4') ? (
+        <video src={json.image} autoPlay loop muted />
+      ) : (
+        <img src={(json && json.image) || "assets/bastard-sword.png"} />
       )}
-    </StyledItemTooltip>
+      </StyledBagItem>
   );
 };
 
