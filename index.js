@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-// import easing from './easing.js'
 import metaversefile from 'metaversefile';
 const {
   useApp,
@@ -7,9 +5,6 @@ const {
   useActivate,
   useLoaders,
   usePhysics,
-  addTrackedApp,
-  useDropManager,
-  useDefaultModules,
   useCleanup,
 } = metaversefile;
 
@@ -18,7 +13,6 @@ const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, '$1');
 export default e => {
   const app = useApp();
   const physics = usePhysics();
-  const dropManager = useDropManager();
 
   app.name = 'trade-console';
 
@@ -67,63 +61,6 @@ export default e => {
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);
-
-      // const mixer = new THREE.AnimationMixer(o);
-      // const actions = animations.map(animationClip =>
-      //   mixer.clipAction(animationClip),
-      // );
-
-      // const startOffset = 1;
-      // const endOffset = 2;
-      // const dropOffset = 1;
-      // activateCb = () => {
-      //   for (const action of actions) {
-      //     action.reset();
-      //     action.play();
-      //     action.time = startOffset;
-      //   }
-
-      //   let timeAcc = 0;
-      //   let lastUpdateTime = Date.now();
-      //   let dropped = false;
-      //   function animate() {
-      //     const now = Date.now();
-      //     const timeDiff = (now - lastUpdateTime) / 1000;
-      //     lastUpdateTime = now;
-
-      //     timeAcc += timeDiff;
-      //     if (!dropped && timeAcc >= dropOffset) {
-      //       const {moduleUrls} = useDefaultModules();
-
-      //       dropManager.createDropApp({
-      //         type: 'minor',
-      //         start_url: moduleUrls.silk,
-      //         components: [
-      //           {
-      //             key: 'appName',
-      //             value: 'Silk',
-      //           },
-      //           {
-      //             key: 'appUrl',
-      //             value: moduleUrls.silk,
-      //           },
-      //         ],
-      //         position: app.position.clone().add(new THREE.Vector3(0, 0.7, 0)),
-      //         quaternion: app.quaternion,
-      //         scale: app.scale,
-      //       });
-
-      //       dropped = true;
-      //     }
-      //     if (timeAcc >= endOffset) {
-      //       frameCb = null;
-      //     } else {
-      //       mixer.update(timeDiff);
-      //       mixer.getRoot().updateMatrixWorld();
-      //     }
-      //   }
-      //   frameCb = animate;
-      // };
     })(),
   );
 

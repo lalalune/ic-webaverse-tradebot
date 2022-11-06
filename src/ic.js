@@ -1,7 +1,7 @@
 import {gql, sudograph} from 'sudograph';
 
 const {query, mutation} = sudograph({
-  canisterId: 'cvccv-qqaaq-aaaaa-aaaaa-c',
+  canisterId: import.meta.env.CANISTER_ID,
 });
 
 export const fetchItems = async () => {
