@@ -1,7 +1,7 @@
 import { Opt, Query, Update } from 'azle';
 
 type Db = {
-    users: {
+    trades: {
         [id: string]: Trade;
     };
 };
@@ -12,28 +12,28 @@ type Trade = {
 };
 
 let db: Db = {
-    users: {}
+    trades: {}
 };
 
 export function get_trade_by_id(id: string): Query<Opt<Trade>> {
-    const user = db.users[id] ?? null;
+    const trade = db.trades[id] ?? null;
 
-    return user;
+    return trade;
 }
 
 export function get_all_trades(): Query<Trade[]> {
-    return Object.values(db.users);
+    return Object.values(db.trades);
 }
 
 export function create_trade(tradedata: string): Update<Trade> {
-    const id = Object.keys(db.users).length.toString();
+    const id = Object.keys(db.trades).length.toString();
 
-    const user = {
+    const trade = {
         id,
         tradedata
     };
 
-    db.users[id] = user;
+    db.trades[id] = trade;
 
-    return user;
+    return trade;
 }
