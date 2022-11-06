@@ -1,6 +1,30 @@
-type Trade = record { id : text; tradedata : text };
-service : () -> {
-  create_trade : (text) -> (Trade);
-  get_all_trades : () -> (vec Trade) query;
-  get_trade_by_id : (text) -> (opt Trade) query;
+type Trade = record {
+    "id": text;
+    "hostData": vec Item;
+    "guestData": vec Item;
+    "hostEscrow": vec Item;
+    "guestEscrow": vec Item;
+    "hostAccept": bool;
+    "guestAccept": bool;
+    "host": principal;
+    "guest": principal;
+};
+
+type Item = record {
+    "name": text;
+    "canisterId": principal;
+    "tokenId": int;
+};
+
+service: {
+    "get_trade_by_id": (text) -> (opt Trade) query;
+    "get_all_trades": () -> (vec Trade) query;
+    "create_trade": () -> (Trade);
+    "accept": (text) -> (Trade);
+    "cancel": (text) -> (Trade);
+    "delete_trade": (text) -> (Trade);
+    "join_trade": (text) -> (Trade);
+    "leave_trade": (text) -> (Trade);
+    "add_item_to_trade": (text, Item) -> (Trade);
+    "remove_item_from_trade": (text, Item) -> (Trade);
 }
