@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { usePlug } from '@raydeck/useplug'
 
 import * as R from "ramda";
 import BagBox from "./BagBox";
@@ -23,19 +24,29 @@ const calculateAccept = (playerSlotType) => {
 };
 
 function Inventory (props) {
+  const {
+    authenticated,
+    principal, 
+    login
+} = usePlug();
+
+console.log('authenticated', authenticated);
+console.log('principal', principal);
+
+
     const { items, updateItemOrder } = props;
     return (
       <StyledInventory style={{width: "70%", display: "inline-block", height: "100%"}}>
-      {!props.connected && (
-        <Frame>
+      {!authenticated &&
+      <Frame>
         <div style={{minHeight: "630px"}}>
         {/* connect button */}
-        <Button variant="contained" onClick={props.connect}>Connect</Button>
+        <Button variant="contained" onClick={() => login()}>Connect</Button>
         </div>
         </Frame>
-  )}
-  {props.connected && (
-      <div>
+      }
+      {authenticated &&
+        <div>
       <Frame>
       <h1>Their Trade</h1> 
         <div className="boxes-grid">
@@ -122,9 +133,8 @@ function Inventory (props) {
           </div>
         </Frame>
         </div>
-  )}
-
-      </StyledInventory>
+                }    
+                 </StyledInventory>
     );
 }
 
