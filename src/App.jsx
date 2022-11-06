@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import * as R from "ramda";
-import { Types, bagConfig, itemDictionary } from "./config";
+import { Types } from "./config";
 import DragLayer from "./DragLayer";
 import StyledApp from "./App.style";
 import { isBlank, canStack } from "./helpers";
@@ -67,6 +67,8 @@ console.log('principal', principal)
 // convert using a browser-friendly es6 method
 const principalString = principal ? window.ic.plug.principalId : "<none>";
 
+const [tokens, setTokens] = useState([]);
+
 useEffect(() => {
   if(!principal) return;
   (async () => {
@@ -79,6 +81,25 @@ useEffect(() => {
     })
     console.log('collections')
     console.log(collections)
+    // make an array of all collections[i].tokens
+    const allTokens = [];
+    const t = collections.reduce((acc, collection) => {
+      console.log('acc', acc);
+      return allTokens.concat(collection.tokens);
+    }).map(token => {
+     token.type = Types.ICTOKEN 
+     return token
+    });
+    
+    const newTokens = {}
+
+    t.forEach((token, i) => {
+      newTokens[i.toString()] = token;
+      newTokens[i].id = i
+    });
+    console.log('newTokens', newTokens)
+    setState({ items: newTokens });
+
   })();
 }, [principal])
 
@@ -94,7 +115,7 @@ useEffect(() => {
     const shouldStack = canStack(
       R.prop("id", target),
       R.prop("id", origin),
-      R.path([R.prop("id", target), "stackable"], itemDictionary)
+      false
     );
     if (target) {
       if (dragItem.isEquiped && target.type !== dragItem.type) {
@@ -117,7 +138,7 @@ useEffect(() => {
     return (
       <StyledApp>
         <DndProvider backend={Backend}>
-          <DragLayer />
+          <DragLayer items={items} />
           <Inventory items={items} connected={connected} connect={() => {setConnected(true)}} updateItemOrder={updateItemOrder} />
       <div style={{width: "30%", display: "inline-block", verticalAlign: "top", height: "100%"}}>
       <Frame>

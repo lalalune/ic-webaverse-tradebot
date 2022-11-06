@@ -11,7 +11,7 @@ export const Types = {
   HEAD: "head",
   CHEST: "chest",
   HANDS: "hands",
-  WEAPON: "WEAPON",
+  ICTOKEN: "ICTOKEN",
   MAIN_HAND: "main-hand",
   OFF_HAND: "off-hand",
   RING: "ring",
@@ -47,7 +47,7 @@ export const itemDictionary = {
     id: 5,
     name: "Chest Plate",
     stackable: false,
-    type: Types.CHEST,
+    type: Types.ICTOKEN,
     image: "assets/armor.png",
   },
   8: {
@@ -55,6 +55,6 @@ export const itemDictionary = {
     name: "Bastard Sword",
     stackable: false,
     image: "assets/bastard-sword.png",
-    type: Types.WEAPON
+    type: Types.ICTOKEN
   }
 };

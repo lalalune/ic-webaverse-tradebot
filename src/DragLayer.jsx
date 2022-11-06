@@ -17,6 +17,7 @@ function getItemStyles(initialOffset, currentOffset) {
   };
 }
 const DragLayer = props => {
+  const {items} = props;
   const { isDragging, item, initialOffset, currentOffset } = useDragLayer(
     monitor => ({
       item: monitor.getItem(),
@@ -32,7 +33,7 @@ const DragLayer = props => {
   return (
     <StyledDragLayer>
       <div style={getItemStyles(initialOffset, currentOffset)}>
-        <DragPreview itemId={item.id} count={item.count} />
+        <DragPreview items={items} itemId={item.id} count={item.count} />
       </div>
     </StyledDragLayer>
   );

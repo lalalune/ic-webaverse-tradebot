@@ -16,14 +16,7 @@ import { remoteItemSlots } from "./helpers";
 import { playerItemSlots } from "./helpers";
 import { Button } from "@mui/material";
 
-const calculateAccept = (playerSlotType) => {
-  if (playerSlotType === Types.MAIN_HAND || playerSlotType === Types.OFF_HAND)
-    return Types.WEAPON;
-
-  return playerSlotType;
-};
-
-function Inventory (props) {
+function Inventory ( { items, updateItemOrder }) {
   const {
     authenticated,
     principal, 
@@ -33,22 +26,33 @@ function Inventory (props) {
 console.log('authenticated', authenticated);
 console.log('principal', principal);
 
+const [accepted, setAccepted] = React.useState(false);
 
-    const { items, updateItemOrder } = props;
+function accept() {
+  console.log('trade accepted!');
+  setAccepted(true);
+}
+
+function cancel() {
+  console.log('trade canceled!');
+  setAccepted(false);
+}
+
     return (
       <StyledInventory style={{width: "70%", display: "inline-block", height: "100%"}}>
       {!authenticated &&
       <Frame>
         <div style={{minHeight: "630px"}}>
-        {/* connect button */}
-        <Button variant="contained" onClick={() => login()}>Connect</Button>
+        {/* center the connect button horizontally and vertically */}
+        <Button variant="contained" onClick={() => login()}
+        style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>Connect</Button>
         </div>
         </Frame>
       }
       {authenticated &&
         <div>
       <Frame>
-      <h1>Their Trade</h1> 
+      <h2 style={{marginBottom: ".25em"}}>Their Trade</h2>
         <div className="boxes-grid">
           {remoteItemSlots.all.map(type => {
             return (
@@ -74,10 +78,10 @@ console.log('principal', principal);
         </div>
       </Frame>
         <Frame>
-        <h1>Your Trade</h1> 
-          <div className="boxes-grid">
+        <h2 style={{marginBottom: ".25em"}}>Your Trade</h2>
+        <div className="boxes-grid">
             {playerItemSlots.all.map(type => {
-              const accept = calculateAccept(type);
+              const accept = type;
               return (
                 <BagBox
                   className={`equip-${type} equip-item`}
@@ -102,19 +106,26 @@ console.log('principal', principal);
         </Frame>
 
         <Frame>
+        {/* center the div horizontally */}
+        <div style={{display: "flex", height: "3em", justifyContent: "center", verticalAlign: "middle"}}>
             {/* two buttons: accept (green) and cancel (red) */}
-            <Button variant="contained" color="success">Accept</Button>
+            <Button variant="contained" onClick={() => {accept()}} color="success">Accept</Button>
+            <span style={{margin: "1em"}}>
             {/* numerical input for amount of ICP to add to trade */}
-            <label htmlFor="icp">ICP</label>
-            <input type="number" id="icp" defaultValue={0} style={{width: "30px"}}/>
-            <label htmlFor="wicp">wICP</label>
-            <input type="number" id="wicp" defaultValue={0} style={{width: "30px"}}/>
-            <label htmlFor="xtc">XTC</label>
-            <input type="number" id="xtc" defaultValue={0} style={{width: "30px"}}/>
-            <Button variant="contained" color="error">Cancel</Button>
+            <label htmlFor="icp" style={{marginRight: ".25em"}}>ICP</label>
+            <input type="number" id="icp" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
+            <label htmlFor="wicp" style={{marginRight: ".25em"}}>wICP</label>
+            <input type="number" id="wicp" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
+            <label htmlFor="xtc" style={{marginRight: ".25em"}}>XTC</label>
+            <input type="number" id="xtc" defaultValue={0} style={{width: "3em", margin: ".25em"}}/>
+            </span>
+            <Button variant="contained" onClick={() => {cancel()}} disabled={!accepted} color="error">Cancel</Button>
+        </div>
         </Frame>
 
         <Frame>
+        <h2 style={{marginBottom: ".25em"}}>Inventory</h2>
+
           <div className="boxes-grid">
             {bagConfig.bagBoxes.map(bagId => {
               const item = itemDictionary[R.path([bagId, "id"], items)];
