@@ -1,7 +1,6 @@
 import React from 'react';
-import {IoIosArrowForward, IoIosArrowBack} from 'react-icons/io';
 import {IconButton, Stack, Button} from '@mui/material';
-import {Item} from './Item';
+import {Item} from './Item.jsx';
 
 export const InventoryComponent = props => {
   const onNextPage = () => {
@@ -80,7 +79,7 @@ export const InventoryComponent = props => {
               onClick={() => onPrevPage()}
               disabled={props.curPage < 1}
             >
-              <IoIosArrowBack />
+              Back
             </IconButton>
             <p className="class_common_text">
               Page {`${props.curPage} - ${props.pageNum}`}
@@ -94,7 +93,7 @@ export const InventoryComponent = props => {
               onClick={() => onNextPage()}
               disabled={props.curPage >= props.pageNum}
             >
-              <IoIosArrowForward />
+              Fwd
             </IconButton>
           </Stack>
         )}

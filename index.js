@@ -14,9 +14,38 @@ export default e => {
   const app = useApp();
   const physics = usePhysics();
 
+  const minScale = 0;
+  const maxScale = 2;
+  const minPosition = 0;
+  const maxPosition = 2;
+  const lerpTime = .5;
+  const lerpScale = (a, b, t) => a + (b - a) * t;
+  const lerpPosition = (a, b, t) => a + (b - a) * t;
+
+  let activated = false;  
+
   app.name = 'trade-console';
 
-  const activateCb = null;
+  const activateCb = () => {
+    activated = !activated;
+    const startTime = Date.now();
+    let currentTime = 0;
+      const timer = setInterval(() => {
+        currentTime = Date.now();
+        const time = (currentTime - startTime) / 1000;
+        const scale = lerpScale(activated ? minScale : maxScale, activated ? maxScale : minScale, time / lerpTime);
+        const position = lerpPosition(activated ? minPosition : maxPosition, activated ? maxPosition : minPosition, time / lerpTime);
+        reactApp.scale.set(scale, scale, scale);
+        reactApp.position.set(-.5, position, reactApp.position.z);
+        if (time > lerpTime) {
+          const finalScale = activated ? maxScale : minScale;
+          reactApp.scale.set(finalScale, finalScale, finalScale);
+          clearInterval(timer);
+        }
+        reactApp.updateMatrixWorld();
+      }, 1000 / 60);
+  };
+
   const frameCb = null;
   useActivate(() => {
     activateCb && activateCb();
@@ -32,14 +61,13 @@ export default e => {
     (async () => {
       const u = `${baseUrl}console.glb`;
       let o = await new Promise((accept, reject) => {
-        const {gltfLoader} = useLoaders();
-        gltfLoader.load(u, accept, function onprogress() {}, reject);
+        const { gltfLoader } = useLoaders();
+        gltfLoader.load(u, accept, function onprogress() { }, reject);
       });
       if (!live) {
         o.destroy();
         return;
       }
-      const {animations} = o;
       o = o.scene;
       app.add(o);
 
@@ -52,9 +80,8 @@ export default e => {
           reactApp.destroy();
           return;
         }
-        reactApp.position.y = 2.05;
         reactApp.rotation.y = Math.PI / 2;
-        reactApp.scale.set(2, 2, 2);
+        reactApp.scale.set(0, 0, 0);
         app.add(reactApp);
         reactApp.updateMatrixWorld();
       }

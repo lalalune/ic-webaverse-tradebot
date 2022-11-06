@@ -1,5 +1,5 @@
 import create from 'zustand';
-import {fetchItems, createItem, fetchUsers, createUser} from './ic';
+import {fetchItems, createItem, fetchUsers, createUser} from './ic.js';
 
 const initialItems = [
   {name: '0', image: 'images/item.jpg', slotType: 'inventory', slot: 0},

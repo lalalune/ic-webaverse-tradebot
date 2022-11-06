@@ -1,7 +1,7 @@
 import React from 'react';
 import {Stack} from '@mui/material';
-import {useStore} from './store';
-import {getPosInInventory} from './funcs';
+import {useStore} from './store.jsx';
+import {getPosInInventory} from './funcs.jsx';
 
 export const Item = ({item, isTrade}) => {
   const {

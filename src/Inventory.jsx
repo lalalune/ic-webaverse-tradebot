@@ -1,10 +1,10 @@
 import React, {useEffect, useRef} from 'react';
-import {InventoryContent} from './InventoryContent';
-import {useStore} from './store';
-import {getPosInInventory} from './funcs';
+import {InventoryContent} from './InventoryContent.jsx';
+import {useStore} from './store.jsx';
+import {getPosInInventory} from './funcs.jsx';
 import './inventory.css';
 
-const Inventory = () => {
+export const Inventory = () => {
   const {
     updateSelItem,
     selItemEl,
@@ -72,5 +72,3 @@ const Inventory = () => {
     </div>
   );
 };
-
-export default Inventory;

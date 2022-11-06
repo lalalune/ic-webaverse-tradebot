@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build:watch": "vite build --watch",
+    "dev:webaverse": "npx serve -p 8001 --cors",
     "build": "vite build && npm run build:component",
     "build:component": "COMPONENT=true vite build",
     "preview": "vite preview"

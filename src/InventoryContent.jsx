@@ -1,7 +1,7 @@
 import React from 'react';
-import {InventoryComponent} from './InventoryComponent';
-import {useStore} from './store';
-import {getSortedItems} from './funcs';
+import {InventoryComponent} from './InventoryComponent.jsx';
+import {useStore} from './store.jsx';
+import {getSortedItems} from './funcs.jsx';
 
 export const InventoryContent = () => {
   const {items, itemNumPerPage, curInventoryPage, updateCurInventoryPage} =
