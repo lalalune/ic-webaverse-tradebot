@@ -33,7 +33,7 @@ const DragLayer = props => {
   return (
     <StyledDragLayer>
       <div style={getItemStyles(initialOffset, currentOffset)}>
-        <DragPreview items={items} itemId={item.id} count={item.count} />
+        <DragPreview items={items} itemId={item.id} />
       </div>
     </StyledDragLayer>
   );

@@ -1,22 +1,20 @@
 import React, { useEffect } from "react";
 import { usePlug } from '@raydeck/useplug'
 
-import * as R from "ramda";
 import BagBox from "./BagBox";
 import BagItem from "./BagItem";
 import RemoteBox from "./RemoteBox";
 
-import { bagConfig, itemDictionary, Types } from "../config";
+import { bagConfig, tradeSlots } from "../config";
 
-import { isBlank } from "../helpers";
 import StyledInventory from "./Inventory.style";
 import Frame from "../frame/Frame";
-import { remoteItemSlots } from "./helpers";
 
-import { playerItemSlots } from "./helpers";
 import { Button } from "@mui/material";
 
-function Inventory ( { items, updateItemOrder }) {
+const isNullOrEmpty = x => x === null || x === undefined || x === "" || x === [];
+
+function Inventory ( { items, remoteItems, updateItemOrder }) {
   const {
     authenticated,
     principal, 
@@ -54,22 +52,22 @@ function cancel() {
       <Frame>
       <h2 style={{marginBottom: ".25em"}}>Their Trade</h2>
         <div className="boxes-grid">
-          {remoteItemSlots.all.map(type => {
+          {tradeSlots.map(slotId => {
             return (
               <RemoteBox
-                className={`equip-${type} equip-item`}
-                bagId={type}
+                className={`equip-${slotId} equip-item`}
+                bagId={slotId}
                 accept={false}
                 shouldHighlight={false}
                 updateItemOrder={updateItemOrder}
-                key={type}
+                key={slotId}
               >
-                {items[type] && (
+                {remoteItems[slotId] && (
                   <BagItem
-                    isEquiped
-                    item={itemDictionary[items[type].id]}
-                    key={type}
-                    bagId={type}
+                    isForTrade={false}
+                    item={remoteItems[slotId]}
+                    key={slotId}
+                    bagId={slotId}
                   />
                 )}
               </RemoteBox>
@@ -80,21 +78,20 @@ function cancel() {
         <Frame>
         <h2 style={{marginBottom: ".25em"}}>Your Trade</h2>
         <div className="boxes-grid">
-            {playerItemSlots.all.map(type => {
-              const accept = type;
+            {tradeSlots.map(type => {
               return (
                 <BagBox
                   className={`equip-${type} equip-item`}
                   bagId={type}
-                  accept={accept}
+                  accept={'all'}
                   shouldHighlight={accept}
                   updateItemOrder={updateItemOrder}
                   key={type}
                 >
                   {items[type] && (
                     <BagItem
-                      isEquiped
-                      item={itemDictionary[items[type].id]}
+                      isForTrade
+                      item={items[type].id}
                       key={type}
                       bagId={type}
                     />
@@ -128,20 +125,20 @@ function cancel() {
 
           <div className="boxes-grid">
             {bagConfig.bagBoxes.map(bagId => {
-              const item = itemDictionary[R.path([bagId, "id"], items)];
-
+              
+              const item = bagId.id;
+              console.log('item', item);
               return (
                 <BagBox
                   bagId={bagId}
                   key={bagId}
-                  hasItem={!isBlank(item)}
+                  hasItem={!isNullOrEmpty(item)}
                   updateItemOrder={updateItemOrder}
                 >
                   {item && (
                     <BagItem
                       key={`${bagId}${item.name}`}
                       bagId={bagId}
-                      count={R.path([bagId, "count"], items)}
                       item={item}
                     />
                   )}

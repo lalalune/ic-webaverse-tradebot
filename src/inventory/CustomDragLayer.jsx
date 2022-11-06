@@ -32,7 +32,7 @@ const CustomDragLayer = props => {
   return (
     <StyledCustomDragLayer>
       <div style={getItemStyles(initialOffset, currentOffset)}>
-        <BoxDragPreview itemId={item.id} count={item.count} />
+        <BoxDragPreview itemId={item.id} />
       </div>
     </StyledCustomDragLayer>
   );

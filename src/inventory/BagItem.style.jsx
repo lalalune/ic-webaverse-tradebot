@@ -28,19 +28,6 @@ const StyledBagItem = styled.div`
         max-width: 100%;
         /* max-height: 65px; */
       }
-  
-      .item-count {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        font-size: 11px;
-        width: 100%;
-        color: gold;
-        padding: 0 2px;
-        text-shadow: 1px 1px 0px black;
-        text-align: left;
-        font-weight: bold;
-      }
     `;
   }}
 `;

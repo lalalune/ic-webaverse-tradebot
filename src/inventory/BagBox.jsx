@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import { useDrop } from "react-dnd";
-import { Types } from "../config";
 
 import StyledBagBox from "./BagBox.style";
 
@@ -16,8 +15,10 @@ const Bag = ({
 }) => {
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: Object.values(Types),
+    accept: 'all',
     drop(item) {
+      console.log('dropped item', item);
+      console.log('if either of these is undefined the hmmmm', item.bagId, bagId);
       if (item.bagId === bagId) return undefined;
       updateItemOrder(bagId, item);
       return undefined;

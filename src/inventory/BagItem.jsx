@@ -9,7 +9,6 @@ export const PresentationalBagItem = ({
   drag,
   isDragging,
   item,
-  count,
   containerId
 }) => {
   if (!item) return null;
@@ -22,9 +21,6 @@ export const PresentationalBagItem = ({
         data-for={containerId.toString()}
       >
         <img src={item.image} />
-        <div className="item-meta">
-          {count && count > 1 && <span className="item-count"> x {count}</span>}
-        </div>
       </StyledBagItem>
       {!isDragging && (
         <ReactTooltip
@@ -48,10 +44,12 @@ export const PresentationalBagItem = ({
   );
 };
 
-const BagItem = ({ item, bagId, count, isEquiped }) => {
-
+const BagItem = ({ item, bagId, isForTrade }) => {
+  console.log('item, bagId, isForTrade', item, bagId, isForTrade)
+  item.bagId = bagId;
+  item.isForTrade = isForTrade;
   const [{ isDragging }, drag, preview] = useDrag({
-    item: Object.assign(item, { bagId, isEquiped, count }),
+    item,
     canDrag: true,
     collect: monitor => ({
       isDragging: monitor.isDragging()
@@ -67,7 +65,6 @@ const BagItem = ({ item, bagId, count, isEquiped }) => {
       drag={drag}
       isDragging={isDragging}
       item={item}
-      count={count}
     />
   );
 };
