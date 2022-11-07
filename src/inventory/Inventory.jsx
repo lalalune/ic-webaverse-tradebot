@@ -14,19 +14,47 @@ const isNullOrEmpty = x => x === null || x === undefined || x === "" || x === []
 
 function Inventory ( { items, remoteItems, updateItemOrder }) {
   const {
-    authenticated,
+    // authenticated,
     principal, 
     login
 } = usePlug();
+const authenticated = true
 
-const initTradeItems = [0, 1, 2, 3, 4, 5].map(i => {
+const initRemoteTradeItems = [0, 1, 2, 3].map(i => {
   return {
     id: i,
     item: null
   }
 })
 
-const [remoteTradeItems, setRemoteTradeItems] = useState(initTradeItems)
+const initTradeItems = [
+  {
+    id: 0,
+    item: {
+      id: 0,
+      collection: 'collection 0',
+      url: 'assets/armor.png',
+    },
+  },
+  {
+    id: 1,
+    item: {
+      id: 1,
+      collection: 'collection 1',
+      url: 'assets/avatar.jpg',
+    },
+  },
+  {
+    id: 2,
+    item: {
+      id: 2,
+      collection: 'collection 2',
+      url: 'assets/bastard-sword.png',
+    },
+  },
+]
+
+const [remoteTradeItems, setRemoteTradeItems] = useState(initRemoteTradeItems)
 
 const [tradeItems, setTradeItems] = useState(initTradeItems)
 const [bagBoxes, setBagBoxes] = useState([...Array(18).keys()].map((i) => {
@@ -48,20 +76,27 @@ useEffect(() => {
 }, [remoteItems]);
 
 
-
-console.log('authenticated', authenticated);
-console.log('principal', principal);
+// console.log('authenticated', authenticated);
+// console.log('principal', principal);
 
 const [accepted, setAccepted] = React.useState(false);
 
 function accept() {
-  console.log('trade accepted!');
+  // console.log('trade accepted!');
   setAccepted(true);
 }
 
 function cancel() {
-  console.log('trade canceled!');
+  // console.log('trade canceled!');
   setAccepted(false);
+}
+
+const swapTradeItems = (aInd, bInd) => {
+  const cloneTradeItems = [...tradeItems]
+  const tempItem = {...cloneTradeItems[aInd]}
+  cloneTradeItems[aInd] = {...cloneTradeItems[bInd]}
+  cloneTradeItems[bInd] = tempItem
+  setTradeItems(cloneTradeItems)
 }
 
     return (
@@ -106,7 +141,7 @@ function cancel() {
         <Frame >
         <h2 style={{marginBottom: ".25em"}}>Your Trade</h2>
         <div className="boxes-grid">
-            {tradeItems.map(slot => {
+            {tradeItems.map((slot, index) => {
               return (
                 <BagBox
                   className={`equip-${slot.id} equip-item`}
@@ -122,6 +157,8 @@ function cancel() {
                       item={slot.item}
                       key={slot.id}
                       bagId={slot.id}
+                      index={index}
+                      swapItems={swapTradeItems}
                     />
                   )}
                 </BagBox>
@@ -152,7 +189,7 @@ function cancel() {
               
               const item = bag.item;
 
-              console.log('item', item);
+              // console.log('item', item);
               return (
                 <BagBox
                   bagId={bag.id}

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import DragLayer from "./DragLayer";
 import StyledApp from "./App.style";
 import Inventory from "./inventory";
@@ -77,7 +77,7 @@ useEffect(() => {
 
     return (
       <StyledApp>
-        <DndProvider backend={Backend}>
+        <DndProvider backend={HTML5Backend}>
           <DragLayer items={state.items} />
           {state.items && (
             <Inventory items={state.items} remoteItems={[]} connected={connected} connect={() => {setConnected(true)}} updateItemOrder={updateItemOrder} />
