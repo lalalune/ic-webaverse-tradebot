@@ -27,10 +27,10 @@ if (process.env.COMPONENT) {
   config.build = {
     emptyOutDir: false,
     lib: {
-      entry: path.resolve(__dirname, 'src/Inventory.jsx'),
+      entry: path.resolve(__dirname, 'src/App.jsx'),
       name: 'TradeConsole',
       formats: ['es'],
-      fileName: () => `Inventory.js`,
+      fileName: () => `Trade.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

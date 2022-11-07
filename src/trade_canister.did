@@ -8,6 +8,7 @@ type Trade = record {
     "guestAccept": bool;
     "host": principal;
     "guest": principal;
+    "fulfilled": bool;
 };
 
 type Item = record {
@@ -19,6 +20,8 @@ type Item = record {
 service: {
     "get_trade_by_id": (text) -> (opt Trade) query;
     "get_all_trades": () -> (vec Trade) query;
+    "get_escrow_items": (text) -> (vec Item) query;
+    "get_escrow_items_self": (text) -> (vec Item) query;
     "create_trade": () -> (Trade);
     "accept": (text) -> (Trade);
     "cancel": (text) -> (Trade);
@@ -27,4 +30,7 @@ service: {
     "leave_trade": (text) -> (Trade);
     "add_item_to_trade": (text, Item) -> (Trade);
     "remove_item_from_trade": (text, Item) -> (Trade);
+    "add_item_to_escrow": (text, Item) -> (Trade);
+    "remove_item_from_escrow": (text, Item) -> (Trade);
+    "withdraw_from_escrow": (text, Item) -> (Item);
 }
