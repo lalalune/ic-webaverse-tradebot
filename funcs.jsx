@@ -1,14 +1,14 @@
-export const getSortedItems = ({items, slotType, itemNumPerPage}) => {
+export const getSortedItems = ({ items, slotType, itemNumPerPage }) => {
   if (!items) items = [];
   const sortedItems = [];
-  items.forEach(item => {
+  items.forEach((item) => {
     sortedItems[item.slot] = item;
   });
   const length = sortedItems.length
     ? Math.ceil(sortedItems.length / itemNumPerPage) * itemNumPerPage
     : itemNumPerPage;
   for (let i = 0; i < length; i++) {
-    if (!sortedItems[i]) sortedItems[i] = {slot: i, slotType};
+    if (!sortedItems[i]) sortedItems[i] = { slot: i, slotType };
   }
   return sortedItems;
 };
@@ -18,7 +18,7 @@ export const getLength = (a, b) => {
   return length;
 };
 
-export const getPosInInventory = info => {
+export const getPosInInventory = (info) => {
   // const item = info.itemEl.getBoundingClientRect();
   const inventory = info.inventoryEl.getBoundingClientRect();
   const tl = info.inventoryTLEl.getBoundingClientRect();
@@ -55,5 +55,5 @@ export const getPosInInventory = info => {
   const x = (info.x - tl.x - diffLeftX + 5) * (600 / width);
   const y = (info.y - Math.min(tl.y, tr.y) - diffTopY / 2 + 5) * (400 / height);
 
-  return {x, y};
+  return { x, y };
 };

@@ -11,9 +11,8 @@ const Bag = ({
   accept,
   className,
   showType,
-  shouldHighlight
+  shouldHighlight,
 }) => {
-
   // const [{ isOver, canDrop }, drop] = useDrop({
   //   accept: 'all',
   //   drop(item) {

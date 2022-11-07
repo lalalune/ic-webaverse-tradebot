@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const StyledCustomDragLayer = styled.div`
-  ${props => {
+  ${(props) => {
     const { isDragging } = props;
     return css`
       position: fixed;

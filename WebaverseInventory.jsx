@@ -1,8 +1,8 @@
-import React from 'react';
-import {Inventory} from "./dist/Trade.js";
+import React from "react";
+import { Inventory } from "./dist/Trade.js";
 
 const WebaverseInventory = () => {
-  return (<Inventory />)
+  return <Inventory />;
 };
 
 export default WebaverseInventory;
