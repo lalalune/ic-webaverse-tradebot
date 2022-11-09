@@ -1,7 +1,7 @@
 import { RequestHandler, Express } from "express";
 import * as bodyParser from "body-parser";
 import * as azle from "azle";
-const { Principal, ic } = azle;
+const { ic } = azle;
 
 class Item {
   public id: string;
@@ -19,8 +19,8 @@ class Item {
 
 class Trade {
   public id: string;
-  public host: Principal;
-  public guest: Principal;
+  public host: azle.Principal;
+  public guest: azle.Principal;
   public hostData: Item[] = [];
   public guestData: Item[] = [];
   public hostEscrow: Item[] = [];
@@ -29,7 +29,7 @@ class Trade {
   public guestAccept: boolean = false;
   public fulfilled: boolean = false;
 
-  constructor(id: string, host: Principal, guest: Principal) {
+  constructor(id: string, host: azle.Principal, guest: azle.Principal) {
     this.id = id;
     this.host = host;
     this.guest = guest;
@@ -42,7 +42,7 @@ const logRequest: RequestHandler = (req, res, next) => {
   console.log(req.method + " Request: " + req.url);
   next();
 }
-const nullPrincipal = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
+const nullPrincipal = azle.Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
 const trades = new Map<string, Trade>();
 
 export function setupRoutes(app: Express) {
