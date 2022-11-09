@@ -1,5 +1,5 @@
 import * as express from "express"
-import { setupRoutes } from './api/api';
+import { setupRoutes } from './api/api.js';
 const app = express();
 
 setupRoutes(app);

@@ -1,6 +1,7 @@
 import { RequestHandler, Express } from "express";
 import * as bodyParser from "body-parser";
-import { Principal, ic } from "azle";
+import * as azle from "azle";
+const { Principal, ic } = azle;
 
 class Item {
   public id: string;
