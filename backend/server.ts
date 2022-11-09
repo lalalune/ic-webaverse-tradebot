@@ -1,56 +1,64 @@
 import { Principal, ic } from "azle"
-import express from 'express';
-const nullPrincipal = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai")
-
-// set up express
+import express from 'express'
 const app = express()
 app.use(express.json())
 
-let db = {
-  trades: {},
+const nullPrincipal = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai")
+
+class Item {
+  public id: string
+  public image: string
+  public slotType: string
+  public slot: number
+
+  constructor(id: string, image: string, slotType: string, slot: number) {
+    this.id = id
+    this.image = image
+    this.slotType = slotType
+    this.slot = slot
+  }
 }
 
-function get_trade_by_id(id) {
-  const trade = db.trades[id] ?? null
+class Trade {
+  public id: string
+  public host: Principal
+  public guest: Principal
+  public hostData: Item[] = []
+  public guestData: Item[] = []
+  public hostEscrow: Item[] = []
+  public guestEscrow: Item[] = []
+  public hostAccept: boolean = false
+  public guestAccept: boolean = false
+  public fulfilled: boolean = false
 
-  return trade
+  constructor(id: string, host: Principal, guest: Principal) {
+    this.id = id
+    this.host = host
+    this.guest = guest
+  }
 }
 
-// express route to call get_trade_by_id
-app.use("/get_trade_by_id", async (req, res) => {
-  const id = req.body.id
-  const trade = get_trade_by_id(id)
-  // return the result
-  res.json(trade)
-})
+const trades = new Map<string, Trade>()
 
-function get_all_trades() {
-  return Object.values(db.trades)
-}
-
-app.use("/get_all_trades", async (req, res) => {
-  const trades = get_all_trades()
+app.use("/get_trades", async (req, res) => {
   res.json(trades)
 })
 
+const get_trade_by_id = (id: string) => {
+  const trade = trades.get(id)
+  return trade
+}
+
+app.use("/get_trade_by_id", async (req, res) => {
+  const id = req.body.id
+  const trade = get_trade_by_id(id)
+  res.json(trade)
+})
+
 function create_trade() {
-  const id = Object.keys(db.trades).length.toString()
-
-  const trade = {
-    id,
-    hostData: [],
-    guestData: [],
-    hostEscrow: [],
-    guestEscrow: [],
-    hostAccept: false,
-    guestAccept: false,
-    host: ic.caller(),
-    guest: nullPrincipal,
-    fulfilled: false,
-  }
-
-  db.trades[id] = trade
-
+  const id = trades.size.toString()
+  const trade = new Trade(id, ic.caller(), nullPrincipal)
+  trades.set(id, trade)
   return trade
 }
 
@@ -59,15 +67,13 @@ app.use("/create_trade", async (req, res) => {
   res.json(trade)
 })
 
-const accept = (id) => {
-  const trade = db.trades[id]
-
+const accept = (id: string) => {
+  const trade = trades.get(id)
   if (trade.host === ic.caller()) {
     trade.hostAccept = true
   } else if (trade.guest === ic.caller()) {
     trade.guestAccept = true
   }
-
   return trade
 }
 
@@ -77,15 +83,13 @@ app.use("/accept", async (req, res) => {
   res.json(trade)
 })
 
-function cancel(id) {
-  const trade = db.trades[id]
-
+function cancel(id: string) {
+  const trade = trades.get(id)
   if (trade.host === ic.caller() && !trade.guestAccept) {
     trade.hostAccept = false
   } else if (trade.guest === ic.caller() && !trade.hostAccept) {
     trade.guestAccept = false
   }
-
   return trade
 }
 
@@ -95,9 +99,9 @@ app.use("/cancel", async (req, res) => {
   res.json(trade)
 })
 
-function delete_trade(id) {
-  const trade = db.trades[id]
-  delete db.trades[id]
+function delete_trade(id: string) {
+  const trade = trades.get(id)
+  trades.delete(id)
   return trade
 }
 
@@ -107,8 +111,8 @@ app.use("/delete_trade", async (req, res) => {
   res.json(trade)
 })
 
-function join_trade(id) {
-  const trade = db.trades[id]
+function join_trade(id: string) {
+  const trade = trades.get(id)
   trade.guest = ic.caller()
   return trade
 }
@@ -119,10 +123,8 @@ app.use("/join_trade", async (req, res) => {
   res.json(trade)
 })
 
-function leave_trade(id) {
-  const trade = db.trades[id]
-
-  // TODO: check if caller is host or guest
+function leave_trade(id: string) {
+  const trade = trades.get(id)
   if (trade.host === ic.caller()) {
     return delete_trade(id)
   } else if (trade.guest === ic.caller()) {
@@ -137,9 +139,8 @@ app.use("/leave_trade", async (req, res) => {
   res.json(trade)
 })
 
-function add_item_to_trade(id, item) {
-  const trade = db.trades[id]
-  // check if the ic.caller() is the host or guest
+function add_item_to_trade(id: string, item: Item) {
+  const trade = trades.get(id)
   if (ic.caller() === trade.host) {
     trade.hostData.push(item)
   } else if (ic.caller() === trade.guest) {
@@ -155,9 +156,8 @@ app.use("/add_item_to_trade", async (req, res) => {
   res.json(trade)
 })
 
-function remove_item_from_trade(id, item) {
-  const trade = db.trades[id]
-  // check if the ic.caller() is the host or guest
+function remove_item_from_trade(id: string, item: Item) {
+  const trade = trades.get(id)
   if (ic.caller() === trade.host) {
     trade.hostData = trade.hostData.filter((i) => i !== item)
   } else if (ic.caller() === trade.guest) {
@@ -173,24 +173,21 @@ app.use("/remove_item_from_trade", async (req, res) => {
   res.json(trade)
 })
 
-function add_item_to_escrow(id, item) {
+function add_item_to_escrow(id: string, item: Item) {
   // TODO: the user needs to upload their asset here
 
-  const trade = db.trades[id]
-  // check if the ic.caller() is the host or guest
+  const trade = trades.get(id)
   if (ic.caller() === trade.host) {
     trade.hostEscrow.push(item)
   } else if (ic.caller() === trade.guest) {
     trade.guestEscrow.push(item)
   }
-
   if (
     trade.hostEscrow === trade.hostData &&
     trade.guestEscrow === trade.guestData
   ) {
     trade.fulfilled = true
   }
-
   return trade
 }
 
@@ -201,14 +198,11 @@ app.use("/add_item_to_escrow", async (req, res) => {
   res.json(trade)
 })
 
-function remove_item_from_escrow(id, item) {
+function remove_item_from_escrow(id: string, item: Item) {
   // TODO: the asset is returned to the user
 
-  const trade = db.trades[id]
-
+  const trade = trades.get(id)
   if (trade.fulfilled) return trade
-
-  // check if the ic.caller() is the host or guest
   if (ic.caller() === trade.host && trade.guestEscrow !== trade.guestData) {
     trade.hostEscrow = trade.hostEscrow.filter((i) => i !== item)
   } else if (
@@ -227,8 +221,8 @@ app.use("/remove_item_from_escrow", async (req, res) => {
   res.json(trade)
 })
 
-function get_escrow_items(id) {
-  const trade = db.trades[id]
+function get_escrow_items(id: string) {
+  const trade = trades.get(id)
   if (ic.caller() === trade.host) {
     return trade.guestEscrow
   } else if (ic.caller() === trade.guest) {
@@ -243,8 +237,8 @@ app.use("/get_escrow_items", async (req, res) => {
   res.json(items)
 })
 
-function get_escrow_items_self(id) {
-  const trade = db.trades[id]
+function get_escrow_items_self(id: string) {
+  const trade = trades.get(id)
   if (ic.caller() === trade.guest) {
     return trade.guestEscrow
   } else if (ic.caller() === trade.host) {
@@ -259,18 +253,18 @@ app.use("/get_escrow_items_self", async (req, res) => {
   res.json(items)
 })
 
-function withdraw_from_escrow(id, item) {
-  const trade = db.trades[id]
+function withdraw_from_escrow(id: string, item: Item) {
+  const trade = trades.get(id)
   let claimedItem
   if (trade.fulfilled) {
     // TODO: the asset is returned to the user
+
     if (ic.caller() === trade.host) {
       claimedItem = trade.guestEscrow.find((i) => i === item)
     } else if (ic.caller() === trade.guest) {
       claimedItem = trade.hostEscrow.find((i) => i === item)
     }
   }
-
   return claimedItem ?? item
 }
 
