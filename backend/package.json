@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.ts",
-  "type": "module",
   "scripts": {
-    "start": "node_modules/.bin/ts-node-esm server.ts"
+    "start": "node_modules/.bin/ts-node server.ts"
   },
   "author": "",
   "license": "ISC",

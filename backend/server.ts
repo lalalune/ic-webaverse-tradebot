@@ -1,5 +1,4 @@
-import * as azle from "azle"
-const { Principal, ic } = azle
+import { Principal, ic } from "azle"
 import express from 'express';
 const nullPrincipal = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai")
 
