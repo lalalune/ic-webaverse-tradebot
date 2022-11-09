@@ -41,7 +41,7 @@ const logRequest: RequestHandler = (req, res, next) => {
   console.log(req.method + " Request: " + req.url);
   next();
 }
-const nullPrincipal = "rrkah-fqaaa-aaaaa-aaaaq-cai";
+const nullPrincipal = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
 const trades = new Map<string, Trade>();
 
 export function setupRoutes(app: Express) {
