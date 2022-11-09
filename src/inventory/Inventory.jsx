@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { usePlug } from "@raydeck/useplug";
+// import { usePlug } from "@raydeck/useplug";
 
 import BagBox from "./BagBox";
 import BagItem from "./BagItem";
@@ -14,8 +14,8 @@ const isNullOrEmpty = (x) =>
   x === null || x === undefined || x === "" || x === [];
 
 function Inventory({ items, remoteItems, updateItemOrder }) {
-  const { authenticated, principal, login } = usePlug();
-  // const authenticated = true
+  // const { authenticated, principal, login } = usePlug();
+  const authenticated = true
 
   const initRemoteTradeItems = [0, 1, 2, 3].map((i) => {
     return {
@@ -119,7 +119,7 @@ function Inventory({ items, remoteItems, updateItemOrder }) {
               variant="contained"
               onClick={() => {
                 console.log(login);
-                login();
+                // login();
               }}
               style={{
                 position: "absolute",
