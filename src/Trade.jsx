@@ -21,8 +21,9 @@ import { idlFactory as trade_idl } from "./trade_canister/trade_canister.did.js"
 
 import { getAllUserNFTs } from "@psychedelic/dab-js";
 import { DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
-import DragLayer from "./DragLayer";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { clone } from "./funcs";
+// import DragLayer from "./DragLayer";
 
 const nullPartner = Principal.fromUint8Array(
   new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
@@ -35,16 +36,34 @@ const url = new URL(window.location.href);
 const tradeId = url.searchParams.get("tradeId");
 
 function Trade({ type, identifier }) {
-  const { authenticated, principal, login, agent } = usePlug();
-
-  const principalString = principal ? window.ic.plug.principalId : "<none>";
-
-  const [items, setItems] = useState(middleItems);
-  const [remoteItems, setRemoteItems] = useState({});
-  const [tradePartner, setTradePartner] = useState(null);
-
   // principal is a byte array that should be converted to a string
   // convert using a browser-friendly es6 method
+  const { authenticated, principal, login, agent } = usePlug();
+  const principalString = principal ? window.ic.plug.principalId : "<none>";
+  const initTradeItems = [0, 1, 2, 3, 4, 5].map((i) => {
+    return {
+      id: i,
+      item: null,
+    };
+  });
+
+  const [items, setItems] = useState(middleItems);
+  const [tradePartner, setTradePartner] = useState(null);
+  const [remoteTradeItems, setRemoteTradeItems] = useState(
+    clone(initTradeItems)
+  );
+  const [tradeData, setTradeData] = useState(middleTradeData);
+  const [plugActor, setPlugActor] = useState(null);
+  const [tradeInitialized, setTradeInitialized] = useState(
+    middleTradeInitialized
+  );
+  const [tradeItems, setTradeItems] = useState(clone(initTradeItems));
+  const [bagBoxes, setBagBoxes] = useState(
+    [...Array(18).keys()].map((i) => {
+      return { id: i, type: "all", item: null };
+    })
+  );
+  const [accepted, setAccepted] = React.useState(false);
 
   useEffect(() => {
     if (!principal) return;
@@ -78,38 +97,6 @@ function Trade({ type, identifier }) {
       setItems(newTokens);
     })();
   }, [principal]);
-
-  const updateItemOrder = (bagId, dragItem) => {
-    const target = items[bagId]; // the box we're dropping to
-    const origin = items[dragItem.bagId];
-    if (target) {
-      if (dragItem.isForTrade && target.type !== dragItem.type) {
-        return false;
-      }
-      // if we have an item in it
-      items[dragItem.bagId] = target; // move that item to the drag past location
-    } else {
-      delete items[dragItem.bagId]; // otherwise remove the previous reference
-    }
-    items[bagId] = origin; // move the actual drag item to new bag
-    setItems(items);
-  };
-
-  const initTradeItems = [0, 1, 2, 3, 4, 5].map((i) => {
-    return {
-      id: i,
-      item: null,
-    };
-  });
-
-  const [remoteTradeItems, setRemoteTradeItems] = useState(initTradeItems);
-  const [tradeData, setTradeData] = useState(middleTradeData);
-  const [plugActor, setPlugActor] = useState(null);
-  const [tradeInitialized, setTradeInitialized] = useState(
-    middleTradeInitialized
-  );
-  const [tradeItems, setTradeItems] = useState(initTradeItems);
-  // console.log("remoteTradeItems: ", remoteTradeItems);
 
   useEffect(() => {
     // get the current url with no params
@@ -157,12 +144,6 @@ function Trade({ type, identifier }) {
     }
   }, []);
 
-  const [bagBoxes, setBagBoxes] = useState(
-    [...Array(18).keys()].map((i) => {
-      return { id: i, type: "all", item: null };
-    })
-  );
-
   useEffect(() => {
     // console.log("items: ", items, items.length);
     if (!items || items.length === 0) return;
@@ -178,8 +159,6 @@ function Trade({ type, identifier }) {
   // console.log("principal", principal);
   // console.log("bagBoxes: ", bagBoxes);
 
-  const [accepted, setAccepted] = React.useState(false);
-
   function accept() {
     console.log("trade accepted!");
     setAccepted(true);
@@ -189,6 +168,22 @@ function Trade({ type, identifier }) {
     console.log("trade canceled!");
     setAccepted(false);
   }
+
+  // const updateItemOrder = (bagId, dragItem) => {
+  //   const target = items[bagId]; // the box we're dropping to
+  //   const origin = items[dragItem.bagId];
+  //   if (target) {
+  //     if (dragItem.isForTrade && target.type !== dragItem.type) {
+  //       return false;
+  //     }
+  //     // if we have an item in it
+  //     items[dragItem.bagId] = target; // move that item to the drag past location
+  //   } else {
+  //     delete items[dragItem.bagId]; // otherwise remove the previous reference
+  //   }
+  //   items[bagId] = origin; // move the actual drag item to new bag
+  //   setItems(items);
+  // };
 
   async function startTrade() {
     let _actor = null;
@@ -229,7 +224,7 @@ function Trade({ type, identifier }) {
   }
 
   return (
-    <DndProvider backend={Backend}>
+    <DndProvider backend={HTML5Backend}>
       {/* <DragLayer items={items} /> */}
       <StyledTrade
         style={{
@@ -299,24 +294,26 @@ function Trade({ type, identifier }) {
             <Frame>
               <h2 style={{ marginBottom: ".25em" }}>Their Trade</h2>
               <div className="boxes-grid">
-                {remoteTradeItems.map((slot) => {
+                {remoteTradeItems.map((slot, index) => {
                   return (
                     <RemoteBox
                       className={`equip-${slot.id} equip-item`}
                       bagId={slot.id}
                       accept={false}
                       shouldHighlight={false}
-                      updateItemOrder={updateItemOrder}
+                      // updateItemOrder={updateItemOrder}
                       key={slot.id}
                     >
-                      {slot.item && (
-                        <BagItem
-                          isForTrade={false}
-                          item={slot.item}
-                          key={slot.id}
-                          bagId={slot.id}
-                        />
-                      )}
+                      <BagItem
+                        isForTrade={false}
+                        item={clone(slot.item)}
+                        key={`remote_${slot.id}`}
+                        bagId={slot.id}
+                        index={index}
+                        tradeItems={clone(remoteTradeItems)}
+                        updateTradeItems={setRemoteTradeItems}
+                        tradeLayer="remote"
+                      />
                     </RemoteBox>
                   );
                 })}
@@ -325,24 +322,26 @@ function Trade({ type, identifier }) {
             <Frame>
               <h2 style={{ marginBottom: ".25em" }}>Your Trade</h2>
               <div className="boxes-grid">
-                {tradeItems.map((slot) => {
+                {tradeItems.map((slot, index) => {
                   return (
                     <BagBox
                       className={`equip-${slot.id} equip-item`}
                       bagId={slot.id}
                       accept={"all"}
                       shouldHighlight={accept}
-                      updateItemOrder={updateItemOrder}
+                      // updateItemOrder={updateItemOrder}
                       key={slot.id}
                     >
-                      {slot.item && (
-                        <BagItem
-                          isForTrade
-                          item={slot.item}
-                          key={slot.id}
-                          bagId={slot.id}
-                        />
-                      )}
+                      <BagItem
+                        isForTrade={true}
+                        item={clone(slot.item)}
+                        key={`local_${slot.id}`}
+                        bagId={slot.id}
+                        index={index}
+                        tradeItems={clone(tradeItems)}
+                        updateTradeItems={setTradeItems}
+                        tradeLayer="local"
+                      />
                     </BagBox>
                   );
                 })}
@@ -407,18 +406,17 @@ function Trade({ type, identifier }) {
                       bagId={bag.id}
                       key={bag.id}
                       hasItem={!isNullOrEmpty(item)}
-                      updateItemOrder={updateItemOrder}
+                      // updateItemOrder={updateItemOrder}
                     >
-                      {item && (
-                        <BagItem
-                          key={`${bag.id}${item.name}`}
-                          bagId={bag.id}
-                          item={item}
-                          index={index}
-                          tradeItems={bagBoxes}
-                          updateTradeItems={setBagBoxes}
-                        />
-                      )}
+                      <BagItem
+                        key={`inventory_${bag.id}`}
+                        bagId={bag.id}
+                        item={clone(item)}
+                        index={index}
+                        tradeItems={clone(bagBoxes)}
+                        updateTradeItems={setBagBoxes}
+                        tradeLayer="inventory"
+                      />
                     </BagBox>
                   );
                 })}

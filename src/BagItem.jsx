@@ -1,8 +1,9 @@
-import React, { useEffect, memo, Fragment, useRef } from "react";
+import React, { useEffect, memo, Fragment, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import StyledBagItem from "./BagItem.style";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { ItemTypes } from "./ItemTypes";
+import { clone } from "./funcs";
 
 let lastClick = Date.now();
 
@@ -25,7 +26,7 @@ export const PresentationalBagItem = ({
   drag,
   isDragging,
   item,
-  containerId,
+  // containerId,
 }) => {
   if (!item) return null;
   const [json, setJson] = React.useState(null);
@@ -45,14 +46,16 @@ export const PresentationalBagItem = ({
       ref={drag}
       isDragging={isDragging}
       data-tip
-      data-for={containerId.toString()}
+      // data-for={containerId.toString()}
     >
       <div onClick={() => handleClick(item)}>
-        {json && json.image && json.image.includes("mp4") ? (
-          <video src={json.image} autoPlay loop muted />
-        ) : (
-          <img src={(json && json.image) || "assets/bastard-sword.png"} />
-        )}
+        {json &&
+          json.image &&
+          (json.image.includes("mp4") ? (
+            <video src={json.image} autoPlay loop muted />
+          ) : (
+            <img src={json.image} />
+          ))}
       </div>
     </StyledBagItem>
   );
@@ -65,9 +68,11 @@ const BagItem = ({
   index,
   tradeItems,
   updateTradeItems,
+  tradeLayer,
 }) => {
   const ref = useRef(null);
   // console.log("item, bagId, isForTrade", item, bagId, isForTrade);
+  if (!item) item = {};
   item.isForTrade = isForTrade;
   item.type = "all";
 
@@ -84,54 +89,36 @@ const BagItem = ({
       }
       const dragIndex = hoverEl.index;
       const hoverIndex = index;
+      const cloneTradeItem = clone(item);
+      const cloneTradeItems = clone(tradeItems);
+      const cloneHoverTradeItem = clone(hoverEl.item);
+      const cloneHoverTradeItems = clone(hoverEl.tradeItems);
 
       // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset();
-
-      // Get pixels to the top
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      if (dragIndex === hoverIndex && tradeLayer === hoverEl.tradeLayer) {
         return;
       }
 
       // Time to actually perform the action
-      console.log("hoverEl: ", hoverEl);
-      const cloneTradeItem = { ...item };
-      const cloneHoverTradeItems = [...hoverEl.tradeItems];
-      cloneHoverTradeItems[hoverIndex].item = cloneTradeItem;
-      hoverEl.updateTradeItems(cloneHoverTradeItems);
-      const cloneTradeItems = [...tradeItems];
-      cloneTradeItems[dragIndex].item = null;
-      updateTradeItems(cloneTradeItems);
+      if (tradeLayer === hoverEl.tradeLayer) {
+        cloneTradeItems[hoverIndex].item = cloneHoverTradeItem;
+        cloneTradeItems[dragIndex].item = cloneTradeItem;
+        updateTradeItems(cloneTradeItems);
+      } else {
+        console.log("cloneTradeItem: ", cloneTradeItem);
+        console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
+        cloneTradeItems[hoverIndex].item = cloneHoverTradeItem;
+        cloneHoverTradeItems[dragIndex].item = cloneTradeItem;
+        updateTradeItems(cloneTradeItems);
+        hoverEl.updateTradeItems(cloneHoverTradeItems);
+      }
 
       // Note: we're mutating the monitor hoverEl here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
       // to avoid expensive index searches.
       hoverEl.index = hoverIndex;
+      hoverEl.tradeLayer = tradeLayer;
     },
   });
 
@@ -139,7 +126,7 @@ const BagItem = ({
     type: ItemTypes.LAYER1,
     canDrag: true,
     item: () => {
-      return { index };
+      return { index, tradeItems, updateTradeItems, item, tradeLayer };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -149,14 +136,10 @@ const BagItem = ({
   const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
 
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, []);
-
   return (
     <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
       <PresentationalBagItem
-        containerId={item.id}
+        // containerId={item.id}
         drag={drag}
         isDragging={isDragging}
         item={item}
