@@ -84,7 +84,7 @@ const BagItem = ({
       };
     },
     hover(hoverEl, monitor) {
-      if (!ref.current) {
+      if (!ref.current || item.id !== undefined) {
         return;
       }
       const dragIndex = hoverEl.index;
