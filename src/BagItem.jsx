@@ -58,7 +58,7 @@ export const PresentationalBagItem = ({
 };
 
 const BagItem = ({ item, bagId, isForTrade }) => {
-  console.log("item, bagId, isForTrade", item, bagId, isForTrade);
+  // console.log("item, bagId, isForTrade", item, bagId, isForTrade);
   item.isForTrade = isForTrade;
   item.type = "all";
   const [{ isDragging }, drag, preview] = useDrag({

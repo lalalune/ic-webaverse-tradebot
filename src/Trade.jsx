@@ -1,4 +1,10 @@
-import { usePlug } from "@raydeck/useplug";
+// import { usePlug } from "@raydeck/useplug";
+import {
+  middleUsePlug as usePlug,
+  middleTradeInitialized,
+  middleTradeData,
+  middleItems,
+} from "./icMiddle";
 import React, { useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
 
@@ -33,7 +39,7 @@ function Trade({ type, identifier }) {
 
   const principalString = principal ? window.ic.plug.principalId : "<none>";
 
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState(middleItems);
   const [remoteItems, setRemoteItems] = useState({});
   const [tradePartner, setTradePartner] = useState(null);
 
@@ -97,10 +103,13 @@ function Trade({ type, identifier }) {
   });
 
   const [remoteTradeItems, setRemoteTradeItems] = useState(initTradeItems);
-  const [tradeData, setTradeData] = useState(null);
+  const [tradeData, setTradeData] = useState(middleTradeData);
   const [plugActor, setPlugActor] = useState(null);
-  const [tradeInitialized, setTradeInitialized] = useState(false);
+  const [tradeInitialized, setTradeInitialized] = useState(
+    middleTradeInitialized
+  );
   const [tradeItems, setTradeItems] = useState(initTradeItems);
+  // console.log("remoteTradeItems: ", remoteTradeItems);
 
   useEffect(() => {
     // get the current url with no params
@@ -155,16 +164,19 @@ function Trade({ type, identifier }) {
   );
 
   useEffect(() => {
+    // console.log("items: ", items, items.length);
     if (!items || items.length === 0) return;
     setBagBoxes(
       bagBoxes.map((box, i) => {
+        // console.log("item: ", i, items[i]);
         return { ...box, item: items[i] ?? null };
       })
     );
   }, [items]);
 
-  console.log("authenticated", authenticated);
-  console.log("principal", principal);
+  // console.log("authenticated", authenticated);
+  // console.log("principal", principal);
+  // console.log("bagBoxes: ", bagBoxes);
 
   const [accepted, setAccepted] = React.useState(false);
 
@@ -388,8 +400,8 @@ function Trade({ type, identifier }) {
               <div className="boxes-grid">
                 {bagBoxes.map((bag) => {
                   const item = bag.item;
+                  // console.log("item: ", item);
 
-                  console.log("item", item);
                   return (
                     <BagBox
                       bagId={bag.id}
