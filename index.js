@@ -1,16 +1,10 @@
-import metaversefile from 'metaversefile';
-const {
-  useApp,
-  useFrame,
-  useActivate,
-  useLoaders,
-  usePhysics,
-  useCleanup,
-} = metaversefile;
+import metaversefile from "metaversefile";
+const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
+  metaversefile;
 
-const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, '$1');
+const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
-export default e => {
+export default (e) => {
   const app = useApp();
   const physics = usePhysics();
 
@@ -18,40 +12,48 @@ export default e => {
   const maxScale = 2;
   const minPosition = 0;
   const maxPosition = 2;
-  const lerpTime = .5;
+  const lerpTime = 0.5;
   const lerpScale = (a, b, t) => a + (b - a) * t;
   const lerpPosition = (a, b, t) => a + (b - a) * t;
 
-  let activated = false;  
+  let activated = false;
 
-  app.name = 'trade-console';
+  app.name = "trade-console";
 
   window.openInWebaverse = (item) => {
-    console.log('openInWebaverse', item);
-    console.log('item url is', item.url);
+    console.log("openInWebaverse", item);
+    console.log("item url is", item.url);
     metaversefile.createAppAsync({
       start_url: item.url,
     });
-  }
+  };
 
   const activateCb = () => {
     activated = !activated;
     const startTime = Date.now();
     let currentTime = 0;
-      const timer = setInterval(() => {
-        currentTime = Date.now();
-        const time = (currentTime - startTime) / 1000;
-        const scale = lerpScale(activated ? minScale : maxScale, activated ? maxScale : minScale, time / lerpTime);
-        const position = lerpPosition(activated ? minPosition : maxPosition, activated ? maxPosition : minPosition, time / lerpTime);
-        reactApp.scale.set(scale, scale, scale);
-        reactApp.position.set(-.5, position, reactApp.position.z);
-        if (time > lerpTime) {
-          const finalScale = activated ? maxScale : minScale;
-          reactApp.scale.set(finalScale, finalScale, finalScale);
-          clearInterval(timer);
-        }
-        reactApp.updateMatrixWorld();
-      }, 1000 / 60);
+    const timer = setInterval(() => {
+      currentTime = Date.now();
+      const time = (currentTime - startTime) / 1000;
+      const scale = lerpScale(
+        activated ? minScale : maxScale,
+        activated ? maxScale : minScale,
+        time / lerpTime
+      );
+      const position = lerpPosition(
+        activated ? minPosition : maxPosition,
+        activated ? maxPosition : minPosition,
+        time / lerpTime
+      );
+      reactApp.scale.set(scale, scale, scale);
+      reactApp.position.set(-0.5, position, reactApp.position.z);
+      if (time > lerpTime) {
+        const finalScale = activated ? maxScale : minScale;
+        reactApp.scale.set(finalScale, finalScale, finalScale);
+        clearInterval(timer);
+      }
+      reactApp.updateMatrixWorld();
+    }, 1000 / 60);
   };
 
   const frameCb = null;
@@ -70,7 +72,7 @@ export default e => {
       const u = `${baseUrl}console_fantasy.glb`;
       let o = await new Promise((accept, reject) => {
         const { gltfLoader } = useLoaders();
-        gltfLoader.load(u, accept, function onprogress() { }, reject);
+        gltfLoader.load(u, accept, function onprogress() {}, reject);
       });
       if (!live) {
         o.destroy();
@@ -96,7 +98,7 @@ export default e => {
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);
-    })(),
+    })()
   );
 
   useCleanup(() => {

@@ -1,8 +1,8 @@
-import React from 'react';
-import {Trade} from "./dist/Trade.js";
+import React from "react";
+import { Trade } from "./dist/Trade.js";
 
 const WebaverseTrade = () => {
-  return (<Trade type={'webaverse'} />)
+  return <Trade type={"webaverse"} />;
 };
 
 export default WebaverseTrade;

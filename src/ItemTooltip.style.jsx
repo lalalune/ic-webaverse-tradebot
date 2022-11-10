@@ -1,12 +1,12 @@
 import styled, { css } from "styled-components";
 
 const StyledTooltip = styled.ul`
-  ${props => {
+  ${(props) => {
     return css`
       ul {
         list-style-type: none;
-        margin:0;
-        padding:0;
+        margin: 0;
+        padding: 0;
       }
       .react-tooltip {
         background-color: #0c1b1c;
@@ -25,7 +25,7 @@ const StyledTooltip = styled.ul`
         height: 30px;
         transform: translateX(-50%);
         margin: 0;
-        border:0 !important;
+        border: 0 !important;
       }
       .react-tooltip:before {
         background-image: url(frame/divider-bottom.png);
@@ -39,7 +39,7 @@ const StyledTooltip = styled.ul`
         background-position: center;
         height: 30px;
         transform: scale(-1) translateX(50%);
-        border:0 !important;
+        border: 0 !important;
         margin: 0;
       }
     `;

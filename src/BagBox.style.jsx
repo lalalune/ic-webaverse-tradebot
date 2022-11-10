@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const StyledBagBox = styled.div`
-  ${props => {
+  ${(props) => {
     const { canDrop, isOver } = props;
 
     return css`

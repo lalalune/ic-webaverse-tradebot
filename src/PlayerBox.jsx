@@ -5,7 +5,7 @@ import BagItem from "./BagItem";
 const style = {
   border: "1px solid gray",
   height: "80px",
-  width: "80px"
+  width: "80px",
 };
 
 const PlayerBox = ({ onDrop, currentItem, type }) => {
@@ -15,11 +15,11 @@ const PlayerBox = ({ onDrop, currentItem, type }) => {
       onDrop(item);
       return undefined;
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
-      draggingColor: monitor.getItemType()
-    })
+      draggingColor: monitor.getItemType(),
+    }),
   });
   const opacity = isOver ? 1 : 0.7;
   return (
@@ -28,7 +28,7 @@ const PlayerBox = ({ onDrop, currentItem, type }) => {
       style={{
         ...style,
         opacity,
-        border: canDrop?'1px solid gold': '1px solid gray',
+        border: canDrop ? "1px solid gold" : "1px solid gray",
       }}
     >
       <p>{type}</p>
@@ -38,9 +38,9 @@ const PlayerBox = ({ onDrop, currentItem, type }) => {
   );
 };
 
-const StatefulPlayerBox = props => {
+const StatefulPlayerBox = (props) => {
   const [currentItem, setlastDropedType] = useState(null);
-  const handleDrop = useCallback(item => setlastDropedType(item), []);
+  const handleDrop = useCallback((item) => setlastDropedType(item), []);
   return <PlayerBox {...props} currentItem={currentItem} onDrop={handleDrop} />;
 };
 export default StatefulPlayerBox;

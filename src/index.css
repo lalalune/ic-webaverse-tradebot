@@ -13,16 +13,15 @@ body {
 }
 
 body:before {
-  content: '';
-  background-image: url('./assets/frame/bg-repeat.jpg');
+  content: "";
+  background-image: url("./assets/frame/bg-repeat.jpg");
   background-repeat: repeat;
   position: fixed;
-  top:0;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: -1;
-
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -30,6 +29,6 @@ code {
 }
 ul {
   list-style-type: none;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
