@@ -121,7 +121,7 @@ useEffect(() => {
           console.log('guest is', guest)
 
           if (guest !== null && guest !== "" && guest !== nullPrincipal && guest !== nullPartner) {
-            if(guest !== principal.toText()){
+            if(guest !== principal){
               // the trade is already initialized with another wallet!
               return console.error('trade already initialized with another wallet!', guest);
             }  

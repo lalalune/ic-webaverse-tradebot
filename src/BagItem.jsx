@@ -3,6 +3,24 @@ import { useDrag } from "react-dnd";
 import StyledBagItem from "./BagItem.style";
 import { getEmptyImage } from "react-dnd-html5-backend";
 
+let lastclick = Date.now();
+  
+const handleClick = (item) => {
+  console.log('click')
+  // check for double click
+  const now = Date.now();
+  if (now - lastclick < 500) {
+    // double click
+    console.log('double click');
+    console.log('item is', item);
+    if(window && window.openInWebaverse){
+      window.openInWebaverse(item);
+    }
+  }
+  lastclick = now;
+
+}
+
 export const PresentationalBagItem = ({
   drag,
   isDragging,
@@ -22,6 +40,7 @@ export const PresentationalBagItem = ({
     }
       setJson({name: j2, image: j2.image});
   }, [item]);
+
   return (
       <StyledBagItem
         ref={drag}
@@ -29,11 +48,13 @@ export const PresentationalBagItem = ({
         data-tip
         data-for={containerId.toString()}
       >
+      <div         onClick={() => handleClick(item)}>
       {json && json.image && json.image.includes('mp4') ? (
         <video src={json.image} autoPlay loop muted />
       ) : (
         <img src={(json && json.image) || "assets/bastard-sword.png"} />
       )}
+      </div>
       </StyledBagItem>
   );
 };
@@ -49,6 +70,7 @@ const BagItem = ({ item, bagId, isForTrade }) => {
       isDragging: monitor.isDragging()
     })
   });
+
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
