@@ -150,15 +150,6 @@ useEffect(() => {
     }));
   }, [items]);
 
-  useEffect(() => {
-    if (!remoteItems || remoteItems.length === 0) return;
-    setRemoteTradeItems(bagBoxes.map((box, i) => {
-      return { ...box, item: remoteItems[i] ?? null }
-    }));
-  }, [remoteItems]);
-
-
-
   console.log('authenticated', authenticated);
   console.log('principal', principal);
 
@@ -338,8 +329,9 @@ useEffect(() => {
     <div style={{padding: "10px"}}>
     </div>
     <div style={{padding: "10px"}}>
-    {authenticated && principal ? principalString : "Please connect with your IC wallet"}
-    <span>Trade initialized: {tradeInitialized} | Trade data: {tradeData ? JSON.stringify(tradeData) : "none"}</span>
+    <b>CONNECTION STATUS</b>
+    <br />
+    {authenticated && principal ? ("Connected with " + principalString) : "Waiting for IC wallet connection..."}
     {tradeInitialized && tradeData && !tradePartner && !tradeId &&
       <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -40%)" }}>
       <b> WAITING FOR TRADE PARNTER... </b>
