@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { PresentationalBagItem } from "./inventory/BagItem";
+import { PresentationalBagItem } from "./BagItem";
 
 const DragPreview = ({ items, itemId }) => {
   const item = items[itemId];
