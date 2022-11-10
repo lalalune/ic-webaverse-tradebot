@@ -343,10 +343,17 @@ useEffect(() => {
     <span>Trade initialized: {tradeInitialized} | Trade data: {tradeData ? JSON.stringify(tradeData) : "none"}</span>
     {tradeInitialized && tradeData && !tradePartner && !tradeId &&
       <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -40%)" }}>
+      <b> WAITING FOR TRADE PARNTER... </b>
+      <br />
         Send this link to your trade partner
           <br />
         <a href={`${url.host}/?tradeId=${tradeData.id}`}>{url.host}/?tradeId={tradeData.id}</a>
       </span>
+    }
+    {tradeInitialized && tradeData && tradePartner &&
+      <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -40%)" }}>
+      Trading with {tradePartner}
+    </span>
     }
     </div>
     </div>
