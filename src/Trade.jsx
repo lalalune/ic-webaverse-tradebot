@@ -415,6 +415,8 @@ function Trade({ type, identifier }) {
                           bagId={bag.id}
                           item={item}
                           index={index}
+                          tradeItems={bagBoxes}
+                          updateTradeItems={setBagBoxes}
                         />
                       )}
                     </BagBox>

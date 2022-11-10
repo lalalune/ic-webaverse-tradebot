@@ -58,7 +58,14 @@ export const PresentationalBagItem = ({
   );
 };
 
-const BagItem = ({ item, bagId, isForTrade }) => {
+const BagItem = ({
+  item,
+  bagId,
+  isForTrade,
+  index,
+  tradeItems,
+  updateTradeItems,
+}) => {
   const ref = useRef(null);
   // console.log("item, bagId, isForTrade", item, bagId, isForTrade);
   item.isForTrade = isForTrade;
@@ -71,11 +78,11 @@ const BagItem = ({ item, bagId, isForTrade }) => {
         handlerId: monitor.getHandlerId(),
       };
     },
-    hover(hoverItem, monitor) {
+    hover(hoverEl, monitor) {
       if (!ref.current) {
         return;
       }
-      const dragIndex = hoverItem.index;
+      const dragIndex = hoverEl.index;
       const hoverIndex = index;
 
       // Don't replace items with themselves
@@ -111,13 +118,20 @@ const BagItem = ({ item, bagId, isForTrade }) => {
       }
 
       // Time to actually perform the action
-      // swapItems(dragIndex, hoverIndex);
+      console.log("hoverEl: ", hoverEl);
+      const cloneTradeItem = { ...item };
+      const cloneHoverTradeItems = [...hoverEl.tradeItems];
+      cloneHoverTradeItems[hoverIndex].item = cloneTradeItem;
+      hoverEl.updateTradeItems(cloneHoverTradeItems);
+      const cloneTradeItems = [...tradeItems];
+      cloneTradeItems[dragIndex].item = null;
+      updateTradeItems(cloneTradeItems);
 
-      // Note: we're mutating the monitor hoverItem here!
+      // Note: we're mutating the monitor hoverEl here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
       // to avoid expensive index searches.
-      hoverItem.index = hoverIndex;
+      hoverEl.index = hoverIndex;
     },
   });
 
