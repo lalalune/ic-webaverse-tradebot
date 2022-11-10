@@ -1,5 +1,6 @@
 import { usePlug } from '@raydeck/useplug';
 import React, { useEffect, useState } from "react";
+import { Principal } from '@dfinity/principal';
 
 import BagBox from "./BagBox";
 import BagItem from "./BagItem";
@@ -17,9 +18,13 @@ import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import DragLayer from "./DragLayer";
 
-const canisterId = import.meta.env.TRADE_CANISTER_CANISTER_ID;
+
+const nullPartner = Principal.fromUint8Array(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])).toText();
+const nullPrincipal = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
 
 const isNullOrEmpty = x => x === null || x === undefined || x === "" || x === [];
+const url = new URL(window.location.href);
+const tradeId = url.searchParams.get("tradeId");
 
 function Inventory() {
   const {
@@ -30,11 +35,9 @@ function Inventory() {
   } = usePlug();
   const principalString = principal ? window.ic.plug.principalId : "<none>";
 
-  const [connected, setConnected] = useState(false);
   const [items, setItems] = useState({});
   const [remoteItems, setRemoteItems] = useState({});
   const [tradePartner, setTradePartner] = useState(null);
-
 
 // principal is a byte array that should be converted to a string
 // convert using a browser-friendly es6 method
@@ -103,13 +106,9 @@ useEffect(() => {
   const [tradeInitialized, setTradeInitialized] = useState(false)
   const [tradeItems, setTradeItems] = useState(initTradeItems);
 
-
   useEffect(() => {
     // get the current url with no params
-    const url = new URL(window.location.href);
-
     // get the tradeid params
-    const tradeId = url.searchParams.get("tradeId");
 
     // if tradeId is not null, then we are in a trade
     if (tradeId !== null) {
@@ -118,6 +117,20 @@ useEffect(() => {
         actor.get_trade_by_id(tradeId).then(res => {
           console.log('trade response:', res);
           setTradeData(res);
+
+          const guest = Principal.fromUint8Array(res[0].guest._arr).toText()
+          console.log('guest is', guest)
+
+          if (guest !== null && guest !== "" && guest !== nullPrincipal && guest !== nullPartner) {
+            if(guest !== principal.toText()){
+              // the trade is already initialized with another wallet!
+              return console.error('trade already initialized with another wallet!', guest);
+            }  
+          }
+
+          actor.join_trade(tradeId).then(res => {
+            console.log('join trade response:', res);
+          });
         });
       });
       setTradeInitialized(true);
@@ -163,11 +176,28 @@ useEffect(() => {
   }
 
   async function startTrade() {
+    let _actor = null;
     window.ic.plug.createActor({ canisterId: 'jljwu-oiaaa-aaaam-qbala-cai', interfaceFactory: trade_idl }).then(actor => {
+      _actor = actor;
       setPlugActor(actor);
       actor.create_trade().then(res => {
         console.log('res', res);
         setTradeData(res);
+        const interval = setInterval(async () => {
+          console.log('looking for trade partner...');
+
+          const res2 = await _actor.get_trade_by_id(res.id);
+          console.log('tradeData', res2[0])
+
+          const guest = Principal.fromUint8Array(res2[0].guest._arr).toText()
+          console.log('guest', guest)
+          console.log('principal of trading partner is', guest);
+          if (guest !== null && guest !== "" && guest !== nullPrincipal && guest !== nullPartner) {
+            setTradePartner(guest);
+            console.log('trade partner found!', guest);
+            clearInterval(interval);
+          }
+        }, 2000);
       });
     });
     setTradeInitialized(true);
@@ -311,11 +341,11 @@ useEffect(() => {
     <div style={{padding: "10px"}}>
     {authenticated && principal ? principalString : "Please connect with your IC wallet"}
     <span>Trade initialized: {tradeInitialized} | Trade data: {tradeData ? JSON.stringify(tradeData) : "none"}</span>
-    {tradeInitialized && tradeData && !tradePartner &&
+    {tradeInitialized && tradeData && !tradePartner && !tradeId &&
       <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -40%)" }}>
         Send this link to your trade partner
           <br />
-        <a href={`https://ic-trade.vercel.app/?tradeId=${tradeData.id}`}>https://ic-trade.vercel.app/?tradeId={tradeData.id}</a>
+        <a href={`${url.host}/?tradeId=${tradeData.id}`}>{url.host}/?tradeId={tradeData.id}</a>
       </span>
     }
     </div>
