@@ -1,19 +1,28 @@
 import styled from "styled-components";
-
-
+import leftTopCorner from "./frame_assets/left-top-corner.png"
+import rightTopCorner from "./frame_assets/right-top-corner.png"
+import leftBottomCorner from "./frame_assets/left-bottom-corner.png"
+import rightBottomCorner from "./frame_assets/right-bottom-corner.png"
+import topHorizontalBar from "./frame_assets/top-horizontal-bar.png"
+import bottomHorizontalBar from "./frame_assets/bottom-horizontal-bar.png"
+import leftVerticalBar from "./frame_assets/left-vertical-bar.png"
+import rightVerticalBar from "./frame_assets/right-vertical-bar.png"
+import bg2 from "./frame_assets/bg2.jpg"
+import bg from "./frame_assets/bg.jpg"
 const StyledFrame = styled.div`
 
     align-self: flex-end;
     display: flex;
-    background-image: url("frame/left-top-corner.png"),
-        url("frame/right-top-corner.png"),
-        url("frame/left-bottom-corner.png"),
-        url("frame/right-bottom-corner.png"),
-        url("frame/top-horizontal-bar.png"),
-        url("frame/bottom-horizontal-bar.png"),
-        url("frame/left-vertical-bar.png"),
-        url("frame/right-vertical-bar.png"),
-        url("frame/bg2.jpg");
+    background-image:
+        url(${leftTopCorner}),
+        url(${rightTopCorner}),
+        url(${leftBottomCorner}),
+        url(${rightBottomCorner}),
+        url(${topHorizontalBar}),
+        url(${bottomHorizontalBar}),
+        url(${leftVerticalBar}),
+        url(${rightVerticalBar}),
+        url(${bg2});
     background-position: left top,
     right top,
     left 1px bottom,
@@ -45,7 +54,7 @@ const StyledFrame = styled.div`
         padding: 10px;
         border-radius: 3px;
         box-shadow: inset 0px 1px 1px 2px #00000057;
-        background: url("frame/bg.jpg") center center;
+        background: url(${bg}) center center;
         background-size: cover;
     }
 
