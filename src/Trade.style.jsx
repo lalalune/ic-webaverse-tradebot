@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledInventory = styled.div`
+const StyledTrade = styled.div`
   .boxes-grid {
     display: grid;
     grid-gap: 10px;
@@ -8,6 +8,6 @@ const StyledInventory = styled.div`
   }
 `;
 
-StyledInventory.displayName = "StyledInventory";
+StyledTrade.displayName = "StyledTrade";
 
-export default StyledInventory;
+export default StyledTrade;

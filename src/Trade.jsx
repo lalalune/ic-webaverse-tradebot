@@ -7,7 +7,7 @@ import BagItem from "./BagItem";
 import RemoteBox from "./RemoteBox";
 
 import Frame from "./frame/Frame";
-import StyledInventory from "./Inventory.style";
+import StyledTrade from "./Trade.style";
 
 import { Button } from "@mui/material";
 
@@ -18,7 +18,6 @@ import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import DragLayer from "./DragLayer";
 
-
 const nullPartner = Principal.fromUint8Array(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])).toText();
 const nullPrincipal = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
 
@@ -26,7 +25,7 @@ const isNullOrEmpty = x => x === null || x === undefined || x === "" || x === []
 const url = new URL(window.location.href);
 const tradeId = url.searchParams.get("tradeId");
 
-function Inventory() {
+function Trade({ type, identifier }) {
   const {
     authenticated,
     principal,
@@ -206,7 +205,7 @@ useEffect(() => {
   return (
     <DndProvider backend={Backend}>
       <DragLayer items={items} />
-    <StyledInventory style={{ width: "70%", display: "inline-block", height: "100vh", verticalAlign: "middle" }}>
+    <StyledTrade style={{ width: "70%", display: "inline-block", height: "100vh", verticalAlign: "middle" }}>
       {!authenticated &&
         <Frame>
           <div style={{ minHeight: "100vh" }}>
@@ -301,7 +300,7 @@ useEffect(() => {
           </Frame>
 
           <Frame style={{ minHeight: "30vh" }}>
-            <h2 style={{ marginBottom: ".25em" }}>Inventory</h2>
+            <h2 style={{ marginBottom: ".25em" }}>Trade</h2>
 
             <div className="boxes-grid">
               {bagBoxes.map(bag => {
@@ -330,7 +329,7 @@ useEffect(() => {
           </Frame>
         </div>
       }
-    </StyledInventory>
+    </StyledTrade>
 
     <div style={{width: "30%", display: "inline-block", verticalAlign: "top", height: "100%"}}>
     <Frame style={{height:"100%"}}>
@@ -363,4 +362,4 @@ useEffect(() => {
   );
 }
 
-export default Inventory;
+export default Trade;

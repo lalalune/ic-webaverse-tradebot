@@ -1,11 +1,11 @@
 import React from "react";
 import StyledApp from "./App.style";
-import Inventory from "./Inventory";
+import Trade from "./Trade";
 
 function App () {
     return (
       <StyledApp>
-            <Inventory />
+            <Trade type={'web'} />
       </StyledApp>
     );
 }

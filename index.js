@@ -72,7 +72,7 @@ export default e => {
       app.add(o);
 
       {
-        const u = `${baseUrl}inventory.react`;
+        const u = `${baseUrl}trade.react`;
         reactApp = await metaversefile.createAppAsync({
           start_url: u,
         });
