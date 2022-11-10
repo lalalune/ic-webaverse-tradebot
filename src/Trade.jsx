@@ -230,7 +230,7 @@ function Trade({ type, identifier }) {
 
   return (
     <DndProvider backend={Backend}>
-      <DragLayer items={items} />
+      {/* <DragLayer items={items} /> */}
       <StyledTrade
         style={{
           width: "70%",
@@ -398,7 +398,7 @@ function Trade({ type, identifier }) {
               <h2 style={{ marginBottom: ".25em" }}>Trade</h2>
 
               <div className="boxes-grid">
-                {bagBoxes.map((bag) => {
+                {bagBoxes.map((bag, index) => {
                   const item = bag.item;
                   // console.log("item: ", item);
 
@@ -414,6 +414,7 @@ function Trade({ type, identifier }) {
                           key={`${bag.id}${item.name}`}
                           bagId={bag.id}
                           item={item}
+                          index={index}
                         />
                       )}
                     </BagBox>
