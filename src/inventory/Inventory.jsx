@@ -10,13 +10,18 @@ import Frame from "../frame/Frame";
 
 import { Button } from "@mui/material";
 
+import { idlFactory as trade_idl } from '../trade_canister/trade_canister.did.js';
+// CANISTER_ID is replaced by webpack based on node environment
+export const canisterId = import.meta.env.TRADE_CANISTER_CANISTER_ID;
+
 const isNullOrEmpty = x => x === null || x === undefined || x === "" || x === [];
 
 function Inventory ( { items, remoteItems, updateItemOrder }) {
   const {
     authenticated,
     principal, 
-    login
+    login,
+    createActor
 } = usePlug();
 
 const initTradeItems = [0, 1, 2, 3, 4, 5].map(i => {
@@ -27,7 +32,8 @@ const initTradeItems = [0, 1, 2, 3, 4, 5].map(i => {
 })
 
 const [remoteTradeItems, setRemoteTradeItems] = useState(initTradeItems)
-
+const [tradeData, setTradeData] = useState(null)
+const [plugActor, setPlugActor] = useState(null)
 const [tradeItems, setTradeItems] = useState(initTradeItems)
 const [bagBoxes, setBagBoxes] = useState([...Array(18).keys()].map((i) => {
   return ({ id: i, type: 'all', item: null })
@@ -64,6 +70,20 @@ function cancel() {
   setAccepted(false);
 }
 
+async function startTrade(){
+  console.log('trade started!');
+  const canisterId = import.meta.env.TRADE_CANISTER_CANISTER_ID;
+  console.log('canister id', canisterId);
+
+  window.ic.plug.createActor({canisterId: 'jljwu-oiaaa-aaaam-qbala-cai', interfaceFactory: trade_idl}).then(actor => {
+    setPlugActor(actor);
+    actor.create_trade().then(res => {
+      console.log('res', res);
+      setTradeData(res);
+    });
+  });
+}
+
     return (
       <StyledInventory style={{width: "70%", display: "inline-block", height: "100vh", verticalAlign: "middle"}}>
       {!authenticated &&
@@ -75,7 +95,16 @@ function cancel() {
         </div>
         </Frame>
       }
-      {authenticated &&
+      {authenticated && !tradeData &&
+        <Frame>
+          <div style={{minHeight: "100vh"}}>
+          {/* center the connect button horizontally and vertically */}
+          <Button variant="contained" onClick={() => startTrade()}
+          style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>Start Trade</Button>
+          </div>
+          </Frame>
+        }
+      {authenticated && tradeData &&
         <div style={{minHeight: "100vh", verticalAlign: "middle"}}>
       <Frame>
       <h2 style={{marginBottom: ".25em"}}>Their Trade</h2>
