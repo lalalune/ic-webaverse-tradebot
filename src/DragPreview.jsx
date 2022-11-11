@@ -3,7 +3,7 @@ import { PresentationalBagItem } from "./BagItem";
 
 const DragPreview = ({ items, itemId }) => {
   const item = items[itemId];
-  console.log("items", items);
+  // console.log("items", items);
 
   return <PresentationalBagItem containerId={itemId} item={item} />;
 };

@@ -1,4 +1,4 @@
-export const boxNum = 6;
+export const tradeBoxNum = 6;
 
 export const inventoryBoxNum = 45;
 

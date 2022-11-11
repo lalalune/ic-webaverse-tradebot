@@ -4,7 +4,6 @@ import { useStore } from "./store";
 
 export const ItemDetails = () => {
   const { selItem } = useStore();
-  console.log("selItem: ", selItem);
 
   return selItem ? (
     <Stack

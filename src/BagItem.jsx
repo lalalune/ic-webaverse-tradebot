@@ -4,12 +4,12 @@ import StyledBagItem from "./BagItem.style";
 import { ItemTypes } from "./ItemTypes";
 import { clone } from "./funcs";
 import { useStore } from "./store";
+import { Stack } from "@mui/system";
 
 let lastClick = Date.now();
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  if (!item) return null;
-  const [json, setJson] = useState(null);
+  const [metadata, setMetadata] = useState(null);
   const { updateSelItem } = useStore();
 
   const handleClick = (item) => {
@@ -27,38 +27,65 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   };
 
   useEffect(() => {
-    const j = item.metadata?.json?.value.TextContent;
-    let j2;
-    if (j) j2 = JSON.parse(j);
-    if (!j) {
-      setJson({ name: item.collection, image: item.url });
+    if (!item || !item.canister) {
+      setMetadata(null);
       return;
     }
-    setJson({ name: j2, image: j2.image });
+    // console.log("item: ", item);
+    const jsonMetadata = item.metadata?.json?.value.TextContent;
+    let _metadata;
+
+    if (jsonMetadata) {
+      _metadata = JSON.parse(jsonMetadata);
+    } else {
+      _metadata = {
+        name: item.collection,
+        image: item.url,
+      };
+    }
+
+    // console.log("metadata: ", _metadata);
+    setMetadata(_metadata);
   }, [item]);
 
-  return (
+  return item ? (
     <StyledBagItem ref={drag} isDragging={isDragging} data-tip>
-      <div onClick={() => handleClick(item)}>
-        {json &&
-          json.image &&
-          (json.image.includes("mp4") ? (
-            <video src={json.image} autoPlay loop muted />
+      {metadata ? (
+        <>
+          {metadata.image ? (
+            <Stack
+              justifyContent={"center"}
+              alignItems={"center"}
+              width={"100%"}
+              height={"100%"}
+              onClick={() => handleClick(item)}
+            >
+              {metadata.image.includes("mp4") && (
+                <video src={metadata.image} autoPlay loop muted />
+              )}
+              {(metadata.image.includes("jpg") ||
+                metadata.image.includes("png")) && <img src={metadata.image} />}
+              Image
+            </Stack>
           ) : (
-            <img src={json.image} />
-          ))}
-      </div>
+            <>No Image</>
+          )}
+        </>
+      ) : (
+        <></>
+      )}
     </StyledBagItem>
+  ) : (
+    <></>
   );
 };
 
 const BagItem = ({
   item,
-  bagId,
   isForTrade,
   index,
-  tradeItems,
-  updateTradeItems,
+  tradeBoxes,
+  updateTradeBoxes,
   tradeLayer,
 }) => {
   const ref = useRef(null);
@@ -73,40 +100,34 @@ const BagItem = ({
         handlerId: monitor.getHandlerId(),
       };
     },
-    hover(hoverEl, monitor) {
-      if (!ref.current || item.id !== undefined) {
-        return;
-      }
-      const dragIndex = hoverEl.index;
-      const hoverIndex = index;
-      const cloneTradeItem = clone(item);
-      const cloneTradeItems = clone(tradeItems);
-      const cloneHoverTradeItem = clone(hoverEl.item);
-      const cloneHoverTradeItems = clone(hoverEl.tradeItems);
+    drop(dragEl, monitor) {
+      // console.log("drag item: ", dragEl.item);
+      // console.log("hover item: ", item);
+      if (!ref.current || item.canister) return; // When full item
 
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex && tradeLayer === hoverEl.tradeLayer) {
-        return;
-      }
+      const dragIndex = dragEl.index;
+      const hoverIndex = index;
+      const cloneDragTradeItem = clone(dragEl.item);
+      const cloneDragTradeBoxes = clone(dragEl.tradeBoxes);
+      const cloneHoverTradeItem = clone(item);
+      const cloneHoverTradeBoxes = clone(tradeBoxes);
+
+      // console.log("cloneDragTradeItem: ", cloneDragTradeItem);
+      // console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
+      // console.log("cloneDragTradeBoxes: ", cloneDragTradeBoxes);
+      // console.log("cloneHoverTradeBoxes: ", cloneHoverTradeBoxes);
 
       // Time to actually perform the action
-      if (tradeLayer === hoverEl.tradeLayer) {
-        cloneTradeItems[hoverIndex].item = cloneHoverTradeItem;
-        cloneTradeItems[dragIndex].item = cloneTradeItem;
-        updateTradeItems(cloneTradeItems);
+      if (tradeLayer === dragEl.tradeLayer) {
+        cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
+        cloneDragTradeBoxes[hoverIndex].item = cloneDragTradeItem;
+        updateTradeBoxes(cloneDragTradeBoxes);
       } else {
-        cloneTradeItems[hoverIndex].item = cloneHoverTradeItem;
-        cloneHoverTradeItems[dragIndex].item = cloneTradeItem;
-        updateTradeItems(cloneTradeItems);
-        hoverEl.updateTradeItems(cloneHoverTradeItems);
+        cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
+        cloneHoverTradeBoxes[hoverIndex].item = cloneDragTradeItem;
+        dragEl.updateTradeBoxes(cloneDragTradeBoxes);
+        updateTradeBoxes(cloneHoverTradeBoxes);
       }
-
-      // Note: we're mutating the monitor hoverEl here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      hoverEl.index = hoverIndex;
-      hoverEl.tradeLayer = tradeLayer;
     },
   });
 
@@ -114,7 +135,7 @@ const BagItem = ({
     type: ItemTypes.LAYER1,
     canDrag: true,
     item: () => {
-      return { index, tradeItems, updateTradeItems, item, tradeLayer };
+      return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
