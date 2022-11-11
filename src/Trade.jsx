@@ -15,7 +15,8 @@ import { clone, getInventoryBoxes } from "./funcs";
 import { Stack } from "@mui/material";
 import { inventoryBoxNum } from "./constants";
 import { useStore } from "./store";
-import DragLayer from "./DragLayer";
+import { Loading } from "./Loading";
+import { ItemDetails } from "./ItemDetails";
 
 const nullPartner = Principal.fromUint8Array(
   new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
@@ -31,6 +32,8 @@ export const Trade = () => {
   const { authenticated, principal, login, agent } = usePlug();
   const principalString = principal ? window.ic.plug.principalId : "<none>";
   const {
+    isCreator,
+    updateIsCreator,
     tradeData,
     updateTradeData,
     remoteBoxes,
@@ -55,79 +58,75 @@ export const Trade = () => {
     updateLoading,
   } = useStore();
 
-  // console.log("inventoryBoxes: ", inventoryBoxes);
-
   useEffect(() => {
-    // get the current url with no params
-    // get the tradeId params
-
-    // if tradeId is not null, then we are in a trade
-    if (tradeId) {
-      window.ic.plug
-        .createActor({
+    (async () => {
+      // If tradeId is not null, then we are in a trade
+      if (tradeId) {
+        updateLoading(true);
+        const actor = await window.ic.plug.createActor({
           canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
           interfaceFactory: idlFactory,
-        })
-        .then((actor) => {
-          updatePlugActor(actor);
-          actor.get_trade_by_id(tradeId).then((res) => {
-            console.log("get_trade_by_id res: ", res);
-            updateTradeData(res);
-            const guest = Principal.fromUint8Array(res[0].guest._arr).toText();
-            console.log("guest: ", guest);
-            const host = Principal.fromUint8Array(res[0].host._arr).toText();
-            console.log("host: ", host);
-
-            if (
-              guest !== null &&
-              guest !== "" &&
-              guest !== nullPrincipal &&
-              guest !== nullPartner
-            ) {
-              if (guest !== principal) {
-                return console.error(
-                  "Trade already initialized to another wallet! guest: ",
-                  guest
-                );
-              }
-            }
-
-            if (
-              host !== null &&
-              host !== "" &&
-              host !== nullPrincipal &&
-              host !== nullPartner
-            ) {
-              updatePartner(host);
-              console.log("Trade partner found! host: ", host);
-            }
-
-            actor.join_trade(tradeId).then((res) => {
-              console.log("join_trade res: ", res);
-            });
-          });
         });
+        updatePlugActor(actor);
+        const trade = await actor.get_trade_by_id(tradeId);
+        console.log("get_trade_by_id trade: ", trade);
+        updateTradeData(trade);
+        updateIsCreator(false);
+        const guest = Principal.fromUint8Array(trade[0].guest._arr).toText();
+        console.log("get_trade_by_id guest: ", guest);
+        const host = Principal.fromUint8Array(trade[0].host._arr).toText();
+        console.log("get_trade_by_id host: ", host);
 
-      updateExistTrade(true);
-      console.log("***** TRADE DETECTED *****");
-    }
+        if (
+          guest !== null &&
+          guest !== "" &&
+          guest !== nullPrincipal &&
+          guest !== nullPartner
+        ) {
+          if (guest !== principal) {
+            return console.error(
+              "Trade already initialized to another wallet! guest: ",
+              guest
+            );
+          }
+        }
+
+        if (
+          host !== null &&
+          host !== "" &&
+          host !== nullPrincipal &&
+          host !== nullPartner
+        ) {
+          console.log("Trade partner found! host: ", host);
+          updatePartner(host);
+        }
+
+        const tradeJoined = await actor.join_trade(tradeId);
+        console.log("tradeJoined: ", tradeJoined);
+        updateExistTrade(true);
+        console.log("***** TRADE DETECTED *****");
+        updateLoading(false);
+      }
+    })();
   }, []);
 
   useEffect(() => {
     if (!principal) return;
     (async () => {
+      updateLoading(true);
       const user = window.ic.plug.principalId;
-      // const balance = await window.ic.plug.requestBalance();
-      // console.log("balance: ", balance);
+      const balance = await window.ic.plug.requestBalance();
+      console.log("balance: ", balance);
       const collections = await getAllUserNFTs({
         agent,
         user,
       });
-      // console.log("collections: ", collections);
+      console.log("collections: ", collections);
 
       // make an array of all collections[i].tokens
       const newTokens = {};
       let slot = 0;
+
       // collections.forEach((collection) => {
       //   if (!collection.name.toLowerCase().includes("cipher"))
       //     collection.tokens.forEach((token) => {
@@ -138,6 +137,7 @@ export const Trade = () => {
       //       }
       //     });
       // });
+
       collections.forEach((collection) => {
         collection.tokens.forEach((token) => {
           newTokens[slot.toString()] = token;
@@ -145,7 +145,8 @@ export const Trade = () => {
           slot++;
         });
       });
-      // console.log("newTokens: ", newTokens);
+
+      console.log("newTokens: ", newTokens);
 
       updateInventoryBoxes(getInventoryBoxes(newTokens));
       updateLoading(false);
@@ -154,50 +155,47 @@ export const Trade = () => {
 
   const startTrade = async () => {
     updateLoading(true);
-    let _actor = null;
-    window.ic.plug
-      .createActor({
-        canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-        interfaceFactory: idlFactory,
-      })
-      .then((actor) => {
-        _actor = actor;
-        updatePlugActor(actor);
-        actor.create_trade().then((res) => {
-          console.log("create_trade res: ", res);
-          updateTradeData(res);
-          updateLoading(false);
-          const interval = setInterval(async () => {
-            console.log("Looking for trade partner...");
-            const res2 = await _actor.get_trade_by_id(res.id);
-            console.log("tradeData: ", res2[0]);
-            const guest = Principal.fromUint8Array(res2[0].guest._arr).toText();
-            console.log("Principal of trading partner: ", guest);
-            if (
-              guest !== null &&
-              guest !== "" &&
-              guest !== nullPrincipal &&
-              guest !== nullPartner
-            ) {
-              updatePartner(guest);
-              console.log("Trade partner found! guest: ", guest);
-              clearInterval(interval);
-            }
-          }, 2000);
-        });
-      });
+    const actor = await window.ic.plug.createActor({
+      canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
+      interfaceFactory: idlFactory,
+    });
+    updatePlugActor(actor);
+    const trade = await actor.create_trade();
+    console.log("new trade: ", trade);
+    updateTradeData(trade);
+    updateIsCreator(true);
+    const interval = setInterval(async () => {
+      console.log("Looking for trade partner...");
+      const rtTrade = await actor.get_trade_by_id(trade.id);
+      console.log("rtTrade: ", rtTrade[0]);
+      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+      console.log("Principal of trading partner: ", guest);
+      if (
+        guest !== null &&
+        guest !== "" &&
+        guest !== nullPrincipal &&
+        guest !== nullPartner
+      ) {
+        updatePartner(guest);
+        console.log("Trade partner found! guest: ", guest);
+        clearInterval(interval);
+      }
+    }, 2000);
     updateExistTrade(true);
+    updateLoading(false);
   };
 
-  function accept() {
-    console.log("Trade accepted!");
+  const onAccept = () => {
+    actor.accept(tradeData.id);
     updateAccepted(true);
-  }
+    console.log("Trade accepted!");
+  };
 
-  function cancel() {
-    console.log("Trade canceled!");
+  const onCancel = () => {
+    actor.cancel(tradeData.id);
     updateAccepted(false);
-  }
+    console.log("Trade canceled!");
+  };
 
   const onPrevPage = () => {
     if (curPage <= 1) return;
@@ -212,7 +210,9 @@ export const Trade = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* <DragLayer inventoryItems={inventoryItems} /> */}
+      <Loading />
+      <ItemDetails />
+
       <StyledTrade
         style={{
           width: "70%",
@@ -227,10 +227,7 @@ export const Trade = () => {
               {/* Center the connect button horizontally and vertically */}
               <Button
                 variant="contained"
-                onClick={() => {
-                  updateLoading(true);
-                  login();
-                }}
+                onClick={login}
                 style={{
                   position: "absolute",
                   top: "50%",
@@ -243,7 +240,7 @@ export const Trade = () => {
             </div>
           </Frame>
         )}
-        {authenticated && !tradeData && !loading && (
+        {authenticated && !tradeData && (
           <Frame>
             <div style={{ minHeight: "100vh" }}>
               {/* Center the trade button horizontally and vertically */}
@@ -289,7 +286,10 @@ export const Trade = () => {
                   <h2>Their Trade</h2>
                 </Stack>
                 <Stack color="green" marginBottom=".25em" alignItems="center">
-                  {accepted ? "TRADE ACCEPTED" : "Waiting..."}
+                  {(isCreator && tradeData.guestAccept) ||
+                  (!isCreator && tradeData.hostAccept)
+                    ? "TRADE ACCEPTED"
+                    : "Waiting..."}
                 </Stack>
               </Stack>
               <div className="boxes-grid">
@@ -314,7 +314,7 @@ export const Trade = () => {
               <div className="boxes-grid">
                 {localBoxes.map((box, index) => {
                   return (
-                    <BagBox key={box.id} type={"all"} shouldHighlight={false}>
+                    <BagBox key={box.id}>
                       <BagItem
                         key={`local_${box.id}`}
                         isForTrade={true}
@@ -340,12 +340,10 @@ export const Trade = () => {
                   verticalAlign: "middle",
                 }}
               >
-                {/* Two buttons: accept (green) and cancel (red) */}
                 <Button
                   variant="contained"
-                  onClick={() => {
-                    accept();
-                  }}
+                  onClick={onAccept}
+                  disabled={accepted}
                   color="success"
                 >
                   Accept
@@ -377,9 +375,7 @@ export const Trade = () => {
                 </span>
                 <Button
                   variant="contained"
-                  onClick={() => {
-                    cancel();
-                  }}
+                  onClick={onCancel}
                   disabled={!accepted}
                   color="error"
                 >

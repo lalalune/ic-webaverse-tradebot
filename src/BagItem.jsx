@@ -90,7 +90,6 @@ const BagItem = ({
   const ref = useRef(null);
   if (!item) item = {};
   item.isForTrade = isForTrade;
-  item.type = "all";
 
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.LAYER1,

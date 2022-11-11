@@ -21,6 +21,9 @@ const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
 });
 
 export const useStore = create((set) => ({
+  isCreator: false,
+  updateIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
+
   tradeData: null,
   updateTradeData: (newVal) => set((state) => ({ tradeData: newVal })),
 

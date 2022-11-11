@@ -2,11 +2,11 @@ import React, { memo } from "react";
 
 import StyledBagBox from "./BagBox.style";
 
-const Bag = ({ children, className }) => {
+const RemoteBox = ({ className, children }) => {
   return (
-    <StyledBagBox isOver={false} canDrop={false} className={className}>
+    <StyledBagBox className={className} isOver={false} canDrop={false}>
       {children}
     </StyledBagBox>
   );
 };
-export default memo(Bag);
+export default memo(RemoteBox);
