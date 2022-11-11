@@ -7,11 +7,11 @@ export const middleUsePlug = () => {
   };
 };
 
-export const middleTradeInitialized = true;
+export const middleExistTrade = true;
 
 export const middleTradeData = {};
 
-export const middleItems = {
+export const middleInventoryItems = {
   0: {
     id: 0,
     collection: "item 0",

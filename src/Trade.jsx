@@ -1,9 +1,9 @@
 // import { usePlug } from "@raydeck/useplug";
 import {
   middleUsePlug as usePlug,
-  middleTradeInitialized,
+  middleExistTrade,
   middleTradeData,
-  middleItems,
+  middleInventoryItems,
 } from "./icMiddle";
 import React, { useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
@@ -25,6 +25,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { clone } from "./funcs";
 import { Stack } from "@mui/material";
 import { inventoryBoxNum } from "./constants";
+import { useStore } from "./store";
 // import DragLayer from "./DragLayer";
 
 const nullPartner = Principal.fromUint8Array(
@@ -42,38 +43,37 @@ function Trade({ type, identifier }) {
   // convert using a browser-friendly es6 method
   const { authenticated, principal, login, agent } = usePlug();
   const principalString = principal ? window.ic.plug.principalId : "<none>";
-  const initTradeItems = [0, 1, 2, 3, 4, 5].map((i) => {
-    return {
-      id: i,
-      item: null,
-    };
-  });
 
-  const [items, setItems] = useState(middleItems);
-  const [tradePartner, setTradePartner] = useState(null);
-  const [remoteTradeItems, setRemoteTradeItems] = useState(
-    clone(initTradeItems)
-  );
-  const [tradeData, setTradeData] = useState(middleTradeData);
-  const [plugActor, setPlugActor] = useState(null);
-  const [tradeInitialized, setTradeInitialized] = useState(
-    middleTradeInitialized
-  );
-  const [tradeItems, setTradeItems] = useState(clone(initTradeItems));
-  const [bagBoxes, setBagBoxes] = useState(
-    [...Array(inventoryBoxNum).keys()].map((i) => {
-      return { id: i, type: "all", item: null };
-    })
-  );
-  const [accepted, setAccepted] = React.useState(false);
-  const [boxNumPerPage, setBoxNumPerPage] = React.useState(18);
-  const [curPage, setCurPage] = React.useState(1);
+  const {
+    tradeData,
+    updateTradeData,
+    inventoryItems,
+    updateInventoryItems,
+    remoteBoxes,
+    updateRemoteBoxes,
+    localBoxes,
+    updateLocalBoxes,
+    inventoryBoxes,
+    updateInventoryBoxes,
+    partner,
+    updatePartner,
+    plugActor,
+    updatePlugActor,
+    existTrade,
+    updateExistTrade,
+    accepted,
+    updateAccepted,
+    boxNumPerPage,
+    updateBoxNumPerPage,
+    curPage,
+    updateCurPage,
+  } = useStore();
 
   useEffect(() => {
     // Todo: check if the partner accepted.
-    setAccepted(true);
+    updateAccepted(true);
 
-    setTradePartner("jf9s8s");
+    updatePartner("jf9s8s");
   }, []);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ function Trade({ type, identifier }) {
           });
       });
 
-      setItems(newTokens);
+      updateInventoryItems(newTokens);
     })();
   }, [principal]);
 
@@ -121,10 +121,10 @@ function Trade({ type, identifier }) {
           interfaceFactory: trade_idl,
         })
         .then((actor) => {
-          setPlugActor(actor);
+          updatePlugActor(actor);
           actor.get_trade_by_id(tradeId).then((res) => {
             console.log("trade response:", res);
-            setTradeData(res);
+            updateTradeData(res);
 
             const guest = Principal.fromUint8Array(res[0].guest._arr).toText();
             console.log("guest is", guest);
@@ -149,42 +149,42 @@ function Trade({ type, identifier }) {
             });
           });
         });
-      setTradeInitialized(true);
+      updateExistTrade(true);
 
       console.log("***** TRADE DETECTED *****");
     }
   }, []);
 
   useEffect(() => {
-    // console.log("items: ", items, items.length);
-    if (!items || items.length === 0) return;
-    setBagBoxes(
-      bagBoxes.map((box, i) => {
-        // console.log("item: ", i, items[i]);
-        return { ...box, item: items[i] ?? null };
+    // console.log("inventoryItems: ", inventoryItems, inventoryItems.length);
+    if (!inventoryItems || inventoryItems.length === 0) return;
+    updateInventoryBoxes(
+      inventoryBoxes.map((box, i) => {
+        // console.log("item: ", i, inventoryItems[i]);
+        return { ...box, item: inventoryItems[i] ?? null };
       })
     );
-  }, [items]);
+  }, [inventoryItems]);
 
   function accept() {
     console.log("trade accepted!");
-    setAccepted(true);
+    updateAccepted(true);
   }
 
   function cancel() {
     console.log("trade canceled!");
-    setAccepted(false);
+    updateAccepted(false);
   }
 
   const onPrevPage = () => {
     if (curPage <= 1) return;
-    setCurPage(curPage - 1);
+    updateCurPage(curPage - 1);
   };
 
   const onNextPage = () => {
     const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage);
     if (curPage >= pageNum) return;
-    setCurPage(curPage + 1);
+    updateCurPage(curPage + 1);
   };
 
   async function startTrade() {
@@ -196,10 +196,10 @@ function Trade({ type, identifier }) {
       })
       .then((actor) => {
         _actor = actor;
-        setPlugActor(actor);
+        updatePlugActor(actor);
         actor.create_trade().then((res) => {
           console.log("res", res);
-          setTradeData(res);
+          updateTradeData(res);
           const interval = setInterval(async () => {
             console.log("looking for trade partner...");
 
@@ -215,19 +215,19 @@ function Trade({ type, identifier }) {
               guest !== nullPrincipal &&
               guest !== nullPartner
             ) {
-              setTradePartner(guest);
+              updatePartner(guest);
               console.log("trade partner found!", guest);
               clearInterval(interval);
             }
           }, 2000);
         });
       });
-    setTradeInitialized(true);
+    updateExistTrade(true);
   }
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* <DragLayer items={items} /> */}
+      {/* <DragLayer inventoryItems={inventoryItems} /> */}
       <StyledTrade
         style={{
           width: "70%",
@@ -261,7 +261,7 @@ function Trade({ type, identifier }) {
           <Frame>
             <div style={{ minHeight: "100vh" }}>
               {/* center the connect button horizontally and vertically */}
-              {!tradeInitialized && (
+              {!existTrade && (
                 <Button
                   variant="contained"
                   onClick={() => startTrade()}
@@ -275,7 +275,7 @@ function Trade({ type, identifier }) {
                   Start Trade
                 </Button>
               )}
-              {tradeInitialized && !tradeData && (
+              {existTrade && !tradeData && (
                 <Button
                   variant="disabled"
                   style={{
@@ -307,7 +307,7 @@ function Trade({ type, identifier }) {
                 </Stack>
               </Stack>
               <div className="boxes-grid">
-                {remoteTradeItems.map((slot, index) => {
+                {remoteBoxes.map((slot, index) => {
                   return (
                     <RemoteBox
                       className={`equip-${slot.id} equip-item`}
@@ -323,8 +323,8 @@ function Trade({ type, identifier }) {
                         key={`remote_${slot.id}`}
                         bagId={slot.id}
                         index={index}
-                        tradeItems={clone(remoteTradeItems)}
-                        updateTradeItems={setRemoteTradeItems}
+                        tradeItems={clone(remoteBoxes)}
+                        updateTradeItems={updateRemoteBoxes}
                         tradeLayer="remote"
                       />
                     </RemoteBox>
@@ -335,7 +335,7 @@ function Trade({ type, identifier }) {
             <Frame>
               <h2 style={{ marginBottom: ".25em" }}>Your Trade</h2>
               <div className="boxes-grid">
-                {tradeItems.map((slot, index) => {
+                {localBoxes.map((slot, index) => {
                   return (
                     <BagBox
                       className={`equip-${slot.id} equip-item`}
@@ -351,8 +351,8 @@ function Trade({ type, identifier }) {
                         key={`local_${slot.id}`}
                         bagId={slot.id}
                         index={index}
-                        tradeItems={clone(tradeItems)}
-                        updateTradeItems={setTradeItems}
+                        tradeItems={clone(localBoxes)}
+                        updateTradeItems={updateLocalBoxes}
                         tradeLayer="local"
                       />
                     </BagBox>
@@ -434,7 +434,7 @@ function Trade({ type, identifier }) {
               </Stack>
 
               <div className="boxes-grid">
-                {bagBoxes
+                {inventoryBoxes
                   .slice((curPage - 1) * boxNumPerPage, curPage * boxNumPerPage)
                   .map((bag, index) => {
                     const item = bag.item;
@@ -452,8 +452,8 @@ function Trade({ type, identifier }) {
                           bagId={bag.id}
                           item={clone(item)}
                           index={(curPage - 1) * boxNumPerPage + index}
-                          tradeItems={clone(bagBoxes)}
-                          updateTradeItems={setBagBoxes}
+                          tradeItems={clone(inventoryBoxes)}
+                          updateTradeItems={updateInventoryBoxes}
                           tradeLayer="inventory"
                         />
                       </BagBox>
@@ -482,7 +482,7 @@ function Trade({ type, identifier }) {
               {authenticated && principal
                 ? "Connected with " + principalString
                 : "Waiting for IC wallet connection..."}
-              {tradeInitialized && tradeData && !tradePartner && !tradeId && (
+              {existTrade && tradeData && !partner && !tradeId && (
                 <span
                   style={{
                     position: "absolute",
@@ -491,7 +491,7 @@ function Trade({ type, identifier }) {
                     transform: "translate(-50%, -40%)",
                   }}
                 >
-                  <b> WAITING FOR TRADE PARNTER... </b>
+                  <b> WAITING FOR TRADE PARTNER... </b>
                   <br />
                   Send this link to your trade partner
                   <br />
@@ -500,7 +500,7 @@ function Trade({ type, identifier }) {
                   </a>
                 </span>
               )}
-              {tradeInitialized && tradeData && tradePartner && (
+              {existTrade && tradeData && partner && (
                 <span
                   style={{
                     position: "absolute",
@@ -509,7 +509,7 @@ function Trade({ type, identifier }) {
                     transform: "translate(-50%, -40%)",
                   }}
                 >
-                  Trading with {tradePartner}
+                  Trading with {partner}
                 </span>
               )}
             </div>

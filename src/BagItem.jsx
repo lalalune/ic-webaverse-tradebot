@@ -1,35 +1,27 @@
-import React, { useEffect, memo, Fragment, useRef, useState } from "react";
+import React, { useEffect, memo, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import StyledBagItem from "./BagItem.style";
-import { getEmptyImage } from "react-dnd-html5-backend";
 import { ItemTypes } from "./ItemTypes";
 import { clone } from "./funcs";
 
 let lastClick = Date.now();
 
 const handleClick = (item) => {
-  console.log("click");
   // check for double click
   const now = Date.now();
   if (now - lastClick < 500) {
     // double click
-    console.log("double click");
-    console.log("item is", item);
     if (window && window.openInWebaverse) {
       window.openInWebaverse(item);
+    } else {
     }
   }
   lastClick = now;
 };
 
-export const PresentationalBagItem = ({
-  drag,
-  isDragging,
-  item,
-  // containerId,
-}) => {
+export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   if (!item) return null;
-  const [json, setJson] = React.useState(null);
+  const [json, setJson] = useState(null);
   useEffect(() => {
     const j = item.metadata?.json?.value.TextContent;
     let j2;
@@ -42,12 +34,7 @@ export const PresentationalBagItem = ({
   }, [item]);
 
   return (
-    <StyledBagItem
-      ref={drag}
-      isDragging={isDragging}
-      data-tip
-      // data-for={containerId.toString()}
-    >
+    <StyledBagItem ref={drag} isDragging={isDragging} data-tip>
       <div onClick={() => handleClick(item)}>
         {json &&
           json.image &&
@@ -71,7 +58,6 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
-  // console.log("item, bagId, isForTrade", item, bagId, isForTrade);
   if (!item) item = {};
   item.isForTrade = isForTrade;
   item.type = "all";
@@ -105,8 +91,6 @@ const BagItem = ({
         cloneTradeItems[dragIndex].item = cloneTradeItem;
         updateTradeItems(cloneTradeItems);
       } else {
-        console.log("cloneTradeItem: ", cloneTradeItem);
-        console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
         cloneTradeItems[hoverIndex].item = cloneHoverTradeItem;
         cloneHoverTradeItems[dragIndex].item = cloneTradeItem;
         updateTradeItems(cloneTradeItems);
@@ -138,12 +122,7 @@ const BagItem = ({
 
   return (
     <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-      <PresentationalBagItem
-        // containerId={item.id}
-        drag={drag}
-        isDragging={isDragging}
-        item={item}
-      />
+      <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} />
     </div>
   );
 };
