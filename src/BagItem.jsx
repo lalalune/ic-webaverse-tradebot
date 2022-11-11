@@ -65,10 +65,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
               )}
               {(metadata.image.includes("jpg") ||
                 metadata.image.includes("png")) && <img src={metadata.image} />}
-              Image
             </Stack>
           ) : (
-            <>No Image</>
+            <></>
           )}
         </>
       ) : (

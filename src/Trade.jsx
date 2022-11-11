@@ -75,6 +75,8 @@ export const Trade = () => {
             updateTradeData(res);
             const guest = Principal.fromUint8Array(res[0].guest._arr).toText();
             console.log("guest: ", guest);
+            const host = Principal.fromUint8Array(res[0].host._arr).toText();
+            console.log("host: ", host);
 
             if (
               guest !== null &&
@@ -88,6 +90,16 @@ export const Trade = () => {
                   guest
                 );
               }
+            }
+
+            if (
+              host !== null &&
+              host !== "" &&
+              host !== nullPrincipal &&
+              host !== nullPartner
+            ) {
+              updatePartner(host);
+              console.log("Trade partner found! host: ", host);
             }
 
             actor.join_trade(tradeId).then((res) => {
@@ -155,23 +167,23 @@ export const Trade = () => {
           console.log("create_trade res: ", res);
           updateTradeData(res);
           updateLoading(false);
-          // const interval = setInterval(async () => {
-          //   console.log("Looking for trade partner...");
-          //   const res2 = await _actor.get_trade_by_id(res.id);
-          //   console.log("tradeData: ", res2[0]);
-          //   const guest = Principal.fromUint8Array(res2[0].guest._arr).toText();
-          //   console.log("Principal of trading partner: ", guest);
-          //   if (
-          //     guest !== null &&
-          //     guest !== "" &&
-          //     guest !== nullPrincipal &&
-          //     guest !== nullPartner
-          //   ) {
-          //     updatePartner(guest);
-          //     console.log("Trade partner found! guest: ", guest);
-          //     clearInterval(interval);
-          //   }
-          // }, 2000);
+          const interval = setInterval(async () => {
+            console.log("Looking for trade partner...");
+            const res2 = await _actor.get_trade_by_id(res.id);
+            console.log("tradeData: ", res2[0]);
+            const guest = Principal.fromUint8Array(res2[0].guest._arr).toText();
+            console.log("Principal of trading partner: ", guest);
+            if (
+              guest !== null &&
+              guest !== "" &&
+              guest !== nullPrincipal &&
+              guest !== nullPartner
+            ) {
+              updatePartner(guest);
+              console.log("Trade partner found! guest: ", guest);
+              clearInterval(interval);
+            }
+          }, 2000);
         });
       });
     updateExistTrade(true);
