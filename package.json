@@ -17,7 +17,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
-    "@mui/material": "^5.10.12",
+    "@mui/material": "^5.10.13",
     "@psychedelic/dab-js": "^1.5.0",
     "@raydeck/useplug": "^1.0.3",
     "azle": "^0.7.0",

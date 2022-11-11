@@ -23,6 +23,8 @@ import { getAllUserNFTs } from "@psychedelic/dab-js";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { clone } from "./funcs";
+import { Stack } from "@mui/material";
+import { inventoryBoxNum } from "./constants";
 // import DragLayer from "./DragLayer";
 
 const nullPartner = Principal.fromUint8Array(
@@ -59,11 +61,20 @@ function Trade({ type, identifier }) {
   );
   const [tradeItems, setTradeItems] = useState(clone(initTradeItems));
   const [bagBoxes, setBagBoxes] = useState(
-    [...Array(18).keys()].map((i) => {
+    [...Array(inventoryBoxNum).keys()].map((i) => {
       return { id: i, type: "all", item: null };
     })
   );
   const [accepted, setAccepted] = React.useState(false);
+  const [boxNumPerPage, setBoxNumPerPage] = React.useState(18);
+  const [curPage, setCurPage] = React.useState(1);
+
+  useEffect(() => {
+    // Todo: check if the partner accepted.
+    setAccepted(true);
+
+    setTradePartner("jf9s8s");
+  }, []);
 
   useEffect(() => {
     if (!principal) return;
@@ -155,10 +166,6 @@ function Trade({ type, identifier }) {
     );
   }, [items]);
 
-  // console.log("authenticated", authenticated);
-  // console.log("principal", principal);
-  // console.log("bagBoxes: ", bagBoxes);
-
   function accept() {
     console.log("trade accepted!");
     setAccepted(true);
@@ -169,21 +176,16 @@ function Trade({ type, identifier }) {
     setAccepted(false);
   }
 
-  // const updateItemOrder = (bagId, dragItem) => {
-  //   const target = items[bagId]; // the box we're dropping to
-  //   const origin = items[dragItem.bagId];
-  //   if (target) {
-  //     if (dragItem.isForTrade && target.type !== dragItem.type) {
-  //       return false;
-  //     }
-  //     // if we have an item in it
-  //     items[dragItem.bagId] = target; // move that item to the drag past location
-  //   } else {
-  //     delete items[dragItem.bagId]; // otherwise remove the previous reference
-  //   }
-  //   items[bagId] = origin; // move the actual drag item to new bag
-  //   setItems(items);
-  // };
+  const onPrevPage = () => {
+    if (curPage <= 1) return;
+    setCurPage(curPage - 1);
+  };
+
+  const onNextPage = () => {
+    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage);
+    if (curPage >= pageNum) return;
+    setCurPage(curPage + 1);
+  };
 
   async function startTrade() {
     let _actor = null;
@@ -292,7 +294,18 @@ function Trade({ type, identifier }) {
         {authenticated && tradeData && (
           <div style={{ minHeight: "100vh", verticalAlign: "middle" }}>
             <Frame>
-              <h2 style={{ marginBottom: ".25em" }}>Their Trade</h2>
+              <Stack
+                justifyContent="space-between"
+                alignItems="center"
+                direction="row"
+              >
+                <Stack marginBottom={".25em"}>
+                  <h2>Their Trade</h2>
+                </Stack>
+                <Stack color="green" marginBottom=".25em" alignItems="center">
+                  {accepted && "[TRADE ACCEPTED]"}
+                </Stack>
+              </Stack>
               <div className="boxes-grid">
                 {remoteTradeItems.map((slot, index) => {
                   return (
@@ -394,32 +407,58 @@ function Trade({ type, identifier }) {
             </Frame>
 
             <Frame style={{ minHeight: "30vh" }}>
-              <h2 style={{ marginBottom: ".25em" }}>Trade</h2>
+              <Stack
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                direction={"row"}
+              >
+                <Stack marginBottom={".25em"}>
+                  <h2>Trade</h2>
+                </Stack>
+                <Stack
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  direction={"row"}
+                  gap={".25em"}
+                >
+                  <Stack style={{ cursor: "pointer" }} onClick={onPrevPage}>
+                    <h2> &#60;</h2>
+                  </Stack>
+                  <Stack color={"red"}>
+                    <h2> {curPage}</h2>
+                  </Stack>
+                  <Stack style={{ cursor: "pointer" }} onClick={onNextPage}>
+                    <h2> &#62;</h2>
+                  </Stack>
+                </Stack>
+              </Stack>
 
               <div className="boxes-grid">
-                {bagBoxes.map((bag, index) => {
-                  const item = bag.item;
-                  // console.log("item: ", item);
+                {bagBoxes
+                  .slice((curPage - 1) * boxNumPerPage, curPage * boxNumPerPage)
+                  .map((bag, index) => {
+                    const item = bag.item;
+                    // console.log("item: ", item);
 
-                  return (
-                    <BagBox
-                      bagId={bag.id}
-                      key={bag.id}
-                      hasItem={!isNullOrEmpty(item)}
-                      // updateItemOrder={updateItemOrder}
-                    >
-                      <BagItem
-                        key={`inventory_${bag.id}`}
+                    return (
+                      <BagBox
                         bagId={bag.id}
-                        item={clone(item)}
-                        index={index}
-                        tradeItems={clone(bagBoxes)}
-                        updateTradeItems={setBagBoxes}
-                        tradeLayer="inventory"
-                      />
-                    </BagBox>
-                  );
-                })}
+                        key={bag.id}
+                        hasItem={!isNullOrEmpty(item)}
+                        // updateItemOrder={updateItemOrder}
+                      >
+                        <BagItem
+                          key={`inventory_${bag.id}`}
+                          bagId={bag.id}
+                          item={clone(item)}
+                          index={(curPage - 1) * boxNumPerPage + index}
+                          tradeItems={clone(bagBoxes)}
+                          updateTradeItems={setBagBoxes}
+                          tradeLayer="inventory"
+                        />
+                      </BagBox>
+                    );
+                  })}
               </div>
             </Frame>
           </div>
