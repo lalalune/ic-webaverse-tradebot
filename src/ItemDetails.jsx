@@ -8,7 +8,7 @@ export const ItemDetails = () => {
 
   return selItem ? (
     <Stack
-      position={"fixed"}
+      position={"absolute"}
       width={"24vw"}
       direction={"column"}
       gap={".25em"}

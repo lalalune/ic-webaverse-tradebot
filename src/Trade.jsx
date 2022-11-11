@@ -15,7 +15,7 @@ import RemoteBox from "./RemoteBox";
 import Frame from "./frame/Frame";
 import StyledTrade from "./Trade.style";
 
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 
 import { idlFactory as trade_idl } from "./trade_canister/trade_canister.did.js";
 
@@ -387,7 +387,15 @@ function Trade({ type, identifier }) {
                 >
                   Accept
                 </Button>
-                <span style={{ margin: "1em" }}>
+                <span
+                  style={{
+                    margin: "1em",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "1em",
+                    alignItems: "center",
+                  }}
+                >
                   {/* numerical input for amount of ICP to add to trade */}
                   <label htmlFor="icp" style={{ marginRight: ".25em" }}>
                     ICP
@@ -396,7 +404,12 @@ function Trade({ type, identifier }) {
                     type="number"
                     id="icp"
                     defaultValue={0}
-                    style={{ width: "3em", margin: ".25em" }}
+                    style={{
+                      width: "3em",
+                      margin: ".25em",
+                      fontSize: "2em",
+                      borderRadius: ".2em",
+                    }}
                   />
                 </span>
                 <Button
