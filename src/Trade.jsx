@@ -67,6 +67,8 @@ function Trade({ type, identifier }) {
     updateBoxNumPerPage,
     curPage,
     updateCurPage,
+    loading,
+    updateLoading,
   } = useStore();
 
   useEffect(() => {
@@ -74,6 +76,10 @@ function Trade({ type, identifier }) {
     updateAccepted(true);
 
     updatePartner("jf9s8s");
+
+    setTimeout(() => {
+      updateLoading(false);
+    }, 2000);
   }, []);
 
   useEffect(() => {
@@ -459,6 +465,30 @@ function Trade({ type, identifier }) {
                       </BagBox>
                     );
                   })}
+                <Stack
+                  style={{
+                    position: "absolute",
+                    width: "95%",
+                    height: "80%",
+                    zIndex: 1,
+                    display: loading ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    opacity: "0.3",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <Stack
+                    style={{
+                      border: "16px solid #f3f3f3",
+                      borderTop: "16px solid #3498db",
+                      borderRadius: "50%",
+                      width: "130px",
+                      height: "130px",
+                      animation: "spin 2s linear infinite",
+                    }}
+                  ></Stack>
+                </Stack>
               </div>
             </Frame>
           </div>

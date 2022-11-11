@@ -7,7 +7,7 @@ function App() {
   return (
     <StyledApp>
       <Trade type={"web"} />
-      {/* <ItemDetails></ItemDetails> */}
+      <ItemDetails></ItemDetails>
     </StyledApp>
   );
 }

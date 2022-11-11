@@ -3,25 +3,29 @@ import { useDrag, useDrop } from "react-dnd";
 import StyledBagItem from "./BagItem.style";
 import { ItemTypes } from "./ItemTypes";
 import { clone } from "./funcs";
+import { useStore } from "./store";
 
 let lastClick = Date.now();
-
-const handleClick = (item) => {
-  // check for double click
-  const now = Date.now();
-  if (now - lastClick < 500) {
-    // double click
-    if (window && window.openInWebaverse) {
-      window.openInWebaverse(item);
-    } else {
-    }
-  }
-  lastClick = now;
-};
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   if (!item) return null;
   const [json, setJson] = useState(null);
+  const { updateSelItem } = useStore();
+
+  const handleClick = (item) => {
+    // check for double click
+    const now = Date.now();
+    if (now - lastClick < 500) {
+      // double click
+      if (window && window.openInWebaverse) {
+        window.openInWebaverse(item);
+      } else {
+        updateSelItem(item);
+      }
+    }
+    lastClick = now;
+  };
+
   useEffect(() => {
     const j = item.metadata?.json?.value.TextContent;
     let j2;

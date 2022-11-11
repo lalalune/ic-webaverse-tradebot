@@ -48,4 +48,10 @@ export const useStore = create((set) => ({
 
   curPage: 1,
   updateCurPage: (newVal) => set((state) => ({ curPage: newVal })),
+
+  selItem: null,
+  updateSelItem: (newVal) => set((state) => ({ selItem: newVal })),
+
+  loading: true,
+  updateLoading: (newVal) => set((state) => ({ loading: newVal })),
 }));
