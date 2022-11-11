@@ -1,4 +1,5 @@
 import { inventoryBoxNum } from "./constants";
+import { getAllUserNFTs } from "@psychedelic/dab-js";
 
 export const clone = (obj) => {
   // const cloneObj = JSON.parse(JSON.stringify(obj));
@@ -18,4 +19,48 @@ export const getInventoryBoxes = (inventoryItems) => {
   });
   // console.log("inventoryBoxes: ", inventoryBoxes);
   return inventoryBoxes;
+};
+
+export const getUserTokens = async ({ agent, user }) => {
+  const collections = await getAllUserNFTs({
+    agent,
+    user,
+  });
+  console.log("collections: ", collections);
+
+  // make an array of all collections[i].tokens
+  const newTokens = {};
+  let slot = 0;
+
+  // collections.forEach((collection) => {
+  //   if (!collection.name.toLowerCase().includes("cipher"))
+  //     collection.tokens.forEach((token) => {
+  //       if (!token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
+  //         newTokens[slot.toString()] = token;
+  //         newTokens[slot].id = slot;
+  //         slot++;
+  //       }
+  //     });
+  // });
+
+  collections.forEach((collection) => {
+    collection.tokens.forEach((token) => {
+      const jsonMetadata = token.metadata?.json?.value.TextContent;
+
+      if (jsonMetadata) {
+        token.metadata = JSON.parse(jsonMetadata);
+      } else {
+        token.metadata = {
+          name: token.collection,
+          image: token.url,
+        };
+      }
+
+      newTokens[slot] = { ...token, id: slot };
+      slot++;
+    });
+  });
+
+  console.log("newTokens: ", newTokens);
+  return newTokens;
 };

@@ -11,7 +11,7 @@ import { idlFactory } from "./trade_canister/trade_canister.did.js";
 import { getAllUserNFTs } from "@psychedelic/dab-js";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { clone, getInventoryBoxes } from "./funcs";
+import { clone, getInventoryBoxes, getUserTokens } from "./funcs";
 import { Stack } from "@mui/material";
 import { inventoryBoxNum } from "./constants";
 import { useStore } from "./store";
@@ -23,6 +23,7 @@ const nullPartner = Principal.fromUint8Array(
 ).toText();
 const nullPrincipal = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const url = new URL(window.location.href);
+let inventoryTokens = [];
 const tradeId = url.searchParams.get("tradeId");
 console.log("tradeId: ", tradeId);
 
@@ -56,6 +57,7 @@ export const Trade = () => {
     updateCurPage,
     loading,
     updateLoading,
+    updateLocalUser,
   } = useStore();
 
   useEffect(() => {
@@ -116,42 +118,23 @@ export const Trade = () => {
       updateLoading(true);
       const user = window.ic.plug.principalId;
       const balance = await window.ic.plug.requestBalance();
+      console.log("user: ", user);
       console.log("balance: ", balance);
-      const collections = await getAllUserNFTs({
-        agent,
-        user,
-      });
-      console.log("collections: ", collections);
-
-      // make an array of all collections[i].tokens
-      const newTokens = {};
-      let slot = 0;
-
-      // collections.forEach((collection) => {
-      //   if (!collection.name.toLowerCase().includes("cipher"))
-      //     collection.tokens.forEach((token) => {
-      //       if (!token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
-      //         newTokens[slot.toString()] = token;
-      //         newTokens[slot].id = slot;
-      //         slot++;
-      //       }
-      //     });
-      // });
-
-      collections.forEach((collection) => {
-        collection.tokens.forEach((token) => {
-          newTokens[slot.toString()] = token;
-          newTokens[slot].id = slot;
-          slot++;
-        });
-      });
-
-      console.log("newTokens: ", newTokens);
-
+      updateLocalUser(user);
+      const newTokens = await getUserTokens({ agent, user });
+      inventoryTokens = clone(newTokens);
       updateInventoryBoxes(getInventoryBoxes(newTokens));
       updateLoading(false);
     })();
   }, [principal]);
+
+  // useEffect(() => {
+  //   if (!plugActor || !tradeData) return;
+  //   const interval = setInterval(async () => {
+  //     const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
+  //     console.log("rtTrade: ", rtTrade[0]);
+  //   }, 1000);
+  // }, [plugActor, tradeData]);
 
   const startTrade = async () => {
     updateLoading(true);
@@ -164,25 +147,28 @@ export const Trade = () => {
     console.log("new trade: ", trade);
     updateTradeData(trade);
     updateIsCreator(true);
-    const interval = setInterval(async () => {
-      console.log("Looking for trade partner...");
-      const rtTrade = await actor.get_trade_by_id(trade.id);
-      console.log("rtTrade: ", rtTrade[0]);
-      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
-      console.log("Principal of trading partner: ", guest);
-      if (
-        guest !== null &&
-        guest !== "" &&
-        guest !== nullPrincipal &&
-        guest !== nullPartner
-      ) {
-        updatePartner(guest);
-        console.log("Trade partner found! guest: ", guest);
-        clearInterval(interval);
-      }
-    }, 2000);
+    // const interval = setInterval(async () => {
+    //   console.log("Looking for trade partner...");
+    //   const rtTrade = await actor.get_trade_by_id(trade.id);
+    //   console.log("rtTrade: ", rtTrade[0]);
+    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+    //   console.log("Principal of trading partner: ", guest);
+    //   if (
+    //     guest !== null &&
+    //     guest !== "" &&
+    //     guest !== nullPrincipal &&
+    //     guest !== nullPartner
+    //   ) {
+    //     updatePartner(guest);
+    //     console.log("Trade partner found! guest: ", guest);
+    //     clearInterval(interval);
+    //   }
+    // }, 2000);
     updateExistTrade(true);
     updateLoading(false);
+    return () => {
+      clearInterval(interval);
+    };
   };
 
   const onAccept = () => {

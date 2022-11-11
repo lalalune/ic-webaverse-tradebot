@@ -60,4 +60,7 @@ export const useStore = create((set) => ({
 
   loading: false,
   updateLoading: (newVal) => set((state) => ({ loading: newVal })),
+
+  localUser: null,
+  updateLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
 }));

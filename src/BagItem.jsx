@@ -9,7 +9,6 @@ import { Stack } from "@mui/system";
 let lastClick = Date.now();
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  const [metadata, setMetadata] = useState(null);
   const { updateSelItem } = useStore();
 
   const handleClick = (item) => {
@@ -26,33 +25,11 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
     lastClick = now;
   };
 
-  useEffect(() => {
-    if (!item || !item.canister) {
-      setMetadata(null);
-      return;
-    }
-    // console.log("item: ", item);
-    const jsonMetadata = item.metadata?.json?.value.TextContent;
-    let _metadata;
-
-    if (jsonMetadata) {
-      _metadata = JSON.parse(jsonMetadata);
-    } else {
-      _metadata = {
-        name: item.collection,
-        image: item.url,
-      };
-    }
-
-    // console.log("metadata: ", _metadata);
-    setMetadata(_metadata);
-  }, [item]);
-
   return item ? (
     <StyledBagItem ref={drag} isDragging={isDragging} data-tip>
-      {metadata ? (
+      {item.metadata ? (
         <>
-          {metadata.image ? (
+          {item.metadata.image ? (
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -60,11 +37,13 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
               height={"100%"}
               onClick={() => handleClick(item)}
             >
-              {metadata.image.includes("mp4") && (
-                <video src={metadata.image} autoPlay loop muted />
+              {item.metadata.image.includes("mp4") && (
+                <video src={item.metadata.image} autoPlay loop muted />
               )}
-              {(metadata.image.includes("jpg") ||
-                metadata.image.includes("png")) && <img src={metadata.image} />}
+              {(item.metadata.image.includes("jpg") ||
+                item.metadata.image.includes("png")) && (
+                <img src={item.metadata.image} />
+              )}
             </Stack>
           ) : (
             <></>
@@ -88,6 +67,7 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
+  const { plugActor, tradeData, isCreator } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
 
@@ -101,7 +81,7 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      if (!ref.current || item.canister) return; // When full item
+      if (!ref.current || item.canister || !plugActor || !tradeData) return; // When full item
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
@@ -110,10 +90,35 @@ const BagItem = ({
       const cloneHoverTradeItem = clone(item);
       const cloneHoverTradeBoxes = clone(tradeBoxes);
 
-      // console.log("cloneDragTradeItem: ", cloneDragTradeItem);
+      console.log("cloneDragTradeItem: ", cloneDragTradeItem);
       // console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
       // console.log("cloneDragTradeBoxes: ", cloneDragTradeBoxes);
       // console.log("cloneHoverTradeBoxes: ", cloneHoverTradeBoxes);
+      console.log("tradeLayer: ", tradeLayer);
+      console.log("dragEl.tradeLayer: ", dragEl.tradeLayer);
+
+      // Time to combine with ic
+      if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
+        (async () => {
+          const res = await plugActor.add_item_to_trade(tradeData.id, {
+            name: cloneDragTradeItem.metadata.name,
+            canisterId: isCreator ? tradeData.host : tradeData.guest,
+            tokenId: cloneDragTradeItem.id,
+          });
+          console.log("add_item_to_trade res: ", res);
+        })();
+      }
+
+      if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
+        (async () => {
+          const res = await plugActor.remove_item_from_trade(tradeData.id, {
+            name: cloneDragTradeItem.metadata.name,
+            canisterId: isCreator ? tradeData.host : tradeData.guest,
+            tokenId: cloneDragTradeItem.id,
+          });
+          console.log("remove_item_from_trade res: ", res);
+        })();
+      }
 
       // Time to actually perform the action
       if (tradeLayer === dragEl.tradeLayer) {
