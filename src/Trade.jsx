@@ -186,13 +186,15 @@ export const Trade = () => {
   };
 
   const onAccept = () => {
-    actor.accept(tradeData.id);
+    if (!plugActor) return;
+    plugActor.accept(tradeData.id);
     updateAccepted(true);
     console.log("Trade accepted!");
   };
 
   const onCancel = () => {
-    actor.cancel(tradeData.id);
+    if (!plugActor) return;
+    plugActor.cancel(tradeData.id);
     updateAccepted(false);
     console.log("Trade canceled!");
   };
@@ -371,6 +373,7 @@ export const Trade = () => {
                       fontSize: "2em",
                       borderRadius: ".2em",
                     }}
+                    disabled={accepted}
                   />
                 </span>
                 <Button
