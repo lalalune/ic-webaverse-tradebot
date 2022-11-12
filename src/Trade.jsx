@@ -276,7 +276,7 @@ export const Trade = () => {
                 </div>
               </Frame>
               <Frame>
-                <div className="flex items-center justify-center w-full h-full gap-8">
+                <div className="flex flex-wrap items-center justify-center w-full h-full gap-8">
                   <Button
                     variant="contained"
                     onClick={onAccept}
