@@ -128,13 +128,28 @@ export const Trade = () => {
     })();
   }, [principal]);
 
-  // useEffect(() => {
-  //   if (!plugActor || !tradeData) return;
-  //   const interval = setInterval(async () => {
-  //     const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-  //     console.log("rtTrade: ", rtTrade[0]);
-  //   }, 1000);
-  // }, [plugActor, tradeData]);
+  // Fetch data from IC in real time
+  useEffect(() => {
+    if (!plugActor || !tradeData) return;
+    const interval = setInterval(async () => {
+      const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
+      console.log("rtTrade: ", rtTrade);
+      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+
+      if (
+        guest !== null &&
+        guest !== "" &&
+        guest !== nullPrincipal &&
+        guest !== nullPartner &&
+        partner !== guest
+      ) {
+        updatePartner(guest);
+        console.log("Trade partner found! guest: ", guest);
+      }
+
+      // Todo: synchronization
+    }, 1000);
+  }, [plugActor, tradeData]);
 
   const startTrade = async () => {
     updateLoading(true);
@@ -147,28 +162,8 @@ export const Trade = () => {
     console.log("new trade: ", trade);
     updateTradeData(trade);
     updateIsCreator(true);
-    // const interval = setInterval(async () => {
-    //   console.log("Looking for trade partner...");
-    //   const rtTrade = await actor.get_trade_by_id(trade.id);
-    //   console.log("rtTrade: ", rtTrade[0]);
-    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
-    //   console.log("Principal of trading partner: ", guest);
-    //   if (
-    //     guest !== null &&
-    //     guest !== "" &&
-    //     guest !== nullPrincipal &&
-    //     guest !== nullPartner
-    //   ) {
-    //     updatePartner(guest);
-    //     console.log("Trade partner found! guest: ", guest);
-    //     clearInterval(interval);
-    //   }
-    // }, 2000);
     updateExistTrade(true);
     updateLoading(false);
-    return () => {
-      clearInterval(interval);
-    };
   };
 
   const onAccept = () => {
