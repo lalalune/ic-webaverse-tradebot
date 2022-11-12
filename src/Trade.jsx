@@ -131,24 +131,24 @@ export const Trade = () => {
   // Fetch data from IC in real time
   useEffect(() => {
     if (!plugActor || !tradeData) return;
-    const interval = setInterval(async () => {
-      const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-      console.log("rtTrade: ", rtTrade);
-      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+    // const interval = setInterval(async () => {
+    //   const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
+    //   console.log("rtTrade: ", rtTrade);
+    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
 
-      if (
-        guest !== null &&
-        guest !== "" &&
-        guest !== nullPrincipal &&
-        guest !== nullPartner &&
-        partner !== guest
-      ) {
-        updatePartner(guest);
-        console.log("Trade partner found! guest: ", guest);
-      }
+    //   if (
+    //     guest !== null &&
+    //     guest !== "" &&
+    //     guest !== nullPrincipal &&
+    //     guest !== nullPartner &&
+    //     partner !== guest
+    //   ) {
+    //     updatePartner(guest);
+    //     console.log("Trade partner found! guest: ", guest);
+    //   }
 
-      // Todo: synchronization
-    }, 1000);
+    //   // Todo: synchronization
+    // }, 1000);
   }, [plugActor, tradeData]);
 
   const startTrade = async () => {
