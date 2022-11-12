@@ -33,32 +33,47 @@ export const getUserTokens = async ({ agent, user }) => {
   let slot = 0;
 
   // collections.forEach((collection) => {
-  //   if (!collection.name.toLowerCase().includes("cipher"))
+  //   if (!collection.name.toLowerCase().includes("cipher")) {
   //     collection.tokens.forEach((token) => {
   //       if (!token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
-  //         newTokens[slot.toString()] = token;
-  //         newTokens[slot].id = slot;
+  //         const jsonMetadata = token.metadata?.json?.value.TextContent;
+
+  //         if (jsonMetadata) {
+  //           token.metadata = JSON.parse(jsonMetadata);
+  //         } else {
+  //           token.metadata = {
+  //             name: token.collection,
+  //             image: token.url,
+  //           };
+  //         }
+
+  //         newTokens[slot] = { ...token, id: slot };
   //         slot++;
   //       }
   //     });
+  //   }
   // });
 
   collections.forEach((collection) => {
-    collection.tokens.forEach((token) => {
-      const jsonMetadata = token.metadata?.json?.value.TextContent;
+    if (collection.name.toLowerCase().includes("cipher")) {
+      collection.tokens.forEach((token) => {
+        if (token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
+          const jsonMetadata = token.metadata?.json?.value.TextContent;
 
-      if (jsonMetadata) {
-        token.metadata = JSON.parse(jsonMetadata);
-      } else {
-        token.metadata = {
-          name: token.collection,
-          image: token.url,
-        };
-      }
+          if (jsonMetadata) {
+            token.metadata = JSON.parse(jsonMetadata);
+          } else {
+            token.metadata = {
+              name: token.collection,
+              image: token.url,
+            };
+          }
 
-      newTokens[slot] = { ...token, id: slot };
-      slot++;
-    });
+          newTokens[slot] = { ...token, id: slot };
+          slot++;
+        }
+      });
+    }
   });
 
   console.log("newTokens: ", newTokens);

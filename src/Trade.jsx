@@ -4,7 +4,6 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Principal } from "@dfinity/principal";
 import { usePlug } from "@raydeck/useplug";
-import { getAllUserNFTs } from "@psychedelic/dab-js";
 
 import { inventoryBoxNum } from "./utils/constants";
 import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
