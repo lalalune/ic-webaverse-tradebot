@@ -1,22 +1,24 @@
-import { usePlug } from "@raydeck/useplug";
 import React, { useEffect } from "react";
-import { Principal } from "@dfinity/principal";
-import BagBox from "./BagBox";
-import BagItem from "./BagItem";
-import RemoteBox from "./RemoteBox";
-import Frame from "./frame/Frame";
-import StyledTrade from "./Trade.style";
-import { Button } from "@mui/material";
-import { idlFactory } from "./trade_canister/trade_canister.did.js";
-import { getAllUserNFTs } from "@psychedelic/dab-js";
+import { Button, Stack } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { clone, getInventoryBoxes, getUserTokens } from "./funcs";
-import { Stack } from "@mui/material";
+import { Principal } from "@dfinity/principal";
+import { usePlug } from "@raydeck/useplug";
+import { getAllUserNFTs } from "@psychedelic/dab-js";
+
 import { inventoryBoxNum } from "./constants";
+import { clone, getInventoryBoxes, getUserTokens } from "./funcs";
 import { useStore } from "./store";
+import { idlFactory } from "./trade_canister/trade_canister.did.js";
+
+import Frame from "./frame/Frame";
+import RemoteBox from "./RemoteBox";
+import BagBox from "./BagBox";
+import BagItem from "./BagItem";
 import { Loading } from "./Loading";
 import { ItemDetails } from "./ItemDetails";
+
+import StyledTrade from "./Trade.style";
 
 const nullPartner = Principal.fromUint8Array(
   new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])

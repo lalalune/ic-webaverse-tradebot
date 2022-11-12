@@ -1,5 +1,6 @@
 import React from "react";
 import { Stack } from "@mui/material";
+
 import { useStore } from "./store";
 
 export const ItemDetails = () => {

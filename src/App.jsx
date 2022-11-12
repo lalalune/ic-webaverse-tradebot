@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
-import StyledApp from "./App.style";
-import { Trade } from "./Trade";
+
 import { useStore } from "./store";
+
+import { Trade } from "./Trade";
+
+import StyledApp from "./App.style";
 
 function App() {
   const { remoteBoxes, localBoxes, inventoryBoxes, loading } = useStore();

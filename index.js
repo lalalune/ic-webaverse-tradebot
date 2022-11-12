@@ -21,8 +21,8 @@ export default (e) => {
   app.name = "trade-console";
 
   window.openInWebaverse = (item) => {
-    console.log("openInWebaverse", item);
-    console.log("item url is", item.url);
+    console.log("openInWebaverse: ", item);
+    console.log("item url: ", item.url);
     metaversefile.createAppAsync({
       start_url: item.url,
     });

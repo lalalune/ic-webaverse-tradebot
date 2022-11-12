@@ -1,10 +1,12 @@
-import React, { useEffect, memo, useRef, useState } from "react";
+import React, { memo, useRef } from "react";
+import { Stack } from "@mui/system";
 import { useDrag, useDrop } from "react-dnd";
-import StyledBagItem from "./BagItem.style";
-import { ItemTypes } from "./ItemTypes";
+
 import { clone } from "./funcs";
 import { useStore } from "./store";
-import { Stack } from "@mui/system";
+import { itemTypes } from "./constants";
+
+import StyledBagItem from "./BagItem.style";
 
 let lastClick = Date.now();
 
@@ -72,7 +74,7 @@ const BagItem = ({
   item.isForTrade = isForTrade;
 
   const [{ handlerId }, drop] = useDrop({
-    accept: ItemTypes.LAYER1,
+    accept: itemTypes.LAYER1,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -137,7 +139,7 @@ const BagItem = ({
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.LAYER1,
+    type: itemTypes.LAYER1,
     canDrag: true,
     item: () => {
       return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };

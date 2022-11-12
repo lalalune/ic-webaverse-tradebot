@@ -28,7 +28,7 @@ export const getUserTokens = async ({ agent, user }) => {
   });
   console.log("collections: ", collections);
 
-  // make an array of all collections[i].tokens
+  // Make an array of all collections[i].tokens
   const newTokens = {};
   let slot = 0;
 

@@ -1,4 +1,5 @@
 import React from "react";
+
 import StyledFrame from "./Frame.style";
 
 const Frame = ({ children, title, className, style }) => (
