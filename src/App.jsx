@@ -4,9 +4,7 @@ import { useStore } from "./store";
 
 import { Trade } from "./Trade";
 
-import StyledApp from "./App.style";
-
-function App() {
+export const App = () => {
   const { remoteBoxes, localBoxes, inventoryBoxes, loading } = useStore();
 
   // useEffect(() => {
@@ -20,10 +18,8 @@ function App() {
   }, [loading]);
 
   return (
-    <StyledApp>
+    <div className="fixed top-0 bottom-0 left-0 right-0">
       <Trade />
-    </StyledApp>
+    </div>
   );
-}
-
-export default App;
+};
