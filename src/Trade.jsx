@@ -323,6 +323,7 @@ export const Trade = () => {
                         curPage * boxNumPerPage
                       )
                       .map((box, index) => {
+                        console.log("box: ", box);
                         return (
                           <BagBox key={box.id}>
                             <BagItem

@@ -2,54 +2,49 @@ import React, { memo, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 
-import { clone } from "./utils/funcs";
+import { clone, isImage, isMedia, isModel } from "./utils/funcs";
 import { useStore } from "./utils/store";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
-let lastClick = Date.now();
-
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   const { updateSelItem } = useStore();
 
-  const handleClick = (item) => {
-    // check for double click
-    const now = Date.now();
-    if (now - lastClick < 500) {
-      // double click
-      if (window && window.openInWebaverse) {
-        window.openInWebaverse(item);
-      } else {
-        updateSelItem(item);
-      }
+  const handleClick = (event) => {
+    switch (event.detail) {
+      case 1:
+        if (window && window.openInWebaverse) {
+          window.openInWebaverse(item);
+        } else {
+          updateSelItem(item);
+        }
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
     }
-    lastClick = now;
   };
 
   return item ? (
-    <StyledBagItem ref={drag} isDragging={isDragging}>
-      {item.metadata ? (
-        <>
-          {item.metadata.image ? (
-            <div
-              className="flex items-center justify-center w-full h-full"
-              onClick={() => handleClick(item)}
-            >
-              {item.metadata.image.includes("mp4") && (
-                <video src={item.metadata.image} autoPlay loop muted />
-              )}
-              {(item.metadata.image.includes("jpg") ||
-                item.metadata.image.includes("png")) && (
-                <img src={item.metadata.image} />
-              )}
-            </div>
-          ) : (
-            <></>
-          )}
-        </>
-      ) : (
-        <></>
+    <StyledBagItem
+      className="flex items-center justify-center"
+      ref={drag}
+      isDragging={isDragging}
+      onClick={handleClick}
+    >
+      {isImage(item?.metadata?.image) && (
+        <img className="w-full h-full" src={item.metadata.image} />
+      )}
+      {isMedia(item?.metadata?.image) && (
+        <video
+          className="w-full h-full"
+          src={item.metadata.image}
+          autoPlay
+          loop
+          muted
+        />
       )}
     </StyledBagItem>
   ) : (
@@ -137,7 +132,7 @@ const BagItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: itemTypes.LAYER1,
-    canDrag: true,
+    canDrag: !!item.canister,
     item: () => {
       return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
     },

@@ -39,7 +39,10 @@ export const getUserTokens = async ({ agent, user }) => {
   //         const jsonMetadata = token.metadata?.json?.value.TextContent;
 
   //         if (jsonMetadata) {
-  //           token.metadata = JSON.parse(jsonMetadata);
+  //           const parseMetadata = JSON.parse(jsonMetadata);
+  //           if (parseMetadata.animation_url)
+  //             parseMetadata.image = parseMetadata.animation_url;
+  //           token.metadata = parseMetadata;
   //         } else {
   //           token.metadata = {
   //             name: token.collection,
@@ -61,7 +64,10 @@ export const getUserTokens = async ({ agent, user }) => {
           const jsonMetadata = token.metadata?.json?.value.TextContent;
 
           if (jsonMetadata) {
-            token.metadata = JSON.parse(jsonMetadata);
+            const parseMetadata = JSON.parse(jsonMetadata);
+            if (parseMetadata.animation_url)
+              parseMetadata.image = parseMetadata.animation_url;
+            token.metadata = parseMetadata;
           } else {
             token.metadata = {
               name: token.collection,
@@ -78,4 +84,51 @@ export const getUserTokens = async ({ agent, user }) => {
 
   console.log("newTokens: ", newTokens);
   return newTokens;
+};
+
+export const getExtension = (url) => {
+  const extension = url.split(".").pop().toLowerCase();
+  // console.log("extension: ", extension);
+  return extension;
+};
+
+export const isImage = (url) => {
+  if (!url) return false;
+  const imageExtensions = [
+    "apng",
+    "avif",
+    "gif",
+    "jpg",
+    "jpeg",
+    "jfif",
+    "pjpeg",
+    "pjp",
+    "png",
+    "svg",
+    "webp",
+    "bmp",
+    "ico",
+    "cur",
+    "tif",
+    "tiff",
+  ];
+  const extension = getExtension(url);
+  const flag = imageExtensions.indexOf(extension) >= 0;
+  return flag;
+};
+
+export const isMedia = (url) => {
+  if (!url) return false;
+  const mediaExtensions = ["mp4", "mov", "wav", "mp3", "ogg", "webm", "avi"];
+  const extension = getExtension(url);
+  const flag = mediaExtensions.indexOf(extension) >= 0;
+  return flag;
+};
+
+export const isModel = (url) => {
+  if (!url) return false;
+  const modelExtensions = ["glb", "fbx", "obj", "usd", "stl", "stp"];
+  const extension = getExtension(url);
+  const flag = modelExtensions.indexOf(extension) >= 0;
+  return flag;
 };
