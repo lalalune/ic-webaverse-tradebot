@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start:tailwind": "npx tailwindcss -i ./index.css -o ./dist/index.css --watch",
+    "start:tailwind": "npx tailwindcss -i ./index.css -o ./tailwind.css --watch",
     "dev": "vite",
     "dev:webaverse": "npx serve -p 8001 --cors",
     "build": "vite build && npm run build:component",

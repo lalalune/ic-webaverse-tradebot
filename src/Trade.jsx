@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Principal } from "@dfinity/principal";
