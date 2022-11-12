@@ -118,13 +118,13 @@ export const Trade = () => {
     (async () => {
       updateLoading(true);
       const user = window.ic.plug.principalId;
+      const balance = await window.ic.plug.requestBalance();
+      console.log("user: ", user);
+      console.log("balance: ", balance);
+      const newTokens = await getUserTokens({ agent, user });
+      inventoryTokens = clone(newTokens);
       updateLocalUser(user);
-      // const balance = await window.ic.plug.requestBalance();
-      // console.log("user: ", user);
-      // console.log("balance: ", balance);
-      // const newTokens = await getUserTokens({ agent, user });
-      // inventoryTokens = clone(newTokens);
-      // updateInventoryBoxes(getInventoryBoxes(newTokens));
+      updateInventoryBoxes(getInventoryBoxes(newTokens));
       updateLoading(false);
     })();
   }, [principal]);
@@ -132,24 +132,24 @@ export const Trade = () => {
   // Fetch data from IC in real time
   useEffect(() => {
     if (!plugActor || !tradeData) return;
-    // const interval = setInterval(async () => {
-    //   const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-    //   // console.log("rtTrade: ", rtTrade);
-    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+    const interval = setInterval(async () => {
+      const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
+      console.log("rtTrade: ", rtTrade);
+      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
 
-    //   if (
-    //     guest !== null &&
-    //     guest !== "" &&
-    //     guest !== nullPrincipal &&
-    //     guest !== nullPartner &&
-    //     partner !== guest
-    //   ) {
-    //     updatePartner(guest);
-    //     console.log("Trade partner found! guest: ", guest);
-    //   }
+      if (
+        guest !== null &&
+        guest !== "" &&
+        guest !== nullPrincipal &&
+        guest !== nullPartner &&
+        partner !== guest
+      ) {
+        updatePartner(guest);
+        console.log("Trade partner found! guest: ", guest);
+      }
 
-    //   // Todo: synchronization
-    // }, 1000);
+      // Todo: synchronization
+    }, 1000);
   }, [plugActor, tradeData]);
 
   const startTrade = async () => {
@@ -159,10 +159,9 @@ export const Trade = () => {
       interfaceFactory: idlFactory,
     });
     updatePlugActor(actor);
-    // const trade = await actor.create_trade();
-    // console.log("new trade: ", trade);
-    // updateTradeData(trade);
-    updateTradeData({});
+    const trade = await actor.create_trade();
+    console.log("new trade: ", trade);
+    updateTradeData(trade);
     updateIsCreator(true);
     updateExistTrade(true);
     updateLoading(false);
