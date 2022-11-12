@@ -1,37 +1,19 @@
 import React from "react";
-import { Stack } from "@mui/material";
+import classnames from "classnames";
 
-import { useStore } from "./store";
+import { useStore } from "./utils/store";
 
 export const Loading = () => {
   const { loading } = useStore();
 
   return (
-    <Stack
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: 1,
-        display: loading ? "flex" : "none",
-        justifyContent: "center",
-        alignItems: "center",
-        opacity: "0.3",
-        backgroundColor: "white",
-      }}
+    <div
+      className={classnames(
+        "absolute top-0 bottom-0 left-0 right-0 z-10 flex justify-center items-center opacity-30 bg-white",
+        { hidden: !loading }
+      )}
     >
-      <Stack
-        style={{
-          border: "16px solid #f3f3f3",
-          borderTop: "16px solid #3498db",
-          borderRadius: "50%",
-          width: "130px",
-          height: "130px",
-          animation: "spin 2s linear infinite",
-        }}
-      ></Stack>
-    </Stack>
+      <div className="w-32 h-32 border-8 rounded-full border-t-green-900 animate-spin"></div>
+    </div>
   );
 };

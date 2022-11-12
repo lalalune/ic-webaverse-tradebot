@@ -9,4 +9,5 @@ const BagBox = ({ className, children, isOver, canDrop }) => {
     </StyledBagBox>
   );
 };
+
 export default memo(BagBox);

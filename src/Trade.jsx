@@ -6,19 +6,17 @@ import { Principal } from "@dfinity/principal";
 import { usePlug } from "@raydeck/useplug";
 import { getAllUserNFTs } from "@psychedelic/dab-js";
 
-import { inventoryBoxNum } from "./constants";
-import { clone, getInventoryBoxes, getUserTokens } from "./funcs";
-import { useStore } from "./store";
+import { inventoryBoxNum } from "./utils/constants";
+import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
+import { useStore } from "./utils/store";
 import { idlFactory } from "./trade_canister/trade_canister.did.js";
 
-import Frame from "./frame/Frame";
+import Frame from "./Frame";
 import RemoteBox from "./RemoteBox";
 import BagBox from "./BagBox";
 import BagItem from "./BagItem";
 import { Loading } from "./Loading";
 import { ItemDetails } from "./ItemDetails";
-
-import StyledTrade from "./Trade.style";
 
 const nullPartner = Principal.fromUint8Array(
   new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
@@ -33,7 +31,6 @@ export const Trade = () => {
   // principal is a byte array that should be converted to a string
   // convert using a browser-friendly es6 method
   const { authenticated, principal, login, agent } = usePlug();
-  const principalString = principal ? window.ic.plug.principalId : "<none>";
   const {
     isCreator,
     updateIsCreator,
@@ -61,6 +58,8 @@ export const Trade = () => {
     updateLoading,
     updateLocalUser,
   } = useStore();
+
+  const principalString = principal ? window.ic.plug.principalId : "<none>";
 
   useEffect(() => {
     (async () => {
@@ -119,13 +118,13 @@ export const Trade = () => {
     (async () => {
       updateLoading(true);
       const user = window.ic.plug.principalId;
-      const balance = await window.ic.plug.requestBalance();
-      console.log("user: ", user);
-      console.log("balance: ", balance);
       updateLocalUser(user);
-      const newTokens = await getUserTokens({ agent, user });
-      inventoryTokens = clone(newTokens);
-      updateInventoryBoxes(getInventoryBoxes(newTokens));
+      // const balance = await window.ic.plug.requestBalance();
+      // console.log("user: ", user);
+      // console.log("balance: ", balance);
+      // const newTokens = await getUserTokens({ agent, user });
+      // inventoryTokens = clone(newTokens);
+      // updateInventoryBoxes(getInventoryBoxes(newTokens));
       updateLoading(false);
     })();
   }, [principal]);
@@ -133,24 +132,24 @@ export const Trade = () => {
   // Fetch data from IC in real time
   useEffect(() => {
     if (!plugActor || !tradeData) return;
-    const interval = setInterval(async () => {
-      const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-      console.log("rtTrade: ", rtTrade);
-      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+    // const interval = setInterval(async () => {
+    //   const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
+    //   // console.log("rtTrade: ", rtTrade);
+    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
 
-      if (
-        guest !== null &&
-        guest !== "" &&
-        guest !== nullPrincipal &&
-        guest !== nullPartner &&
-        partner !== guest
-      ) {
-        updatePartner(guest);
-        console.log("Trade partner found! guest: ", guest);
-      }
+    //   if (
+    //     guest !== null &&
+    //     guest !== "" &&
+    //     guest !== nullPrincipal &&
+    //     guest !== nullPartner &&
+    //     partner !== guest
+    //   ) {
+    //     updatePartner(guest);
+    //     console.log("Trade partner found! guest: ", guest);
+    //   }
 
-      // Todo: synchronization
-    }, 1000);
+    //   // Todo: synchronization
+    // }, 1000);
   }, [plugActor, tradeData]);
 
   const startTrade = async () => {
@@ -160,9 +159,10 @@ export const Trade = () => {
       interfaceFactory: idlFactory,
     });
     updatePlugActor(actor);
-    const trade = await actor.create_trade();
-    console.log("new trade: ", trade);
-    updateTradeData(trade);
+    // const trade = await actor.create_trade();
+    // console.log("new trade: ", trade);
+    // updateTradeData(trade);
+    updateTradeData({});
     updateIsCreator(true);
     updateExistTrade(true);
     updateLoading(false);
@@ -194,283 +194,187 @@ export const Trade = () => {
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <Loading />
-      <ItemDetails />
-
-      <StyledTrade
-        style={{
-          width: "70%",
-          display: "inline-block",
-          height: "100vh",
-          verticalAlign: "middle",
-        }}
-      >
-        {!authenticated && (
-          <Frame>
-            <div style={{ minHeight: "100vh" }}>
-              {/* Center the connect button horizontally and vertically */}
-              <Button
-                variant="contained"
-                onClick={login}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                Connect
-              </Button>
-            </div>
-          </Frame>
-        )}
-        {authenticated && !tradeData && (
-          <Frame>
-            <div style={{ minHeight: "100vh" }}>
-              {/* Center the trade button horizontally and vertically */}
-              {!existTrade && (
-                <Button
-                  variant="contained"
-                  onClick={() => startTrade()}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  Start Trade
+    <div className="w-full h-full">
+      <DndProvider backend={HTML5Backend}>
+        <Loading />
+        <ItemDetails />
+        <div className="absolute top-0 left-0 w-3/4 h-full">
+          {!authenticated && (
+            <Frame className="absolute w-full h-full">
+              <div className="flex items-center justify-center w-full h-full">
+                <Button variant="contained" onClick={login}>
+                  Connect
                 </Button>
-              )}
-              {existTrade && !tradeData && (
-                <Button
-                  variant="disabled"
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  Starting...
-                </Button>
-              )}
-            </div>
-          </Frame>
-        )}
-        {authenticated && tradeData && (
-          <div style={{ minHeight: "100vh", verticalAlign: "middle" }}>
-            <Frame>
-              <Stack
-                justifyContent="space-between"
-                alignItems="center"
-                direction="row"
-              >
-                <Stack marginBottom={".25em"}>
-                  <h2>Their Trade</h2>
-                </Stack>
-                <Stack color="green" marginBottom=".25em" alignItems="center">
-                  {(isCreator && tradeData.guestAccept) ||
-                  (!isCreator && tradeData.hostAccept)
-                    ? "TRADE ACCEPTED"
-                    : "Waiting..."}
-                </Stack>
-              </Stack>
-              <div className="boxes-grid">
-                {remoteBoxes.map((box, index) => {
-                  return (
-                    <RemoteBox key={box.id}>
-                      <BagItem
-                        key={`remote_${box.id}`}
-                        item={clone(box.item)}
-                        index={index}
-                        tradeBoxes={clone(remoteBoxes)}
-                        updateTradeBoxes={updateRemoteBoxes}
-                        tradeLayer="remote"
-                      />
-                    </RemoteBox>
-                  );
-                })}
               </div>
             </Frame>
-            <Frame>
-              <h2 style={{ marginBottom: ".25em" }}>Your Trade</h2>
-              <div className="boxes-grid">
-                {localBoxes.map((box, index) => {
-                  return (
-                    <BagBox key={box.id}>
-                      <BagItem
-                        key={`local_${box.id}`}
-                        isForTrade={true}
-                        item={clone(box.item)}
-                        index={index}
-                        tradeBoxes={clone(localBoxes)}
-                        updateTradeBoxes={updateLocalBoxes}
-                        tradeLayer="local"
-                      />
-                    </BagBox>
-                  );
-                })}
+          )}
+          {authenticated && !tradeData && (
+            <Frame className="absolute w-full h-full">
+              <div className="flex items-center justify-center w-full h-full">
+                {!existTrade && (
+                  <Button variant="contained" onClick={startTrade}>
+                    Start Trade
+                  </Button>
+                )}
+                {existTrade && !tradeData && (
+                  <Button variant="disabled">Starting...</Button>
+                )}
               </div>
             </Frame>
-
-            <Frame>
-              {/* Center the div horizontally */}
-              <div
-                style={{
-                  display: "flex",
-                  height: "3em",
-                  justifyContent: "center",
-                  verticalAlign: "middle",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  onClick={onAccept}
-                  disabled={accepted}
-                  color="success"
-                >
-                  Accept
-                </Button>
-                <span
-                  style={{
-                    margin: "1em",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "1em",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* Numerical input for amount of ICP to add to trade */}
-                  <label htmlFor="icp" style={{ marginRight: ".25em" }}>
-                    ICP
-                  </label>
-                  <input
-                    type="number"
-                    id="icp"
-                    defaultValue={0}
-                    style={{
-                      width: "3em",
-                      margin: ".25em",
-                      fontSize: "2em",
-                      borderRadius: ".2em",
-                    }}
+          )}
+          {authenticated && tradeData && (
+            <div className="absolute w-full h-full overflow-auto">
+              <Frame>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl">Their Trade</div>
+                    <div className="text-xl text-blue-900">
+                      {(isCreator && tradeData.guestAccept) ||
+                      (!isCreator && tradeData.hostAccept)
+                        ? "TRADE ACCEPTED"
+                        : "Waiting..."}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {remoteBoxes.map((box, index) => {
+                      return (
+                        <RemoteBox key={box.id}>
+                          <BagItem
+                            key={`remote_${box.id}`}
+                            item={clone(box.item)}
+                            index={index}
+                            tradeBoxes={clone(remoteBoxes)}
+                            updateTradeBoxes={updateRemoteBoxes}
+                            tradeLayer="remote"
+                          />
+                        </RemoteBox>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Frame>
+              <Frame>
+                <div className="flex flex-col gap-2">
+                  <div className="text-2xl">Your Trade</div>
+                  <div className="flex flex-wrap gap-3">
+                    {localBoxes.map((box, index) => {
+                      return (
+                        <BagBox key={box.id}>
+                          <BagItem
+                            key={`local_${box.id}`}
+                            isForTrade={true}
+                            item={clone(box.item)}
+                            index={index}
+                            tradeBoxes={clone(localBoxes)}
+                            updateTradeBoxes={updateLocalBoxes}
+                            tradeLayer="local"
+                          />
+                        </BagBox>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Frame>
+              <Frame>
+                <div className="flex items-center justify-center w-full h-full gap-8">
+                  <Button
+                    variant="contained"
+                    onClick={onAccept}
                     disabled={accepted}
-                  />
-                </span>
-                <Button
-                  variant="contained"
-                  onClick={onCancel}
-                  disabled={!accepted}
-                  color="error"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </Frame>
-
-            <Frame style={{ minHeight: "30vh" }}>
-              <Stack
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                direction={"row"}
-              >
-                <Stack marginBottom={".25em"}>
-                  <h2>Trade</h2>
-                </Stack>
-                <Stack
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                  direction={"row"}
-                  gap={".25em"}
-                >
-                  <Stack style={{ cursor: "pointer" }} onClick={onPrevPage}>
-                    <h2> &#60;</h2>
-                  </Stack>
-                  <Stack color={"red"}>
-                    <h2> {curPage}</h2>
-                  </Stack>
-                  <Stack style={{ cursor: "pointer" }} onClick={onNextPage}>
-                    <h2> &#62;</h2>
-                  </Stack>
-                </Stack>
-              </Stack>
-
-              <div className="boxes-grid">
-                {inventoryBoxes
-                  .slice((curPage - 1) * boxNumPerPage, curPage * boxNumPerPage)
-                  .map((box, index) => {
-                    return (
-                      <BagBox key={box.id}>
-                        <BagItem
-                          key={`inventory_${box.id}`}
-                          item={clone(box.item)}
-                          index={(curPage - 1) * boxNumPerPage + index}
-                          tradeBoxes={clone(inventoryBoxes)}
-                          updateTradeBoxes={updateInventoryBoxes}
-                          tradeLayer="inventory"
-                        />
-                      </BagBox>
-                    );
-                  })}
-              </div>
-            </Frame>
-          </div>
-        )}
-      </StyledTrade>
-
-      <div
-        style={{
-          width: "30%",
-          display: "inline-block",
-          verticalAlign: "top",
-          height: "100%",
-        }}
-      >
-        <Frame style={{ height: "100%" }}>
-          <div style={{ height: "100%", minHeight: "100vh" }}>
-            <div style={{ padding: "10px" }}></div>
-            <div style={{ padding: "10px" }}>
+                    color="success"
+                  >
+                    Accept
+                  </Button>
+                  <div className="flex items-center justify-center gap-2">
+                    {/* Numerical input for amount of ICP to add to trade */}
+                    <label htmlFor="icp">ICP: </label>
+                    <input
+                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
+                      id="icp"
+                      type="number"
+                    />
+                  </div>
+                  <Button
+                    variant="contained"
+                    onClick={onCancel}
+                    disabled={!accepted}
+                    color="error"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Frame>
+              <Frame>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl">Inventory</div>
+                    <div className="flex items-center gap-2 text-xl">
+                      <div className="cursor-pointer" onClick={onPrevPage}>
+                        &#60;
+                      </div>
+                      <div className="text-blue-900">{curPage}</div>
+                      <div className="cursor-pointer" onClick={onNextPage}>
+                        &#62;
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {inventoryBoxes
+                      .slice(
+                        (curPage - 1) * boxNumPerPage,
+                        curPage * boxNumPerPage
+                      )
+                      .map((box, index) => {
+                        return (
+                          <BagBox key={box.id}>
+                            <BagItem
+                              key={`inventory_${box.id}`}
+                              item={clone(box.item)}
+                              index={(curPage - 1) * boxNumPerPage + index}
+                              tradeBoxes={clone(inventoryBoxes)}
+                              updateTradeBoxes={updateInventoryBoxes}
+                              tradeLayer="inventory"
+                            />
+                          </BagBox>
+                        );
+                      })}
+                  </div>
+                </div>
+              </Frame>
+            </div>
+          )}
+        </div>
+        <div className="absolute top-0 right-0 w-1/4 h-full">
+          <Frame className="h-full">
+            <div className="p-2">
               <b>CONNECTION STATUS</b>
               <br />
               {authenticated && principal
                 ? "Connected with " + principalString
                 : "Waiting for IC wallet connection..."}
+              <br />
+              <br />
               {existTrade && tradeData && !partner && !tradeId && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -40%)",
-                  }}
-                >
+                <>
                   <b> WAITING FOR TRADE PARTNER... </b>
                   <br />
                   Send this link to your trade partner
                   <br />
-                  <a href={`${url.host}/?tradeId=${tradeData.id}`}>
+                  <a
+                    className="text-blue-900"
+                    href={`${url.host}/?tradeId=${tradeData.id}`}
+                  >
                     {url.host}/?tradeId={tradeData.id}
                   </a>
-                </span>
+                </>
               )}
               {existTrade && tradeData && partner && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -40%)",
-                  }}
-                >
-                  Trading with {partner}
-                </span>
+                <>Trading with {partner}</>
               )}
             </div>
-          </div>
-        </Frame>
-      </div>
-    </DndProvider>
+          </Frame>
+        </div>
+      </DndProvider>
+    </div>
   );
 };

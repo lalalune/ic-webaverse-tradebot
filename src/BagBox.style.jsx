@@ -10,7 +10,6 @@ const StyledBagBox = styled.div`
         ? `1px solid ${isOver ? "green" : "gold"}`
         : "1px solid #0c1e20"};
       position: relative;
-
       width: 6em;
       display: flex;
       height: 6em;
@@ -19,11 +18,6 @@ const StyledBagBox = styled.div`
       background-image: radial-gradient(#0c1e20 0%, #101010 66%);
       border-radius: 2px;
       box-shadow: 0px 0px 0px 2px #2f3639;
-      .slot-type {
-        color: gold;
-        font-size: 11px;
-        font-weight: bold;
-      }
     `;
   }}
 `;

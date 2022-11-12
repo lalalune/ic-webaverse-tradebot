@@ -14,27 +14,7 @@ const StyledFrame = styled.div`
     repeat-x, repeat-y, repeat-y, no-repeat;
   background-color: #1d2123;
   position: relative;
-  padding: 20px 10px 5px;
-  .boxes-meta {
-    position: absolute;
-    top: 0;
-    transform: translateY(-50%);
-    .boxes-title {
-      padding: 5px;
-      color: #c1a78e;
-      border: 1px solid #806448;
-      border-radius: 2px;
-      background-color: #301f19;
-    }
-  }
-  .box-inner-container {
-    width: 100%;
-    padding: 10px;
-    border-radius: 3px;
-    box-shadow: inset 0px 1px 1px 2px #00000057;
-    background: url("frame/bg.jpg") center center;
-    background-size: cover;
-  }
+  padding: 8px;
 `;
 
 StyledFrame.displayName = "StyledFrame";

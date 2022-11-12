@@ -1,10 +1,10 @@
 import React, { memo, useRef } from "react";
-import { Stack } from "@mui/system";
 import { useDrag, useDrop } from "react-dnd";
+import classnames from "classnames";
 
-import { clone } from "./funcs";
-import { useStore } from "./store";
-import { itemTypes } from "./constants";
+import { clone } from "./utils/funcs";
+import { useStore } from "./utils/store";
+import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
@@ -28,15 +28,12 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   };
 
   return item ? (
-    <StyledBagItem ref={drag} isDragging={isDragging} data-tip>
+    <StyledBagItem ref={drag} isDragging={isDragging}>
       {item.metadata ? (
         <>
           {item.metadata.image ? (
-            <Stack
-              justifyContent={"center"}
-              alignItems={"center"}
-              width={"100%"}
-              height={"100%"}
+            <div
+              className="flex items-center justify-center w-full h-full"
               onClick={() => handleClick(item)}
             >
               {item.metadata.image.includes("mp4") && (
@@ -46,7 +43,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
                 item.metadata.image.includes("png")) && (
                 <img src={item.metadata.image} />
               )}
-            </Stack>
+            </div>
           ) : (
             <></>
           )}
@@ -96,8 +93,8 @@ const BagItem = ({
       // console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
       // console.log("cloneDragTradeBoxes: ", cloneDragTradeBoxes);
       // console.log("cloneHoverTradeBoxes: ", cloneHoverTradeBoxes);
-      console.log("tradeLayer: ", tradeLayer);
-      console.log("dragEl.tradeLayer: ", dragEl.tradeLayer);
+      // console.log("tradeLayer: ", tradeLayer);
+      // console.log("dragEl.tradeLayer: ", dragEl.tradeLayer);
 
       // Time to combine with ic
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
@@ -115,12 +112,12 @@ const BagItem = ({
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
         (async () => {
-          const res = await plugActor.remove_item_from_trade(tradeData.id, {
-            name: cloneDragTradeItem.metadata.name,
-            canisterId: isCreator ? tradeData.host : tradeData.guest,
-            tokenId: cloneDragTradeItem.id,
-          });
-          console.log("remove_item_from_trade res: ", res);
+          // const res = await plugActor.remove_item_from_trade(tradeData.id, {
+          //   name: cloneDragTradeItem.metadata.name,
+          //   canisterId: isCreator ? tradeData.host : tradeData.guest,
+          //   tokenId: cloneDragTradeItem.id,
+          // });
+          // console.log("remove_item_from_trade res: ", res);
         })();
       }
 
@@ -153,7 +150,11 @@ const BagItem = ({
   drag(drop(ref));
 
   return (
-    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+    <div
+      className={classnames({ opacity: opacity })}
+      ref={ref}
+      data-handler-id={handlerId}
+    >
       <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} />
     </div>
   );
