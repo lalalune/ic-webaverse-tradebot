@@ -1,6 +1,7 @@
-import React, { memo, useRef } from "react";
+import React, { memo, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
+import { GLTFModel } from "react-3d-viewer";
 
 import { clone, isImage, isMedia, isModel } from "./utils/funcs";
 import { useStore } from "./utils/store";
@@ -10,6 +11,7 @@ import StyledBagItem from "./BagItem.style";
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   const { updateSelItem } = useStore();
+  const modelRef = useRef(null);
 
   const handleClick = (event) => {
     switch (event.detail) {
@@ -26,6 +28,13 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
         break;
     }
   };
+
+  // useEffect(() => {
+  //   return () => {
+  //     console.log("modelRef: ", modelRef?.current);
+  //     modelRef?.current?.remove();
+  //   };
+  // }, []);
 
   return item ? (
     <StyledBagItem
@@ -46,6 +55,14 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
           muted
         />
       )}
+      {/* {isModel(item?.metadata?.image) && (
+        <GLTFModel
+          ref={modelRef}
+          width={96}
+          height={96}
+          src={item.metadata.image}
+        />
+      )} */}
     </StyledBagItem>
   ) : (
     <></>

@@ -65,8 +65,8 @@ export const getUserTokens = async ({ agent, user }) => {
 
           if (jsonMetadata) {
             const parseMetadata = JSON.parse(jsonMetadata);
-            if (parseMetadata.animation_url)
-              parseMetadata.image = parseMetadata.animation_url;
+            // if (parseMetadata.animation_url)
+            //   parseMetadata.image = parseMetadata.animation_url;
             token.metadata = parseMetadata;
           } else {
             token.metadata = {
@@ -127,7 +127,8 @@ export const isMedia = (url) => {
 
 export const isModel = (url) => {
   if (!url) return false;
-  const modelExtensions = ["glb", "fbx", "obj", "usd", "stl", "stp"];
+  // const modelExtensions = ["glb", "fbx", "obj", "usd", "stl", "stp"];
+  const modelExtensions = ["glb"];
   const extension = getExtension(url);
   const flag = modelExtensions.indexOf(extension) >= 0;
   return flag;
