@@ -32,15 +32,15 @@ if (process.env.COMPONENT) {
       formats: ['es'],
       fileName: () => `Trade.js`,
     },
-    rollupOptions: {
-      external: ['react', 'react-dom'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        },
-      },
-    },
+    // rollupOptions: {
+    //   external: ['react', 'react-dom'],
+    //   output: {
+    //     globals: {
+    //       react: 'React',
+    //       'react-dom': 'ReactDOM'
+    //     },
+    //   },
+    // },
   }
 }
 
