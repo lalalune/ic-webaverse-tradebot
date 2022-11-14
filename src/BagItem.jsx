@@ -16,53 +16,63 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
+        break;
+      case 2:
         if (window && window.openInWebaverse) {
           window.openInWebaverse(item);
         } else {
           updateSelItem(item);
         }
         break;
-      case 2:
-        break;
       case 3:
         break;
     }
   };
 
-  // useEffect(() => {
-  //   return () => {
-  //     console.log("modelRef: ", modelRef?.current);
-  //     modelRef?.current?.remove();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const refContainer = modelRef?.current?.$container;
+      if (refContainer?.children?.length > 1) {
+        refContainer.removeChild(refContainer.firstChild);
+      }
+    }, 1);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return item ? (
     <StyledBagItem
-      className="flex items-center justify-center"
+      className="flex items-center justify-center class_model"
       ref={drag}
       isDragging={isDragging}
       onClick={handleClick}
     >
       {isImage(item?.metadata?.image) && (
-        <img className="w-full h-full" src={item.metadata.image} />
+        <img
+          className="max-w-full max-h-full min-w-min min-h-min"
+          src={item.metadata.image}
+        />
       )}
       {isMedia(item?.metadata?.image) && (
         <video
-          className="w-full h-full"
+          className="max-w-full max-h-full min-w-min min-h-min"
           src={item.metadata.image}
           autoPlay
           loop
           muted
         />
       )}
-      {/* {isModel(item?.metadata?.image) && (
+      {isModel(item?.metadata?.image) && (
         <GLTFModel
           ref={modelRef}
           width={96}
           height={96}
           src={item.metadata.image}
+          enabled={false}
+          position={{ x: -0.15, y: -0.3, z: -0.3 }}
         />
-      )} */}
+      )}
     </StyledBagItem>
   ) : (
     <></>
@@ -78,9 +88,10 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
-  const { plugActor, tradeData, isCreator } = useStore();
+  const { plugActor, tradeData } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
+  // console.log("item: ", item);
 
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
@@ -92,7 +103,8 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      if (!ref.current || item.canister || !plugActor || !tradeData) return; // When full item
+      // if (!ref.current || item.canister || !plugActor || !tradeData) return; // When full item
+      if (!ref.current || item.canister || !tradeData) return; // When full item
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
@@ -172,4 +184,4 @@ const BagItem = ({
   );
 };
 
-export default memo(BagItem);
+export default BagItem;

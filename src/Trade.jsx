@@ -117,9 +117,9 @@ export const Trade = () => {
     (async () => {
       updateLoading(true);
       const user = window.ic.plug.principalId;
-      const balance = await window.ic.plug.requestBalance();
       console.log("user: ", user);
-      console.log("balance: ", balance);
+      // const balance = await window.ic.plug.requestBalance();
+      // console.log("balance: ", balance);
       const newTokens = await getUserTokens({ agent, user });
       inventoryTokens = clone(newTokens);
       updateLocalUser(user);
@@ -153,14 +153,15 @@ export const Trade = () => {
 
   const startTrade = async () => {
     updateLoading(true);
-    const actor = await window.ic.plug.createActor({
-      canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-      interfaceFactory: idlFactory,
-    });
-    updatePlugActor(actor);
-    const trade = await actor.create_trade();
-    console.log("new trade: ", trade);
-    updateTradeData(trade);
+    // const actor = await window.ic.plug.createActor({
+    //   canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
+    //   interfaceFactory: idlFactory,
+    // });
+    // updatePlugActor(actor);
+    // const trade = await actor.create_trade();
+    // console.log("new trade: ", trade);
+    // updateTradeData(trade);
+    updateTradeData({});
     updateIsCreator(true);
     updateExistTrade(true);
     updateLoading(false);
@@ -323,7 +324,6 @@ export const Trade = () => {
                         curPage * boxNumPerPage
                       )
                       .map((box, index) => {
-                        console.log("box: ", box);
                         return (
                           <BagBox key={box.id}>
                             <BagItem
