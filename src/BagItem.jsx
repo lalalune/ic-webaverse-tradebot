@@ -16,13 +16,13 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
-        break;
-      case 2:
         if (window && window.openInWebaverse) {
           window.openInWebaverse(item);
         } else {
           updateSelItem(item);
         }
+        break;
+      case 2:
         break;
       case 3:
         break;
