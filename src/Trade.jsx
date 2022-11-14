@@ -153,15 +153,15 @@ export const Trade = () => {
 
   const startTrade = async () => {
     updateLoading(true);
-    // const actor = await window.ic.plug.createActor({
-    //   canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-    //   interfaceFactory: idlFactory,
-    // });
-    // updatePlugActor(actor);
-    // const trade = await actor.create_trade();
-    // console.log("new trade: ", trade);
-    // updateTradeData(trade);
-    updateTradeData({});
+    const actor = await window.ic.plug.createActor({
+      canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
+      interfaceFactory: idlFactory,
+    });
+    updatePlugActor(actor);
+    const trade = await actor.create_trade();
+    console.log("new trade: ", trade);
+    updateTradeData(trade);
+    // updateTradeData({});
     updateIsCreator(true);
     updateExistTrade(true);
     updateLoading(false);

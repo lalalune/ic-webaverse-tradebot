@@ -49,14 +49,11 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
       onClick={handleClick}
     >
       {isImage(item?.metadata?.image) && (
-        <img
-          className="max-w-full max-h-full min-w-min min-h-min"
-          src={item.metadata.image}
-        />
+        <img className="w-full h-full" src={item.metadata.image} />
       )}
       {isMedia(item?.metadata?.image) && (
         <video
-          className="max-w-full max-h-full min-w-min min-h-min"
+          className="w-full h-full"
           src={item.metadata.image}
           autoPlay
           loop
