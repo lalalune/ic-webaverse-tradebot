@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const StyledBagItem = styled.div`
-  ${props => {
+  ${(props) => {
     const { isDragging } = props;
     return css`
       width: 6em;
@@ -9,7 +9,8 @@ const StyledBagItem = styled.div`
       border: 0 !important;
       opacity: ${isDragging ? 0 : 1};
       cursor: grab;
-      img, video {
+      img,
+      video {
         max-width: 100%;
       }
     `;
