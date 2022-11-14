@@ -95,6 +95,10 @@ const BagItem = ({
 
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
+    canDrop(dragItem, monitor) {
+      const flag = tradeLayer !== "remote";
+      return flag;
+    },
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
