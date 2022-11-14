@@ -20,7 +20,7 @@ export const ItemDetails = () => {
     };
   }, []);
 
-  return selItem ? (
+  return selItem?.metadata?.image ? (
     <div className="absolute bottom-0 right-0 z-10 flex flex-col w-1/4 gap-1 p-4 bg-black-100">
       <div className="flex flex-col gap-1 font-bold text-red-900">
         <div>{selItem?.collection}</div>
