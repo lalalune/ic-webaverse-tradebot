@@ -4,7 +4,6 @@ const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
   import { Buffer } from 'buffer'
   globalThis.Buffer = Buffer
   window.Buffer = Buffer
-  
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
 export default (e) => {

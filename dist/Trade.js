@@ -43565,11 +43565,15 @@ const Trade = () => {
   });
 };
 globalThis.Buffer = buffer$1.Buffer;
-const canisterId = "lj532-6iaaa-aaaah-qcc7a-cai", whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai"], App = () => /* @__PURE__ */ jsx(PlugProvider, {
+const canisterId = "lj532-6iaaa-aaaah-qcc7a-cai", whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai"], App = ({
+  type: Z
+}) => /* @__PURE__ */ jsx(PlugProvider, {
   whitelist,
   children: /* @__PURE__ */ jsx("div", {
     className: "fixed top-0 bottom-0 left-0 right-0",
-    children: /* @__PURE__ */ jsx(Trade, {})
+    children: /* @__PURE__ */ jsx(Trade, {
+      type: Z
+    })
   })
 });
 export {

@@ -12,11 +12,11 @@ const canisterId = "lj532-6iaaa-aaaah-qcc7a-cai";
 // Whitelist the canister id for Plug permissions
 const whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai"];
 
-export const App = () => {
+export const App = ({type}) => {
   return (
     <PlugProvider whitelist={whitelist}>
       <div className="fixed top-0 bottom-0 left-0 right-0">
-        <Trade />
+        <Trade type={type} />
       </div>
     </PlugProvider>
   );
