@@ -5,6 +5,6 @@ const app = express();
 
 setupRoutes(app);
 
-app.listen(8510, "localhost", () =>
+app.listen(8081, "localhost", () =>
   console.log("Server started on 8510 port...")
 );

@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start:tailwind": "npx tailwindcss -i ./index.css -o ./tailwind.css --watch",
     "dev": "vite",
     "dev:webaverse": "npx serve -p 8001 --cors",
     "build": "vite build && npm run build:component",
@@ -18,20 +17,11 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
-<<<<<<< HEAD
-    "@mui/material": "^5.10.13",
-    "@psychedelic/dab-js": "^1.5.0",
-=======
     "@mui/material": "^5.10.12",
->>>>>>> lalalune/master
+    "@psychedelic/dab-js": "^1.5.0",
     "@raydeck/useplug": "^1.0.3",
     "azle": "^0.7.0",
-    "classnames": "^2.3.2",
     "react": "^18.2.0",
-<<<<<<< HEAD
-    "react-3d-viewer": "^1.0.12",
-=======
->>>>>>> lalalune/master
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
@@ -47,7 +37,6 @@
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
     "@vitejs/plugin-react": "^2.2.0",
-    "tailwindcss": "^3.2.4",
     "vite": "^3.2.0"
   }
 }

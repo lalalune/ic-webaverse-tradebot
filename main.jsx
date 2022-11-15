@@ -11,8 +11,12 @@ const whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai"];
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <PlugProvider whitelist={whitelist}>
+    {/* <PlugProvider whitelist={whitelist}>
+      <Authenticated>
+        <App />
+      </Authenticated>
       <App />
-    </PlugProvider>
+    </PlugProvider> */}
+    <App />
   </React.StrictMode>
 );

@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "backend",
+=======
+  "name": "typescript-playground",
+>>>>>>> lalalune/master
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
