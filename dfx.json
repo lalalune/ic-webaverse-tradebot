@@ -8,11 +8,7 @@
       "candid": "src/trade_canister.did",
       "wasm": "target/wasm32-unknown-unknown/release/trade_canister.wasm",
       "declarations": {
-<<<<<<< HEAD
         "output": "src/trade_canister"
-=======
-        "output": "test/dfx_generated/trade_canister"
->>>>>>> lalalune/master
       }
     }
   }

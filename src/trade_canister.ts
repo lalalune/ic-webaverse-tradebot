@@ -10,18 +10,10 @@ type Db = {
 
 type Trade = {
   id: string;
-  hostData: {
-    [id: string]: Item;
-  }
-  guestData: {
-    [id: string]: Item;
-  }
-  hostEscrow: {
-    [id: string]: Item;
-  }
-  guestEscrow: {
-    [id: string]: Item;
-  }
+  hostData: Item[];
+  guestData: Item[];
+  hostEscrow: Item[];
+  guestEscrow: Item[];
   hostAccept: boolean;
   guestAccept: boolean;
   host: Principal;
@@ -54,10 +46,10 @@ export function create_trade(): Update<Trade> {
 
   const trade = {
     id,
-    hostData: {},
-    guestData: {},
-    hostEscrow: {},
-    guestEscrow: {},
+    hostData: [],
+    guestData: [],
+    hostEscrow: [],
+    guestEscrow: [],
     hostAccept: false,
     guestAccept: false,
     host: ic.caller(),
@@ -122,9 +114,11 @@ export function add_item_to_trade(id: string, item: Item): Update<Trade> {
   const trade = db.trades[id];
   // check if the ic.caller() is the host or guest
   if (ic.caller() === trade.host) {
-    trade.hostData[item.name] = item;
+    trade.hostData.push(item);
+    db.trades[id] = trade;
   } else if (ic.caller() === trade.guest) {
-    trade.guestData[item.name] = item;
+    trade.guestData.push(item);
+    db.trades[id] = trade;
   }
   return trade;
 }
@@ -133,11 +127,11 @@ export function remove_item_from_trade(id: string, item: Item): Update<Trade> {
   const trade = db.trades[id];
   // check if the ic.caller() is the host or guest
   if (ic.caller() === trade.host) {
-    if(trade.hostData[item.name])
-      delete trade.hostData[item.name];
+    trade.hostData.splice(trade.hostData.indexOf(item));
+    db.trades[id] = trade;
   } else if (ic.caller() === trade.guest) {
-    if(trade.guestData[item.name])
-      delete trade.guestData[item.name];
+    trade.guestData.splice(trade.guestData.indexOf(item));
+    db.trades[id] = trade;
   }
   return trade;
 }
@@ -148,9 +142,9 @@ export function add_item_to_escrow(id: string, item: Item): Update<Trade> {
   const trade = db.trades[id];
   // check if the ic.caller() is the host or guest
   if (ic.caller() === trade.host) {
-    trade.hostEscrow[item.name] = item;
+    trade.hostEscrow.push(item);
   } else if (ic.caller() === trade.guest) {
-    trade.guestEscrow[item.name] = item;
+    trade.guestEscrow.push(item);
   }
 
   if (trade.hostEscrow === trade.hostData && trade.guestEscrow === trade.guestData) {
@@ -169,11 +163,9 @@ export function remove_item_from_escrow(id: string, item: Item): Update<Trade> {
 
   // check if the ic.caller() is the host or guest
   if (ic.caller() === trade.host && trade.guestEscrow !== trade.guestData) {
-    if(trade.hostEscrow[item.name])
-      delete trade.hostEscrow[item.name];
+    trade.hostEscrow = trade.hostEscrow.filter(i => i !== item);
   } else if (ic.caller() === trade.guest && trade.hostEscrow !== trade.hostData) {
-    if(trade.guestEscrow[item.name])
-      delete trade.guestEscrow[item.name];
+    trade.guestEscrow = trade.guestEscrow.filter(i => i !== item);
   }
   return trade;
 }
@@ -181,9 +173,9 @@ export function remove_item_from_escrow(id: string, item: Item): Update<Trade> {
 export function get_escrow_items(id: string): Query<Item[]> {
   const trade = db.trades[id];
   if (ic.caller() === trade.host) {
-    return Object.values(trade.guestEscrow);
+    return trade.guestEscrow;
   } else if (ic.caller() === trade.guest) {
-    return Object.values(trade.hostEscrow);
+    return trade.hostEscrow;
   }
   return [];
 }
@@ -191,9 +183,9 @@ export function get_escrow_items(id: string): Query<Item[]> {
 export function get_escrow_items_self(id: string): Query<Item[]> {
   const trade = db.trades[id];
   if (ic.caller() === trade.guest) {
-    return Object.values(trade.guestEscrow);
+    return trade.guestEscrow;
   } else if (ic.caller() === trade.host) {
-    return Object.values(trade.hostEscrow);
+    return trade.hostEscrow;
   }
   return [];
 }
@@ -204,9 +196,9 @@ export function withdraw_from_escrow(id: string, item: Item): Update<Item> {
   if (trade.fulfilled) {
     // TODO: the asset is returned to the user
     if (ic.caller() === trade.host) {
-      claimedItem = trade.guestEscrow[item.name];
+      claimedItem = trade.guestEscrow.find(i => i === item);
     } else if (ic.caller() === trade.guest) {
-      claimedItem = trade.hostEscrow.find[item.name];
+      claimedItem = trade.hostEscrow.find(i => i === item);
     }
   }
 

@@ -18,26 +18,21 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
-<<<<<<< HEAD
     "@mui/material": "^5.10.13",
     "@psychedelic/dab-js": "^1.5.0",
-=======
-    "@mui/material": "^5.10.12",
->>>>>>> lalalune/master
     "@raydeck/useplug": "^1.0.3",
     "azle": "^0.7.0",
     "classnames": "^2.3.2",
+    "esbuild-plugin-inline-image": "^0.0.8",
     "react": "^18.2.0",
-<<<<<<< HEAD
     "react-3d-viewer": "^1.0.12",
-=======
->>>>>>> lalalune/master
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
     "react-scripts": "3.3.0",
     "react-tooltip": "^3.11.2",
+    "rollup-plugin-polyfill-node": "^0.11.0",
     "styled-components": "^4.4.1",
     "three": "^0.146.0",
     "uuid": "^3.3.3",

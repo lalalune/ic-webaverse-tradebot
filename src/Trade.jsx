@@ -289,6 +289,11 @@ export const Trade = () => {
       return () => clearInterval(interval);
     }, [plugActor, tradeData, partner]);
   
+    const connect = async () => {
+      console.log('connecting...')
+      login();
+    }
+
 
   const startTrade = async () => {
     updateLoading(true);
@@ -340,7 +345,7 @@ export const Trade = () => {
         {!authenticated && (
             <Frame className="absolute w-full h-full">
               <div className="flex items-center justify-center w-full h-full">
-                <Button variant="contained" onClick={login}>
+                <Button variant="contained" onClick={connect}>
                   Connect
                 </Button>
               </div>

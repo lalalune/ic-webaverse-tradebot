@@ -1,7 +1,7 @@
 {
   "name": "trade-console",
   "description": "trade-console",
-  "start_url": "index.js",
+  "start_url": "trade.react",
   "components": {
     "activate": true
   }

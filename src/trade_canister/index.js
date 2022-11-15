@@ -5,7 +5,7 @@ import { idlFactory } from "./trade_canister.did.js";
 export { idlFactory } from "./trade_canister.did.js";
 
 // CANISTER_ID is replaced by webpack based on node environment
-export const canisterId = import.meta.env.TRADE_CANISTER_CANISTER_ID;
+export const canisterId = process.env.TRADE_CANISTER_CANISTER_ID;
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });
@@ -17,7 +17,7 @@ export const createActor = (canisterId, options = {}) => {
   }
 
   // Fetch root key for certificate validation during development
-  if (import.meta.env.DFX_NETWORK !== "ic") {
+  if (process.env.DFX_NETWORK !== "ic") {
     agent.fetchRootKey().catch((err) => {
       console.warn(
         "Unable to fetch root key. Check to ensure that your local replica is running"
@@ -33,3 +33,5 @@ export const createActor = (canisterId, options = {}) => {
     ...options.actorOptions,
   });
 };
+
+export const trade_canister = createActor(canisterId);

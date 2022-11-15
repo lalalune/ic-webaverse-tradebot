@@ -1,7 +1,10 @@
 import metaversefile from "metaversefile";
 const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
-
+  import { Buffer } from 'buffer'
+  globalThis.Buffer = Buffer
+  window.Buffer = Buffer
+  
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
 export default (e) => {
@@ -82,7 +85,7 @@ export default (e) => {
       app.add(o);
 
       {
-        const u = `${baseUrl}trade.react`;
+        const u = `${import.meta.url}trade.react`;
         reactApp = await metaversefile.createAppAsync({
           start_url: u,
         });
