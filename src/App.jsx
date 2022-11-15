@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+globalThis.Buffer = Buffer
 import React from "react";
 
 import { Trade } from "./Trade";
