@@ -58,9 +58,8 @@ export const getUserTokens = async ({ agent, user }) => {
   // });
 
   collections.forEach((collection) => {
-    if (collection.name.toLowerCase().includes("cipher")) {
+    if (!collection.name.toLowerCase().includes("cipher")) {
       collection.tokens.forEach((token) => {
-        if (token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
           const jsonMetadata = token.metadata?.json?.value.TextContent;
 
           if (jsonMetadata) {
@@ -77,7 +76,6 @@ export const getUserTokens = async ({ agent, user }) => {
 
           newTokens[slot] = { ...token, id: slot };
           slot++;
-        }
       });
     }
   });
