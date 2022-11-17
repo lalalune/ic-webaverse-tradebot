@@ -4,6 +4,7 @@ export const idlFactory = ({ IDL }) => {
     'url' : IDL.Text,
     'collection' : IDL.Text,
     'name' : IDL.Text,
+    'slot' : IDL.Nat32,
     'index' : IDL.Text,
     'canisterId' : IDL.Text,
   });

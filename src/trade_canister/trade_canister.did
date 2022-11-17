@@ -18,6 +18,7 @@ type Item = record {
     "name": text;
     "index": text;
     "url": text;
+    "slot": nat32;
 };
 
 service: {

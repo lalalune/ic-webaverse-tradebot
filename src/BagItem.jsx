@@ -48,24 +48,24 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
       isDragging={isDragging}
       onClick={handleClick}
     >
-      {isImage(item?.metadata?.image) && (
-        <img className="w-full h-full" src={item.metadata.image} />
+      {isImage(item?.url) && (
+        <img className="w-full h-full" src={item.url} />
       )}
-      {isMedia(item?.metadata?.image) && (
+      {isMedia(item?.url) && (
         <video
           className="w-full h-full"
-          src={item.metadata.image}
+          src={item.url}
           autoPlay
           loop
           muted
         />
       )}
-      {isModel(item?.metadata?.image) && (
+      {isModel(item?.url) && (
         <GLTFModel
           ref={modelRef}
           width={96}
           height={96}
-          src={item.metadata.image}
+          src={item.url}
           enabled={false}
           position={{ x: -0.15, y: -0.3, z: -0.3 }}
         />
@@ -104,14 +104,16 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      // if (!ref.current || item.canister || !plugActor || !tradeData) return; // When full item
-      if (!ref.current || item.canister || !tradeData) return; // When full item
+      // if (!ref.current || item.canisterId || !plugActor || !tradeData) return; // When full item
+      if (!ref.current || item.canisterId || !tradeData) return; // When full item
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
       const cloneDragTradeItem = clone(dragEl.item);
+      cloneDragTradeItem.slot = hoverIndex
       const cloneDragTradeBoxes = clone(dragEl.tradeBoxes);
       const cloneHoverTradeItem = clone(item);
+      cloneHoverTradeItem.slot = dragIndex
       const cloneHoverTradeBoxes = clone(tradeBoxes);
 
       console.log("cloneDragTradeItem: ", cloneDragTradeItem);
@@ -124,14 +126,7 @@ const BagItem = ({
       // Time to combine with ic
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
-          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, {
-            id: cloneDragTradeItem.id,
-            canisterId: cloneDragTradeItem.canister,
-            collection: cloneDragTradeItem.collection,
-            index: cloneDragTradeItem.index,
-            name: cloneDragTradeItem.metadata?.name,
-            url: cloneDragTradeItem.metadata?.image,
-          });
+          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, cloneDragTradeItem);
           console.log('add_item_to_trade res: ', res)
         })();
       }
@@ -159,7 +154,7 @@ const BagItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: itemTypes.LAYER1,
-    canDrag: !!item.canister,
+    canDrag: !!item.canisterId,
     item: () => {
       return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
     },

@@ -6,6 +6,7 @@ export interface Item {
   'url' : string,
   'collection' : string,
   'name' : string,
+  'slot' : number,
   'index' : string,
   'canisterId' : string,
 }

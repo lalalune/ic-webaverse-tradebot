@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import { usePlug } from "@raydeck/useplug"
 
 import { inventoryBoxNum, nullPrincipalId } from "./utils/constants"
-import { clone, existItems, getInventoryBoxes, getUserTokens } from "./utils/funcs"
+import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
 import { useStore } from "./utils/store"
 import { trade_canister } from "./trade_canister/index"
 
@@ -65,6 +65,7 @@ export const Trade = () => {
       // console.log("balance: ", balance)
       const newTokens = await getUserTokens({ agent, user })
       inventoryTokens = clone(newTokens)
+      console.log('newTokens: ', newTokens)
       setLocalUser(user)
       setInventoryBoxes(getInventoryBoxes(newTokens))
       if (tradeId) {
@@ -125,6 +126,18 @@ export const Trade = () => {
         console.log('trade partner found(host): ', host)
         await plugActor.join_trade(localUser, curTradeId)
         updatePartner(host)
+      }
+
+      if (isCreator) {
+        const rb = getRemoteBoxes(tradeData.guestData)
+        console.log('guestData: ', tradeData.guestData)
+        console.log('remoteBoxes: ', rb)
+        setRemoteBoxes(rb)
+      } else {
+        const rb = getRemoteBoxes(tradeData.hostData)
+        console.log('hostData: ', tradeData.hostData)
+        console.log('remoteBoxes: ', rb)
+        setRemoteBoxes(rb)
       }
 
       setLoading(false)

@@ -1,4 +1,4 @@
-import { inventoryBoxNum } from "./constants";
+import { inventoryBoxNum, tradeBoxNum } from "./constants";
 import { getAllUserNFTs } from "@psychedelic/dab-js";
 
 export const clone = (obj) => {
@@ -13,48 +13,55 @@ export const clone = (obj) => {
   return cloneObj;
 };
 
+export const getRemoteBoxes = (remoteItems) => {
+  const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return { id: i, item: remoteItems.find(item => item.slot === i) ?? null };
+  });
+  return remoteBoxes;
+};
+
+export const getLocalBoxes = (localItems) => {
+  const localBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return { id: i, item: localItems.find(item => item.slot === i) ?? null };
+  });
+  return localBoxes;
+};
+
 export const getInventoryBoxes = (inventoryItems) => {
   const inventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
-    return { id: i, type: "all", item: inventoryItems[i] ?? null };
+    return { id: i, item: inventoryItems.find(item => item.slot === i) ?? null };
   });
-  // console.log("inventoryBoxes: ", inventoryBoxes);
   return inventoryBoxes;
 };
 
 export const getUserTokens = async ({ agent, user }) => {
   return [
     {
-      id: '0',
-      canister: "canister 1",
+      id: '1',
+      canisterId: "canister 1",
       collection: "collection 1",
       index: "1",
-      metadata: {
-        name: "token 1",
-        image: "assets/armor.png",
-      },
-      url: "",
-    },
-    {
-      id: '1',
-      canister: "canister 2",
-      collection: "collection 2",
-      index: "2",
-      metadata: {
-        name: "token 2",
-        image: "assets/bastard-sword.png",
-      },
-      url: "",
+      name: "token 1",
+      url: "assets/armor.png",
+      slot: 0,
     },
     {
       id: '2',
-      canister: "canister 3",
+      canisterId: "canister 2",
+      collection: "collection 2",
+      index: "2",
+      name: "token 2",
+      url: "assets/bastard-sword.png",
+      slot: 2,
+    },
+    {
+      id: '3',
+      canisterId: "canister 3",
       collection: "collection 3",
       index: "3",
-      metadata: {
-        name: "token 3",
-        image: "models/chest.glb",
-      },
-      url: "",
+      name: "token 3",
+      url: "models/chest.glb",
+      slot: 4,
     },
   ];
 
@@ -86,7 +93,7 @@ export const getUserTokens = async ({ agent, user }) => {
   //           };
   //         }
 
-  //         newTokens[slot] = { ...token, id: slot };
+  //         newTokens[slot] = { ...token, id: slot, slot };
   //         slot++;
   //       }
   //     });
@@ -111,7 +118,7 @@ export const getUserTokens = async ({ agent, user }) => {
             };
           }
 
-          newTokens[slot] = { ...token, id: slot.toString() };
+          newTokens[slot] = { ...token, id: slot.toString(), slot };
           slot++;
         }
       });
@@ -172,7 +179,7 @@ export const isModel = (url) => {
 
 export const existItems = boxes => {
   if (!boxes || !boxes.length) return false
-  const flag = !!(boxes.filter(box => box?.item?.canister).length)
+  const flag = !!(boxes.filter(box => box?.item?.canisterId).length)
   // console.log('existItems: ', flag)
   return flag
 }

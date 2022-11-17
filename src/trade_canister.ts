@@ -1,5 +1,4 @@
-import { Query, Update } from 'azle'
-import { ItemDetails } from './ItemDetails'
+import { Query, Update, nat32 } from 'azle'
 
 const nullPrincipalId = 'null-principal-id'
 
@@ -29,6 +28,7 @@ type Item = {
   name: string
   index: string
   url: string
+  slot: nat32
 }
 
 let db: Db = {
@@ -195,5 +195,5 @@ export function withdraw_from_escrow(caller: string, tradeId: string, itemId: st
     }
   }
 
-  return claimedItem ?? { id: itemId, canisterId: '', collection: '', name: '', index: '', url: '' }
+  return claimedItem ?? { id: itemId, canisterId: '', collection: '', name: '', index: '', url: '', slot: 0 }
 }
