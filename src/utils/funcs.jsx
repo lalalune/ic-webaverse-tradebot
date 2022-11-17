@@ -166,3 +166,10 @@ export const isModel = (url) => {
   const flag = modelExtensions.indexOf(extension) >= 0;
   return flag;
 };
+
+export const existItems = boxes => {
+  if (!boxes || !boxes.length) return false
+  const flag = !!(boxes.filter(box => box?.item?.canister).length)
+  console.log('existItems: ', flag)
+  return flag
+}

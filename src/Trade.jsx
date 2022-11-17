@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import { usePlug } from "@raydeck/useplug"
 
 import { inventoryBoxNum, nullPrincipalId } from "./utils/constants"
-import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs"
+import { clone, existItems, getInventoryBoxes, getUserTokens } from "./utils/funcs"
 import { useStore } from "./utils/store"
 import { trade_canister } from "./trade_canister/index"
 
@@ -65,18 +65,18 @@ export const Trade = () => {
       inventoryTokens = clone(newTokens)
       setLocalUser(user)
       setInventoryBoxes(getInventoryBoxes(newTokens))
-      setLoading(false)
       if (tradeId) {
         startTrade()
       }
+      setLoading(false)
     })()
   }, [principal])
 
   useEffect(() => {
     (async () => {
       if (!plugActor || !localUser) return
-      console.log('plugActor: ', plugActor)
       setLoading(true)
+      console.log('plugActor: ', plugActor)
       let trade
 
       if (tradeId) {
@@ -114,12 +114,12 @@ export const Trade = () => {
         )
       }
 
-      if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host) {
+      if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host && guest !== partner) {
         console.log('trade partner found(guest): ', guest)
         setPartner(guest)
       }
 
-      if (!isCreator && host !== nullPrincipalId && host !== localUser) {
+      if (!isCreator && host !== nullPrincipalId && host !== localUser && host !== partner) {
         console.log('trade partner found(host): ', host)
         await plugActor.join_trade(localUser, curTradeId)
         setPartner(host)
@@ -257,7 +257,7 @@ export const Trade = () => {
                   <Button
                     variant="contained"
                     onClick={onAccept}
-                    disabled={accepted}
+                    disabled={accepted || !existItems(localBoxes)}
                     color="success"
                   >
                     Accept
@@ -274,7 +274,7 @@ export const Trade = () => {
                   <Button
                     variant="contained"
                     onClick={onCancel}
-                    disabled={!accepted}
+                    disabled={!accepted && existItems(localBoxes)}
                     color="error"
                   >
                     Cancel
