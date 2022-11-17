@@ -6,8 +6,8 @@ type Trade = record {
     "guestEscrow": vec Item;
     "hostAccept": bool;
     "guestAccept": bool;
-    "host": principal;
-    "guest": principal;
+    "host": text;
+    "guest": text;
     "fulfilled": bool;
 };
 
@@ -20,19 +20,19 @@ type Item = record {
 };
 
 service: {
-    "get_trade_by_id": (text) -> (opt Trade) query;
+    "get_trade_by_id": (text) -> (Trade) query;
     "get_all_trades": () -> (vec Trade) query;
-    "get_escrow_items": (text) -> (vec Item) query;
-    "get_escrow_items_self": (text) -> (vec Item) query;
-    "create_trade": () -> (Trade);
-    "accept": (text) -> (Trade);
-    "cancel": (text) -> (Trade);
+    "get_escrow_items": (text, text) -> (vec Item) query;
+    "get_escrow_items_self": (text, text) -> (vec Item) query;
+    "create_trade": (text) -> (Trade);
+    "accept": (text, text) -> (Trade);
+    "cancel": (text, text) -> (Trade);
     "delete_trade": (text) -> (Trade);
-    "join_trade": (text) -> (Trade);
-    "leave_trade": (text) -> (Trade);
-    "add_item_to_trade": (text, Item) -> (Trade);
-    "remove_item_from_trade": (text, Item) -> (Trade);
-    "add_item_to_escrow": (text, Item) -> (Trade);
-    "remove_item_from_escrow": (text, Item) -> (Trade);
-    "withdraw_from_escrow": (text, Item) -> (Item);
+    "join_trade": (text, text) -> (Trade);
+    "leave_trade": (text, text) -> (Trade);
+    "add_item_to_trade": (text, text, Item) -> (Trade);
+    "remove_item_from_trade": (text, text, Item) -> (Trade);
+    "add_item_to_escrow": (text, text, Item) -> (Trade);
+    "remove_item_from_escrow": (text, text, Item) -> (Trade);
+    "withdraw_from_escrow": (text, text, Item) -> (Item);
 }

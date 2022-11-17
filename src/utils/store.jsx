@@ -21,8 +21,17 @@ const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
 });
 
 export const useStore = create((set) => ({
+  plugActor: null,
+  setPlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
+
   isCreator: false,
   setIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
+
+  localUser: null,
+  setLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
+
+  partner: null,
+  setPartner: (newVal) => set((state) => ({ partner: newVal })),
 
   curTradeId: null,
   setCurTradeId: (newVal) => set((state) => ({ curTradeId: newVal })),
@@ -43,12 +52,6 @@ export const useStore = create((set) => ({
   setInventoryBoxes: (newVal) =>
     set((state) => ({ inventoryBoxes: newVal })),
 
-  partner: null,
-  setPartner: (newVal) => set((state) => ({ partner: newVal })),
-
-  plugActor: null,
-  setPlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
-
   accepted: false,
   setAccepted: (newVal) => set((state) => ({ accepted: newVal })),
 
@@ -63,7 +66,4 @@ export const useStore = create((set) => ({
 
   loading: false,
   setLoading: (newVal) => set((state) => ({ loading: newVal })),
-
-  localUser: null,
-  setLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
 }));
