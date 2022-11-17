@@ -1,8 +1,15 @@
 {
   "canisters": {
-    "hello_backend": {
-      "main": "src/hello_backend/main.mo",
-      "type": "motoko"
+    "trade_canister": {
+      "type": "custom",
+      "build": "npx azle trade_canister",
+      "root": "src",
+      "ts": "src/trade_canister.ts",
+      "candid": "src/trade_canister.did",
+      "wasm": "target/wasm32-unknown-unknown/release/trade_canister.wasm",
+      "declarations": {
+        "output": "src/trade_canister"
+      }
     }
   }
 }

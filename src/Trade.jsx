@@ -8,7 +8,7 @@ import { usePlug } from "@raydeck/useplug";
 import { inventoryBoxNum } from "./utils/constants";
 import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
 import { useStore } from "./utils/store";
-import { idlFactory, hello_backend } from "./declarations/hello_backend";
+import { idlFactory } from "./trade_canister/trade_canister.did.js";
 
 import Frame from "./Frame";
 import RemoteBox from "./RemoteBox";
@@ -153,13 +153,12 @@ export const Trade = () => {
 
   const startTrade = async () => {
     updateLoading(true);
-    // const actor = await window.ic.plug.createActor({
-    //   canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-    //   interfaceFactory: idlFactory,
-    // });
-    // console.log('actor: ', actor)
-    // updatePlugActor(actor);
-    const trade = await hello_backend.greet('name');
+    const actor = await window.ic.plug.createActor({
+      canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
+      interfaceFactory: idlFactory,
+    });
+    updatePlugActor(actor);
+    const trade = await actor.create_trade();
     console.log("new trade: ", trade);
     updateTradeData(trade);
     // updateTradeData({});
