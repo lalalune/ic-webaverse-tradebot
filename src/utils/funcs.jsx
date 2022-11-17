@@ -52,7 +52,7 @@ export const getUserTokens = async ({ agent, user }) => {
       index: "2",
       name: "token 2",
       url: "assets/bastard-sword.png",
-      slot: 2,
+      slot: 1,
     },
     {
       id: '3',
@@ -61,7 +61,7 @@ export const getUserTokens = async ({ agent, user }) => {
       index: "3",
       name: "token 3",
       url: "models/chest.glb",
-      slot: 4,
+      slot: 2,
     },
   ];
 
@@ -75,50 +75,23 @@ export const getUserTokens = async ({ agent, user }) => {
   const newTokens = {};
   let slot = 0;
 
-  // collections.forEach((collection) => {
-  //   if (!collection.name.toLowerCase().includes("cipher")) {
-  //     collection.tokens.forEach((token) => {
-  //       if (!token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
-  //         const jsonMetadata = token.metadata?.json?.value.TextContent;
-
-  //         if (jsonMetadata) {
-  //           const parseMetadata = JSON.parse(jsonMetadata);
-  //           if (parseMetadata.animation_url)
-  //             parseMetadata.image = parseMetadata.animation_url;
-  //           token.metadata = parseMetadata;
-  //         } else {
-  //           token.metadata = {
-  //             name: token.collection,
-  //             image: token.url,
-  //           };
-  //         }
-
-  //         newTokens[slot] = { ...token, id: slot, slot };
-  //         slot++;
-  //       }
-  //     });
-  //   }
-  // });
-
   collections.forEach((collection) => {
-    if (collection.name.toLowerCase().includes("cipher")) {
+    if (!collection.name.toLowerCase().includes("cipher")) {
       collection.tokens.forEach((token) => {
-        if (token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
+        if (!token.canister.includes("6hgw2-nyaaa-aaaai-abkqq-cai")) {
+          let newToken = { id: slot.toString(), canisterId: token.canister, collection: token.collection, index: token.index.toString(), slot }
           const jsonMetadata = token.metadata?.json?.value.TextContent;
 
           if (jsonMetadata) {
             const parseMetadata = JSON.parse(jsonMetadata);
-            if (parseMetadata.animation_url)
-              parseMetadata.image = parseMetadata.animation_url;
-            token.metadata = parseMetadata;
+            newToken.name = parseMetadata.name
+            newToken.url = parseMetadata.animation_url ?? parseMetadata.image
           } else {
-            token.metadata = {
-              name: token.collection,
-              image: token.url,
-            };
+            newToken.name = token.collection
+            newToken.url = token.url
           }
 
-          newTokens[slot] = { ...token, id: slot.toString(), slot };
+          newTokens[slot] = newToken
           slot++;
         }
       });

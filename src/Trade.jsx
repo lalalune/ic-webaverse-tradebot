@@ -65,7 +65,6 @@ export const Trade = () => {
       // console.log("balance: ", balance)
       const newTokens = await getUserTokens({ agent, user })
       inventoryTokens = clone(newTokens)
-      console.log('newTokens: ', newTokens)
       setLocalUser(user)
       setInventoryBoxes(getInventoryBoxes(newTokens))
       if (tradeId) {
