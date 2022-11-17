@@ -12,9 +12,11 @@ type Trade = record {
 };
 
 type Item = record {
+    "canisterId": text;
+    "collection": text;
     "name": text;
-    "canisterId": principal;
-    "tokenId": int;
+    "index": text;
+    "url": text;
 };
 
 service: {

@@ -22,45 +22,48 @@ const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
 
 export const useStore = create((set) => ({
   isCreator: false,
-  updateIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
+  setIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
+
+  curTradeId: null,
+  setCurTradeId: (newVal) => set((state) => ({ curTradeId: newVal })),
 
   tradeData: null,
-  updateTradeData: (newVal) => set((state) => ({ tradeData: newVal })),
+  setTradeData: (newVal) => set((state) => ({ tradeData: newVal })),
 
-  existTrade: false,
-  updateExistTrade: (newVal) => set((state) => ({ existTrade: newVal })),
+  tradeStarted: false,
+  setTradeStarted: (newVal) => set((state) => ({ tradeStarted: newVal })),
 
   remoteBoxes: clone(initRemoteBoxes),
-  updateRemoteBoxes: (newVal) => set((state) => ({ remoteBoxes: newVal })),
+  setRemoteBoxes: (newVal) => set((state) => ({ remoteBoxes: newVal })),
 
   localBoxes: clone(initLocalBoxes),
-  updateLocalBoxes: (newVal) => set((state) => ({ localBoxes: newVal })),
+  setLocalBoxes: (newVal) => set((state) => ({ localBoxes: newVal })),
 
   inventoryBoxes: initInventoryBoxes,
-  updateInventoryBoxes: (newVal) =>
+  setInventoryBoxes: (newVal) =>
     set((state) => ({ inventoryBoxes: newVal })),
 
   partner: null,
-  updatePartner: (newVal) => set((state) => ({ partner: newVal })),
+  setPartner: (newVal) => set((state) => ({ partner: newVal })),
 
   plugActor: null,
-  updatePlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
+  setPlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
 
   accepted: false,
-  updateAccepted: (newVal) => set((state) => ({ accepted: newVal })),
+  setAccepted: (newVal) => set((state) => ({ accepted: newVal })),
 
   boxNumPerPage: pageBoxNum,
-  updateBoxNumPerPage: (newVal) => set((state) => ({ boxNumPerPage: newVal })),
+  setBoxNumPerPage: (newVal) => set((state) => ({ boxNumPerPage: newVal })),
 
   curPage: 1,
-  updateCurPage: (newVal) => set((state) => ({ curPage: newVal })),
+  setCurPage: (newVal) => set((state) => ({ curPage: newVal })),
 
   selItem: null,
-  updateSelItem: (newVal) => set((state) => ({ selItem: newVal })),
+  setSelItem: (newVal) => set((state) => ({ selItem: newVal })),
 
   loading: false,
-  updateLoading: (newVal) => set((state) => ({ loading: newVal })),
+  setLoading: (newVal) => set((state) => ({ loading: newVal })),
 
   localUser: null,
-  updateLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
+  setLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
 }));

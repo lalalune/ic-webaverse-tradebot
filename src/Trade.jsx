@@ -1,198 +1,160 @@
-import React, { useEffect } from "react";
-import { Button } from "@mui/material";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { Principal } from "@dfinity/principal";
-import { usePlug } from "@raydeck/useplug";
+import React, { useEffect } from "react"
+import { Button } from "@mui/material"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { Principal } from "@dfinity/principal"
+import { usePlug } from "@raydeck/useplug"
 
-import { inventoryBoxNum } from "./utils/constants";
-import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
-import { useStore } from "./utils/store";
-import { idlFactory, trade_canister } from "./trade_canister/index";
+import { inventoryBoxNum, nullPrincipal } from "./utils/constants"
+import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs"
+import { useStore } from "./utils/store"
+import { trade_canister } from "./trade_canister/index"
 
-import Frame from "./Frame";
-import RemoteBox from "./RemoteBox";
-import BagBox from "./BagBox";
-import BagItem from "./BagItem";
-import { Loading } from "./Loading";
-import { ItemDetails } from "./ItemDetails";
+import Frame from "./Frame"
+import RemoteBox from "./RemoteBox"
+import BagBox from "./BagBox"
+import BagItem from "./BagItem"
+import { Loading } from "./Loading"
+import { ItemDetails } from "./ItemDetails"
 
-
-const nullPartner = Principal.fromUint8Array(
-  new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
-).toText();
-const nullPrincipal = "rrkah-fqaaa-aaaaa-aaaaq-cai";
-const url = new URL(window.location.href);
-let inventoryTokens = [];
-const tradeId = url.searchParams.get("tradeId");
-console.log("tradeId: ", tradeId);
+const url = new URL(window.location.href)
+let inventoryTokens = []
+const tradeId = url.searchParams.get("tradeId")
+tradeId && console.log("I'm joiner. tradeId: ", tradeId)
 
 export const Trade = () => {
-  // principal is a byte array that should be converted to a string
-  // convert using a browser-friendly es6 method
-  const { authenticated, principal, login, agent } = usePlug();
+  const { authenticated, principal, login, agent } = usePlug()
   const {
     isCreator,
-    updateIsCreator,
+    setIsCreator,
     tradeData,
-    updateTradeData,
+    setTradeData,
     remoteBoxes,
-    updateRemoteBoxes,
+    setRemoteBoxes,
     localBoxes,
-    updateLocalBoxes,
+    setLocalBoxes,
     inventoryBoxes,
-    updateInventoryBoxes,
+    setInventoryBoxes,
     partner,
-    updatePartner,
+    setPartner,
     plugActor,
-    updatePlugActor,
-    existTrade,
-    updateExistTrade,
+    setPlugActor,
+    tradeStarted,
+    setTradeStarted,
     accepted,
-    updateAccepted,
+    setAccepted,
     boxNumPerPage,
-    updateBoxNumPerPage,
     curPage,
-    updateCurPage,
-    loading,
-    updateLoading,
-    updateLocalUser,
-  } = useStore();
+    setCurPage,
+    setLoading,
+    setLocalUser,
+    curTradeId,
+    setCurTradeId,
+  } = useStore()
+  const principalString = principal ? window.ic.plug.principalId : "<none>"
 
-  const principalString = principal ? window.ic.plug.principalId : "<none>";
+  useEffect(() => {
+    setPlugActor(trade_canister)
+  }, [])
+
+  useEffect(() => {
+    if (!principal) return
+    (async () => {
+      setLoading(true)
+      const user = window.ic.plug.principalId
+      console.log("user: ", user)
+      // const balance = await window.ic.plug.requestBalance()
+      // console.log("balance: ", balance)
+      const newTokens = await getUserTokens({ agent, user })
+      inventoryTokens = clone(newTokens)
+      setLocalUser(user)
+      setInventoryBoxes(getInventoryBoxes(newTokens))
+      setLoading(false)
+    })()
+  }, [principal])
 
   useEffect(() => {
     (async () => {
-      // If tradeId is not null, then we are in a trade
+      let trade
+
       if (tradeId) {
-        updateLoading(true);
-        const actor = await window.ic.plug.createActor({
-          canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-          interfaceFactory: idlFactory,
-        });
-        updatePlugActor(trade_canister);
-        const trade = await trade_canister.get_trade_by_id(tradeId);
-        console.log("get_trade_by_id trade: ", trade);
-        updateTradeData(trade);
-        updateIsCreator(false);
-        const guest = Principal.fromUint8Array(trade[0].guest._arr).toText();
-        console.log("get_trade_by_id guest: ", guest);
-        const host = Principal.fromUint8Array(trade[0].host._arr).toText();
-        console.log("get_trade_by_id host: ", host);
-
-        if (
-          guest !== null &&
-          guest !== "" &&
-          guest !== nullPrincipal &&
-          guest !== nullPartner
-        ) {
-          if (guest !== principal) {
-            return console.error(
-              "Trade already initialized to another wallet! guest: ",
-              guest
-            );
-          }
-        }
-
-        if (
-          host !== null &&
-          host !== "" &&
-          host !== nullPrincipal &&
-          host !== nullPartner
-        ) {
-          console.log("Trade partner found! host: ", host);
-          updatePartner(host);
-        }
-
-        const tradeJoined = await actor.join_trade(tradeId);
-        console.log("tradeJoined: ", tradeJoined);
-        updateExistTrade(true);
-        console.log("***** TRADE DETECTED *****");
-        updateLoading(false);
+        console.log("***** TRADE DETECTED *****")
+        trade = await plugActor.get_trade_by_id(tradeId)
+        setIsCreator(false)
+      } else {
+        trade = await plugActor.create_trade()
+        setIsCreator(true)
       }
-    })();
-  }, []);
+
+      setCurTradeId(trade.id)
+      setTradeData(trade)
+      setTradeStarted(true)
+    })()
+  }, [plugActor])
 
   useEffect(() => {
-    if (!principal) return;
     (async () => {
-      updateLoading(true);
-      const user = window.ic.plug.principalId;
-      console.log("user: ", user);
-      // const balance = await window.ic.plug.requestBalance();
-      // console.log("balance: ", balance);
-      const newTokens = await getUserTokens({ agent, user });
-      inventoryTokens = clone(newTokens);
-      updateLocalUser(user);
-      updateInventoryBoxes(getInventoryBoxes(newTokens));
-      updateLoading(false);
-    })();
-  }, [principal]);
+      if (!plugActor && !curTradeId) return
+      setLoading(true)
+      const host = Principal.fromUint8Array(tradeData[0].host._arr).toText()
+      const guest = Principal.fromUint8Array(tradeData[0].guest._arr).toText()
+
+      if (!isCreator && guest !== nullPrincipal && guest !== principal) {
+        return console.error(
+          "Trade already initialized to another wallet: ",
+          guest
+        )
+      }
+
+      if (isCreator && guest !== nullPrincipal && guest !== principal && guest !== host) {
+        console.log('trade partner found: ', guest)
+        setPartner(guest)
+      }
+
+      if (!isCreator && host !== nullPrincipal && host !== principal) {
+        console.log('trade partner found: ', host)
+        await plugActor.join_trade(curTradeId)
+        setPartner(host)
+      }
+
+      setLoading(false)
+    })()
+  }, [tradeData])
 
   // Fetch data from IC in real time
   useEffect(() => {
-    if (!plugActor || !tradeData) return;
-    // const interval = setInterval(async () => {
-    //   const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-    //   console.log("rtTrade: ", rtTrade);
-    //   const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
+    if (!plugActor) return
 
-    //   if (
-    //     guest !== null &&
-    //     guest !== "" &&
-    //     guest !== nullPrincipal &&
-    //     guest !== nullPartner &&
-    //     partner !== guest
-    //   ) {
-    //     updatePartner(guest);
-    //     console.log("Trade partner found! guest: ", guest);
-    //   }
-
-    //   // Todo: synchronization
-    // }, 1000);
-  }, [plugActor, tradeData]);
+  }, [curTradeId])
 
   const startTrade = async () => {
-    updateLoading(true);
-    // const actor = await window.ic.plug.createActor({
-    //   canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-    //   interfaceFactory: idlFactory,
-    // });
-    // console.log('actor: ', actor)  
-    updatePlugActor(trade_canister);
-    const trade = await trade_canister.create_trade();
-    console.log("new trade: ", trade)
-    updateTradeData(trade);
-    // updateTradeData({});
-    updateIsCreator(true);
-    updateExistTrade(true);
-    updateLoading(false);
-  };
+    setPlugActor(trade_canister)
+  }
 
   const onAccept = () => {
-    if (!plugActor) return;
-    plugActor.accept(tradeData.id);
-    updateAccepted(true);
-    console.log("Trade accepted!");
-  };
+    if (!plugActor) return
+    plugActor.accept(tradeData.id)
+    setAccepted(true)
+    console.log("Trade accepted!")
+  }
 
   const onCancel = () => {
-    if (!plugActor) return;
-    plugActor.cancel(tradeData.id);
-    updateAccepted(false);
-    console.log("Trade canceled!");
-  };
+    if (!plugActor) return
+    plugActor.cancel(tradeData.id)
+    setAccepted(false)
+    console.log("Trade canceled!")
+  }
 
   const onPrevPage = () => {
-    if (curPage <= 1) return;
-    updateCurPage(curPage - 1);
-  };
+    if (curPage <= 1) return
+    setCurPage(curPage - 1)
+  }
 
   const onNextPage = () => {
-    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage);
-    if (curPage >= pageNum) return;
-    updateCurPage(curPage + 1);
-  };
+    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage)
+    if (curPage >= pageNum) return
+    setCurPage(curPage + 1)
+  }
 
   return (
     <div className="w-full h-full">
@@ -212,12 +174,12 @@ export const Trade = () => {
           {authenticated && !tradeData && (
             <Frame className="absolute w-full h-full">
               <div className="flex items-center justify-center w-full h-full">
-                {!existTrade && (
+                {!tradeStarted && (
                   <Button variant="contained" onClick={startTrade}>
                     Start Trade
                   </Button>
                 )}
-                {existTrade && !tradeData && (
+                {tradeStarted && !tradeData && (
                   <Button variant="disabled">Starting...</Button>
                 )}
               </div>
@@ -245,11 +207,11 @@ export const Trade = () => {
                             item={clone(box.item)}
                             index={index}
                             tradeBoxes={clone(remoteBoxes)}
-                            updateTradeBoxes={updateRemoteBoxes}
+                            updateTradeBoxes={setRemoteBoxes}
                             tradeLayer="remote"
                           />
                         </RemoteBox>
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -267,11 +229,11 @@ export const Trade = () => {
                             item={clone(box.item)}
                             index={index}
                             tradeBoxes={clone(localBoxes)}
-                            updateTradeBoxes={updateLocalBoxes}
+                            updateTradeBoxes={setLocalBoxes}
                             tradeLayer="local"
                           />
                         </BagBox>
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -311,11 +273,11 @@ export const Trade = () => {
                     <div className="text-2xl">Inventory</div>
                     <div className="flex items-center gap-2 text-xl">
                       <div className="cursor-pointer" onClick={onPrevPage}>
-                        &#60;
+                        &#60
                       </div>
                       <div className="text-blue-900">{curPage}</div>
                       <div className="cursor-pointer" onClick={onNextPage}>
-                        &#62;
+                        &#62
                       </div>
                     </div>
                   </div>
@@ -333,11 +295,11 @@ export const Trade = () => {
                               item={clone(box.item)}
                               index={(curPage - 1) * boxNumPerPage + index}
                               tradeBoxes={clone(inventoryBoxes)}
-                              updateTradeBoxes={updateInventoryBoxes}
+                              updateTradeBoxes={setInventoryBoxes}
                               tradeLayer="inventory"
                             />
                           </BagBox>
-                        );
+                        )
                       })}
                   </div>
                 </div>
@@ -355,7 +317,7 @@ export const Trade = () => {
                 : "Waiting for IC wallet connection..."}
               <br />
               <br />
-              {existTrade && tradeData && !partner && !tradeId && (
+              {tradeStarted && tradeData && !partner && !tradeId && (
                 <>
                   <b> WAITING FOR TRADE PARTNER... </b>
                   <br />
@@ -369,7 +331,7 @@ export const Trade = () => {
                   </a>
                 </>
               )}
-              {existTrade && tradeData && partner && (
+              {tradeStarted && tradeData && partner && (
                 <>Trading with {partner}</>
               )}
             </div>
@@ -377,5 +339,5 @@ export const Trade = () => {
         </div>
       </DndProvider>
     </div>
-  );
-};
+  )
+}

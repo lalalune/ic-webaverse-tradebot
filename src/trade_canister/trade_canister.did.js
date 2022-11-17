@@ -1,8 +1,10 @@
 export const idlFactory = ({ IDL }) => {
   const Item = IDL.Record({
-    'tokenId' : IDL.Int,
+    'url' : IDL.Text,
+    'collection' : IDL.Text,
     'name' : IDL.Text,
-    'canisterId' : IDL.Principal,
+    'index' : IDL.Text,
+    'canisterId' : IDL.Text,
   });
   const Trade = IDL.Record({
     'id' : IDL.Text,

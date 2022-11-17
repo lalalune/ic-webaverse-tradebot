@@ -10,7 +10,7 @@ import { itemTypes } from "./utils/constants";
 import StyledBagItem from "./BagItem.style";
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  const { updateSelItem } = useStore();
+  const { setSelItem } = useStore();
   const modelRef = useRef(null);
 
   const handleClick = (event) => {
@@ -19,7 +19,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
         if (window && window.openInWebaverse) {
           window.openInWebaverse(item);
         } else {
-          updateSelItem(item);
+          setSelItem(item);
         }
         break;
       case 2:
