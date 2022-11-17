@@ -149,7 +149,7 @@ export const Trade = () => {
     const interval = setInterval(async () => {
       const trade = await plugActor.get_trade_by_id(curTradeId)
       setTradeData(trade)
-    }, 1000)
+    }, 10)
     return () => {
       clearInterval(interval)
     }
