@@ -301,11 +301,11 @@ export const Trade = () => {
                     <div className="text-2xl">Inventory</div>
                     <div className="flex items-center gap-2 text-xl">
                       <div className="cursor-pointer" onClick={onPrevPage}>
-                        &#60
+                        &#60;
                       </div>
                       <div className="text-blue-900">{curPage}</div>
                       <div className="cursor-pointer" onClick={onNextPage}>
-                        &#62
+                        &#62;
                       </div>
                     </div>
                   </div>
