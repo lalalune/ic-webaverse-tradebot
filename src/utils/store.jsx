@@ -30,9 +30,6 @@ export const useStore = create((set) => ({
   localUser: null,
   setLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
 
-  partner: null,
-  setPartner: (newVal) => set((state) => ({ partner: newVal })),
-
   curTradeId: null,
   setCurTradeId: (newVal) => set((state) => ({ curTradeId: newVal })),
 

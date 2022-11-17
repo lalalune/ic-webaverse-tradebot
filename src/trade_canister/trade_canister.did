@@ -12,6 +12,7 @@ type Trade = record {
 };
 
 type Item = record {
+    "id": text;
     "canisterId": text;
     "collection": text;
     "name": text;
@@ -31,8 +32,8 @@ service: {
     "join_trade": (text, text) -> (Trade);
     "leave_trade": (text, text) -> (Trade);
     "add_item_to_trade": (text, text, Item) -> (Trade);
-    "remove_item_from_trade": (text, text, Item) -> (Trade);
+    "remove_item_from_trade": (text, text, text) -> (Trade);
     "add_item_to_escrow": (text, text, Item) -> (Trade);
-    "remove_item_from_escrow": (text, text, Item) -> (Trade);
-    "withdraw_from_escrow": (text, text, Item) -> (Item);
+    "remove_item_from_escrow": (text, text, text) -> (Trade);
+    "withdraw_from_escrow": (text, text, text) -> (Item);
 }

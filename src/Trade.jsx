@@ -20,6 +20,10 @@ const url = new URL(window.location.href)
 const tradeId = url.searchParams.get("tradeId")
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
 let inventoryTokens = []
+let partner
+const updatePartner = val => {
+  partner = val
+}
 
 export const Trade = () => {
   const { authenticated, principal, login, agent } = usePlug()
@@ -34,8 +38,6 @@ export const Trade = () => {
     setLocalBoxes,
     inventoryBoxes,
     setInventoryBoxes,
-    partner,
-    setPartner,
     plugActor,
     setPlugActor,
     tradeStarted,
@@ -104,8 +106,8 @@ export const Trade = () => {
       // const guest = Principal.fromUint8Array(tradeData.guest._arr).toText()
       const host = tradeData.host
       const guest = tradeData.guest
-      console.log('host: ', host)
-      console.log('guest: ', guest)
+      // console.log('host: ', host)
+      // console.log('guest: ', guest)
 
       if (!isCreator && guest !== nullPrincipalId && guest !== localUser) {
         return console.error(
@@ -116,13 +118,13 @@ export const Trade = () => {
 
       if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host && guest !== partner) {
         console.log('trade partner found(guest): ', guest)
-        setPartner(guest)
+        updatePartner(guest)
       }
 
       if (!isCreator && host !== nullPrincipalId && host !== localUser && host !== partner) {
         console.log('trade partner found(host): ', host)
         await plugActor.join_trade(localUser, curTradeId)
-        setPartner(host)
+        updatePartner(host)
       }
 
       setLoading(false)

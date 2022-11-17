@@ -24,34 +24,37 @@ export const getInventoryBoxes = (inventoryItems) => {
 export const getUserTokens = async ({ agent, user }) => {
   return [
     {
+      id: '0',
       canister: "canister 1",
       collection: "collection 1",
+      index: "1",
       metadata: {
         name: "token 1",
         image: "assets/armor.png",
       },
       url: "",
-      slot: 0,
     },
     {
+      id: '1',
       canister: "canister 2",
       collection: "collection 2",
+      index: "2",
       metadata: {
         name: "token 2",
         image: "assets/bastard-sword.png",
       },
       url: "",
-      slot: 1,
     },
     {
+      id: '2',
       canister: "canister 3",
       collection: "collection 3",
+      index: "3",
       metadata: {
         name: "token 3",
         image: "models/chest.glb",
       },
       url: "",
-      slot: 2,
     },
   ];
 
@@ -98,8 +101,8 @@ export const getUserTokens = async ({ agent, user }) => {
 
           if (jsonMetadata) {
             const parseMetadata = JSON.parse(jsonMetadata);
-            // if (parseMetadata.animation_url)
-            //   parseMetadata.image = parseMetadata.animation_url;
+            if (parseMetadata.animation_url)
+              parseMetadata.image = parseMetadata.animation_url;
             token.metadata = parseMetadata;
           } else {
             token.metadata = {
@@ -108,7 +111,7 @@ export const getUserTokens = async ({ agent, user }) => {
             };
           }
 
-          newTokens[slot] = { ...token, id: slot };
+          newTokens[slot] = { ...token, id: slot.toString() };
           slot++;
         }
       });
@@ -170,6 +173,6 @@ export const isModel = (url) => {
 export const existItems = boxes => {
   if (!boxes || !boxes.length) return false
   const flag = !!(boxes.filter(box => box?.item?.canister).length)
-  console.log('existItems: ', flag)
+  // console.log('existItems: ', flag)
   return flag
 }

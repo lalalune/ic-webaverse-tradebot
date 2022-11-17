@@ -85,7 +85,7 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
-  const { plugActor, tradeData } = useStore();
+  const { plugActor, tradeData, localUser } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
   // console.log("item: ", item);
@@ -124,25 +124,22 @@ const BagItem = ({
       // Time to combine with ic
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
-          // const res = await plugActor.add_item_to_trade(tradeData.id, {
-          //   name: cloneDragTradeItem.metadata.name,
-          //   canisterId: isCreator ? tradeData.host : tradeData.guest,
-          //   tokenId: cloneDragTradeItem.id,
-          // });
-          // console.log("add_item_to_trade res: ", res);
-          // const res = await plugActor.get_all_trades();
-          // console.log("get_all_trades res: ", res);
+          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, {
+            id: cloneDragTradeItem.id,
+            canisterId: cloneDragTradeItem.canister,
+            collection: cloneDragTradeItem.collection,
+            index: cloneDragTradeItem.index,
+            name: cloneDragTradeItem.metadata?.name,
+            url: cloneDragTradeItem.metadata?.image,
+          });
+          console.log('add_item_to_trade res: ', res)
         })();
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
         (async () => {
-          // const res = await plugActor.remove_item_from_trade(tradeData.id, {
-          //   name: cloneDragTradeItem.metadata.name,
-          //   canisterId: isCreator ? tradeData.host : tradeData.guest,
-          //   tokenId: cloneDragTradeItem.id,
-          // });
-          // console.log("remove_item_from_trade res: ", res);
+          const res = await plugActor.remove_item_from_trade(localUser, tradeData.id, cloneDragTradeItem.id);
+          console.log("remove_item_from_trade res: ", res);
         })();
       }
 

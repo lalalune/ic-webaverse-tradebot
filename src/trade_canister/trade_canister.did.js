@@ -1,5 +1,6 @@
 export const idlFactory = ({ IDL }) => {
   const Item = IDL.Record({
+    'id' : IDL.Text,
     'url' : IDL.Text,
     'collection' : IDL.Text,
     'name' : IDL.Text,
@@ -40,16 +41,20 @@ export const idlFactory = ({ IDL }) => {
     'join_trade' : IDL.Func([IDL.Text, IDL.Text], [Trade], []),
     'leave_trade' : IDL.Func([IDL.Text, IDL.Text], [Trade], []),
     'remove_item_from_escrow' : IDL.Func(
-        [IDL.Text, IDL.Text, Item],
+        [IDL.Text, IDL.Text, IDL.Text],
         [Trade],
         [],
       ),
     'remove_item_from_trade' : IDL.Func(
-        [IDL.Text, IDL.Text, Item],
+        [IDL.Text, IDL.Text, IDL.Text],
         [Trade],
         [],
       ),
-    'withdraw_from_escrow' : IDL.Func([IDL.Text, IDL.Text, Item], [Item], []),
+    'withdraw_from_escrow' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text],
+        [Item],
+        [],
+      ),
   });
 };
 export const init = ({ IDL }) => { return []; };

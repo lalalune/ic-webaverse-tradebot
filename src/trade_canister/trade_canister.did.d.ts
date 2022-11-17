@@ -2,6 +2,7 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface Item {
+  'id' : string,
   'url' : string,
   'collection' : string,
   'name' : string,
@@ -33,7 +34,7 @@ export interface _SERVICE {
   'get_trade_by_id' : ActorMethod<[string], Trade>,
   'join_trade' : ActorMethod<[string, string], Trade>,
   'leave_trade' : ActorMethod<[string, string], Trade>,
-  'remove_item_from_escrow' : ActorMethod<[string, string, Item], Trade>,
-  'remove_item_from_trade' : ActorMethod<[string, string, Item], Trade>,
-  'withdraw_from_escrow' : ActorMethod<[string, string, Item], Item>,
+  'remove_item_from_escrow' : ActorMethod<[string, string, string], Trade>,
+  'remove_item_from_trade' : ActorMethod<[string, string, string], Trade>,
+  'withdraw_from_escrow' : ActorMethod<[string, string, string], Item>,
 }
