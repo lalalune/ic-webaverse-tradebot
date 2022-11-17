@@ -8,7 +8,7 @@ import { usePlug } from "@raydeck/useplug";
 import { inventoryBoxNum } from "./utils/constants";
 import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
 import { useStore } from "./utils/store";
-import { idlFactory, hello_backend } from "./declarations/hello_backend";
+import { idlFactory, trade_canister } from "./trade_canister/index";
 
 import Frame from "./Frame";
 import RemoteBox from "./RemoteBox";
@@ -16,6 +16,7 @@ import BagBox from "./BagBox";
 import BagItem from "./BagItem";
 import { Loading } from "./Loading";
 import { ItemDetails } from "./ItemDetails";
+
 
 const nullPartner = Principal.fromUint8Array(
   new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
@@ -69,8 +70,8 @@ export const Trade = () => {
           canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
           interfaceFactory: idlFactory,
         });
-        updatePlugActor(actor);
-        const trade = await actor.get_trade_by_id(tradeId);
+        updatePlugActor(trade_canister);
+        const trade = await trade_canister.get_trade_by_id(tradeId);
         console.log("get_trade_by_id trade: ", trade);
         updateTradeData(trade);
         updateIsCreator(false);
@@ -157,10 +158,10 @@ export const Trade = () => {
     //   canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
     //   interfaceFactory: idlFactory,
     // });
-    // console.log('actor: ', actor)
-    // updatePlugActor(actor);
-    const trade = await hello_backend.greet('name');
-    console.log("new trade: ", trade);
+    // console.log('actor: ', actor)  
+    updatePlugActor(trade_canister);
+    const trade = await trade_canister.create_trade();
+    console.log("new trade: ", trade)
     updateTradeData(trade);
     // updateTradeData({});
     updateIsCreator(true);
@@ -230,7 +231,7 @@ export const Trade = () => {
                     <div className="text-2xl">Their Trade</div>
                     <div className="text-xl text-blue-900">
                       {(isCreator && tradeData.guestAccept) ||
-                      (!isCreator && tradeData.hostAccept)
+                        (!isCreator && tradeData.hostAccept)
                         ? "TRADE ACCEPTED"
                         : "Waiting..."}
                     </div>
