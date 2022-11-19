@@ -6,7 +6,7 @@
       "root": "src",
       "ts": "src/trade_canister.ts",
       "candid": "src/trade_canister.did",
-      "wasm": "target/wasm32-unknown-unknown/release/trade_canister.wasm",
+      "wasm": "target/wasm32-unknown-unknown/release/trade_canister.wasm.gz",
       "declarations": {
         "output": "src/trade_canister"
       }
