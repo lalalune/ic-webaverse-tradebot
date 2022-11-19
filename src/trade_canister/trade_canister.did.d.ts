@@ -8,15 +8,15 @@ export interface Item {
 }
 export interface Trade {
   'id' : string,
-  'hostEscrow' : Array<Item>,
-  'hostData' : Array<Item>,
+  'host_escrow' : Array<Item>,
+  'host_data' : Array<Item>,
   'fulfilled' : boolean,
   'host' : Principal,
-  'guestData' : Array<Item>,
-  'hostAccept' : boolean,
-  'guestEscrow' : Array<Item>,
+  'guest_data' : Array<Item>,
+  'host_accept' : boolean,
+  'guest_escrow' : Array<Item>,
   'guest' : Principal,
-  'guestAccept' : boolean,
+  'guest_accept' : boolean,
 }
 export interface _SERVICE {
   'accept' : ActorMethod<[string], Trade>,

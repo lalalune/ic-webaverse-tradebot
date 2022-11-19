@@ -118,12 +118,12 @@ export const Trade = () => {
 
     // type Trade = {
     //   id: string;
-    //   hostData: Item[];
-    //   guestData: Item[];
-    //   hostEscrow: Item[];
-    //   guestEscrow: Item[];
-    //   hostAccept: boolean;
-    //   guestAccept: boolean;
+    //   host_data: Item[];
+    //   guest_data: Item[];
+    //   host_escrow: Item[];
+    //   guest_escrow: Item[];
+    //   host_accept: boolean;
+    //   guest_accept: boolean;
     //   host: Principal;
     //   guest: Principal;
     //   fulfilled: boolean;
@@ -132,9 +132,9 @@ export const Trade = () => {
     let data = []
     // if the user is the host, update the host's inventory
     if (userIsHost) {
-      data = tradeData.hostData;
+      data = tradeData.host_data;
     } else if(userIsGuest) {
-      data = tradeData.guestData;
+      data = tradeData.guest_data;
     } else {
       throw new Error("User is not host or guest");
     }
@@ -252,13 +252,13 @@ export const Trade = () => {
       }
 
       if (isCreator) {
-        const rb = getRemoteBoxes(tradeData.guestData)
-        console.log('guestData: ', tradeData.guestData)
+        const rb = getRemoteBoxes(tradeData.guest_data)
+        console.log('guest_data: ', tradeData.guest_data)
         console.log('remoteBoxes: ', rb)
         setRemoteBoxes(rb)
       } else {
-        const rb = getRemoteBoxes(tradeData.hostData)
-        console.log('hostData: ', tradeData.hostData)
+        const rb = getRemoteBoxes(tradeData.host_data)
+        console.log('host_data: ', tradeData.host_data)
         console.log('remoteBoxes: ', rb)
         setRemoteBoxes(rb)
       }
@@ -391,8 +391,8 @@ export const Trade = () => {
                   <div className="flex items-center justify-between">
                     <div className="text-2xl">Their Trade</div>
                     <div className="text-xl text-blue-900">
-                      {(isCreator && tradeData.guestAccept) ||
-                        (!isCreator && tradeData.hostAccept)
+                      {(isCreator && tradeData.guest_accept) ||
+                        (!isCreator && tradeData.host_accept)
                         ? "TRADE ACCEPTED"
                         : ""}
                     </div>

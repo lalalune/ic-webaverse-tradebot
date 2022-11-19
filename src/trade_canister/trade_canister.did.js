@@ -6,15 +6,15 @@ export const idlFactory = ({ IDL }) => {
   });
   const Trade = IDL.Record({
     'id' : IDL.Text,
-    'hostEscrow' : IDL.Vec(Item),
-    'hostData' : IDL.Vec(Item),
+    'host_escrow' : IDL.Vec(Item),
+    'host_data' : IDL.Vec(Item),
     'fulfilled' : IDL.Bool,
     'host' : IDL.Principal,
-    'guestData' : IDL.Vec(Item),
-    'hostAccept' : IDL.Bool,
-    'guestEscrow' : IDL.Vec(Item),
+    'guest_data' : IDL.Vec(Item),
+    'host_accept' : IDL.Bool,
+    'guest_escrow' : IDL.Vec(Item),
     'guest' : IDL.Principal,
-    'guestAccept' : IDL.Bool,
+    'guest_accept' : IDL.Bool,
   });
   return IDL.Service({
     'accept' : IDL.Func([IDL.Text], [Trade], []),
