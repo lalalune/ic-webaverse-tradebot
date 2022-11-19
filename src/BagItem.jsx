@@ -102,8 +102,8 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      // if (!ref.current || item.canisterId || !plugActor || !tradeData) return; // When full item
-      if (!ref.current || item.canisterId || !tradeData) return; // When full item
+      // if (!ref.current || item.canister_id || !plugActor || !tradeData) return; // When full item
+      if (!ref.current || item.canister_id || !tradeData) return; // When full item
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
@@ -152,7 +152,7 @@ const BagItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: itemTypes.LAYER1,
-    canDrag: !!item.canisterId,
+    canDrag: !!item.canister_id,
     item: () => {
       return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
     },

@@ -38,7 +38,7 @@ export const getUserTokens = async ({ agent, user }) => {
   // return [
   //   {
   //     id: '1',
-  //     canisterId: "canister 1",
+  //     canister_id: "canister 1",
   //     collection: "collection 1",
   //     index: "1",
   //     name: "token 1",
@@ -47,7 +47,7 @@ export const getUserTokens = async ({ agent, user }) => {
   //   },
   //   {
   //     id: '2',
-  //     canisterId: "canister 2",
+  //     canister_id: "canister 2",
   //     collection: "collection 2",
   //     index: "2",
   //     name: "token 2",
@@ -56,7 +56,7 @@ export const getUserTokens = async ({ agent, user }) => {
   //   },
   //   {
   //     id: '3',
-  //     canisterId: "canister 3",
+  //     canister_id: "canister 3",
   //     collection: "collection 3",
   //     index: "3",
   //     name: "token 3",
@@ -78,7 +78,7 @@ export const getUserTokens = async ({ agent, user }) => {
   collections.forEach((collection) => {
     if (!collection.name.toLowerCase().includes("cipher")) {
       collection.tokens.forEach((token) => {
-          let newToken = { id: slot.toString(), canisterId: token.canister, collection: token.collection, index: token.index.toString(), slot }
+          let newToken = { id: slot.toString(), canister_id: token.canister, collection: token.collection, index: token.index.toString(), slot }
           const jsonMetadata = token.metadata?.json?.value.TextContent;
 
           if (jsonMetadata) {
@@ -150,7 +150,7 @@ export const isModel = (url) => {
 
 export const existItems = boxes => {
   if (!boxes || !boxes.length) return false
-  const flag = !!(boxes.filter(box => box?.item?.canisterId).length)
+  const flag = !!(boxes.filter(box => box?.item?.canister_id).length)
   // console.log('existItems: ', flag)
   return flag
 }

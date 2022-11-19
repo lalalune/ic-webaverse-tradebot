@@ -159,17 +159,17 @@ export const Trade = () => {
 
         // type Item = {
         //   name: string;
-        //   canisterId: Principal;
-        //   tokenId: int;
+        //   canister_id: Principal;
+        //   token_id: int;
         // }
 
         // can item.index (BigInt) to int
-        const tokenId = Number(item.index);
-        console.log('tradeData.id, {name: item.collection, canister: Principal.fromText(item.canister), tokenId')
-        console.log(tradeData.id, {name: item.metadata.name, canisterId: item.canister, tokenId})
+        const token_id = Number(item.index);
+        console.log('tradeData.id, {name: item.collection, canister: Principal.fromText(item.canister), token_id')
+        console.log(tradeData.id, {name: item.metadata.name, canister_id: item.canister, token_id})
 
         // item is not in tradeData, add it
-        plugActor.add_item_to_trade(tradeData.id, {name: item.collection, canisterId: Principal.fromText(item.canister), tokenId}).then((tradeResponse) => {
+        plugActor.add_item_to_trade(tradeData.id, {name: item.collection, canister_id: Principal.fromText(item.canister), token_id}).then((tradeResponse) => {
             console.log ('tradeResponse', tradeResponse)
             updateTradeData(tradeResponse[0]);
           });

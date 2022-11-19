@@ -13,8 +13,8 @@ type Trade = record {
 
 type Item = record {
     "name": text;
-    "canisterId": principal;
-    "tokenId": int;
+    "canister_id": principal;
+    "token_id": int;
 };
 
 service: {

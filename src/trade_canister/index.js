@@ -5,10 +5,10 @@ import { idlFactory } from "./trade_canister.did.js";
 export { idlFactory } from "./trade_canister.did.js";
 
 // CANISTER_ID is replaced by webpack based on node environment
-// export const canisterId = process.env.TRADE_CANISTER_CANISTER_ID;
-export const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai";
+// export const canister_id = process.env.TRADE_CANISTER_CANISTER_ID;
+export const canister_id = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 
-export const createActor = (canisterId, options = {}) => {
+export const createActor = (canister_id, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });
 
   if (options.agent && options.agentOptions) {
@@ -30,12 +30,12 @@ export const createActor = (canisterId, options = {}) => {
   // Creates an actor with using the candid interface and the HttpAgent
   return Actor.createActor(idlFactory, {
     agent,
-    canisterId,
+    canister_id,
     ...options.actorOptions,
   });
 };
 
-export const trade_canister = createActor(canisterId, {
+export const trade_canister = createActor(canister_id, {
   agentOptions: {
     host: 'http://127.0.0.1:4943'
   }

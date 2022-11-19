@@ -2,9 +2,9 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface Item {
-  'tokenId' : bigint,
+  'token_id' : bigint,
   'name' : string,
-  'canisterId' : Principal,
+  'canister_id' : Principal,
 }
 export interface Trade {
   'id' : string,
