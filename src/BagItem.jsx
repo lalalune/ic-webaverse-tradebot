@@ -1,16 +1,16 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
+import {useStore} from './store.jsx'
 
 import { clone, isImage, isMedia, isModel } from "./utils/funcs";
-import { StateContext } from "./StateProvider";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  const { setSelItem } = useContext(StateContext);
+  const { setSelItem } = useStore();
   const modelRef = useRef(null);
 
   const handleClick = (event) => {
@@ -83,7 +83,7 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
-  const { plugActor, tradeData, localUser } = useContext(StateContext);
+  const { plugActor, tradeData, localUser } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
   // console.log("item: ", item);

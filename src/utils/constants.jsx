@@ -1,4 +1,4 @@
-import { Principal } from 'azle'
+import { Principal } from "@dfinity/principal";
 
 export const tradeBoxNum = 6
 

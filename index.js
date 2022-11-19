@@ -1,9 +1,6 @@
 import metaversefile from "metaversefile";
 const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
-  import { Buffer } from 'buffer'
-  globalThis.Buffer = Buffer
-  window.Buffer = Buffer
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
 export default (e) => {
