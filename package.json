@@ -26,6 +26,7 @@
     "classnames": "^2.3.2",
     "concurrently": "^7.5.0",
     "esbuild-plugin-inline-image": "^0.0.8",
+    "immutability-helper": "^3.1.1",
     "react": "^18.2.0",
     "react-3d-viewer": "^1.0.12",
     "react-dnd": "^16.0.1",

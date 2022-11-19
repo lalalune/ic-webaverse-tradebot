@@ -2,6 +2,7 @@ import React, { useContext, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
+import update from 'immutability-helper'
 
 import { clone, isImage, isMedia, isModel } from "./utils/funcs";
 import { StateContext } from "./StateProvider";
@@ -9,7 +10,7 @@ import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
-export const PresentationalBagItem = ({ drag, isDragging, item }) => {
+export const PresentationalBagItem = ({ isDragging, item }) => {
   const { setSelItem } = useContext(StateContext);
   const modelRef = useRef(null);
 
@@ -44,7 +45,6 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   return item && (
     <StyledBagItem
       className="flex items-center justify-center class_model"
-      ref={drag}
       isDragging={isDragging}
       onClick={handleClick}
     >
@@ -79,7 +79,7 @@ const BagItem = ({
   isForTrade,
   index,
   tradeBoxes,
-  updateTradeBoxes,
+  setTradeBoxes,
   tradeLayer,
 }) => {
   const ref = useRef(null);
@@ -91,7 +91,7 @@ const BagItem = ({
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
     canDrop(dragItem, monitor) {
-      const flag = tradeLayer !== "remote";
+      const flag = (tradeLayer !== "remote");
       return flag;
     },
     collect(monitor) {
@@ -102,8 +102,7 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      // if (!ref.current || item.canister_id || !plugActor || !tradeData) return; // When full item
-      if (!ref.current || item.canister_id || !tradeData) return; // When full item
+      if ((dragEl.index === index && dragEl.tradeLayer === tradeLayer) || tradeLayer === 'remote') return;
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
@@ -122,31 +121,39 @@ const BagItem = ({
       // console.log("dragEl.tradeLayer: ", dragEl.tradeLayer);
 
       // Time to combine with ic
-      if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
-        (async () => {
-          const res = await plugActor.add_item_to_trade(localUserId, tradeData.id, cloneDragTradeItem);
-          console.log('add_item_to_trade res: ', res)
-        })();
-      }
+      // if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
+      //   (async () => {
+      //     const res = await plugActor.add_item_to_trade(localUserId, tradeData.id, cloneDragTradeItem);
+      //     console.log('add_item_to_trade res: ', res)
+      //   })();
+      // }
 
-      if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        (async () => {
-          const res = await plugActor.remove_item_from_trade(localUserId, tradeData.id, cloneDragTradeItem.id);
-          console.log("remove_item_from_trade res: ", res);
-        })();
-      }
+      // if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
+      //   (async () => {
+      //     const res = await plugActor.remove_item_from_trade(localUserId, tradeData.id, cloneDragTradeItem.id);
+      //     console.log("remove_item_from_trade res: ", res);
+      //   })();
+      // }
 
       // Time to actually perform the action
       if (tradeLayer === dragEl.tradeLayer) {
-        cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
-        cloneDragTradeBoxes[hoverIndex].item = cloneDragTradeItem;
-        updateTradeBoxes(cloneDragTradeBoxes);
+        setTradeBoxes((prevBox) =>
+          update(prevBox, {
+            $splice: [
+              [dragIndex, 1],
+              [hoverIndex, 0, prevBox[dragIndex]],
+            ],
+          }),
+        )
       } else {
         cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
         cloneHoverTradeBoxes[hoverIndex].item = cloneDragTradeItem;
-        dragEl.updateTradeBoxes(cloneDragTradeBoxes);
-        updateTradeBoxes(cloneHoverTradeBoxes);
+        dragEl.setTradeBoxes(cloneDragTradeBoxes);
+        setTradeBoxes(cloneHoverTradeBoxes);
       }
+
+      dragEl.index = hoverIndex
+      dragEl.tradeLayer = tradeLayer
     },
   });
 
@@ -154,7 +161,7 @@ const BagItem = ({
     type: itemTypes.LAYER1,
     canDrag: !!item.canister_id,
     item: () => {
-      return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
+      return { index, tradeBoxes, setTradeBoxes, item, tradeLayer };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -170,7 +177,7 @@ const BagItem = ({
       ref={ref}
       data-handler-id={handlerId}
     >
-      <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} />
+      <PresentationalBagItem isDragging={isDragging} item={item} />
     </div>
   );
 };

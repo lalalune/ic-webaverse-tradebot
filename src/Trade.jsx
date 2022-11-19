@@ -250,7 +250,7 @@ export const Trade = () => {
                               item={clone(box.item)}
                               index={index}
                               tradeBoxes={clone(remoteBoxes)}
-                              updateTradeBoxes={setRemoteBoxes}
+                              setTradeBoxes={setRemoteBoxes}
                               tradeLayer="remote"
                             />
                           </RemoteBox>
@@ -272,7 +272,7 @@ export const Trade = () => {
                               item={clone(box.item)}
                               index={index}
                               tradeBoxes={clone(localBoxes)}
-                              updateTradeBoxes={setLocalBoxes}
+                              setTradeBoxes={setLocalBoxes}
                               tradeLayer="local"
                             />
                           </BagBox>
@@ -341,7 +341,7 @@ export const Trade = () => {
                               item={clone(box.item)}
                               index={(curPage - 1) * pageBoxNum + index}
                               tradeBoxes={clone(inventoryBoxes)}
-                              updateTradeBoxes={setInventoryBoxes}
+                              setTradeBoxes={setInventoryBoxes}
                               tradeLayer="inventory"
                             />
                           </BagBox>
