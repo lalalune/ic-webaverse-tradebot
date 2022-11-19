@@ -3,11 +3,12 @@ import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { usePlug } from "@raydeck/useplug"
+import { Principal } from 'azle'
 
 import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
-import { StateContext } from "./StateProvider";
-import { trade_canister } from "./trade_canister/index"
+import { StateContext } from "./StateProvider"
+import { trade_canister } from "./declarations/trade_canister/index"
 
 import Frame from "./Frame"
 import RemoteBox from "./RemoteBox"
@@ -20,9 +21,9 @@ const url = new URL(window.location.href)
 const tradeId = url.searchParams.get("tradeId")
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
 let inventoryTokens = []
-let partner
-const updatePartner = val => {
-  partner = val
+let partnerId
+const updatePartnerId = val => {
+  partnerId = val
 }
 
 export const Trade = () => {
@@ -47,27 +48,26 @@ export const Trade = () => {
     curPage,
     setCurPage,
     setLoading,
-    localUser,
-    setLocalUser,
+    localUserId,
+    setLocalUserId,
     curTradeId,
     setCurTradeId,
-  } = useContext(StateContext);
+  } = useContext(StateContext)
 
   const principalString = principal ? window.ic.plug.principalId : "<none>"
 
-  // handle guest joining existing trade from link
+  // run after wallet connection
   useEffect(() => {
     (async () => {
       if (!principal) return
       setLoading(true)
-      const user = window.ic.plug.principalId
-      console.log("local user: ", user)
-      setLocalUser(user)
       // const balance = await window.ic.plug.requestBalance()
       // console.log("balance: ", balance)
-      const newTokens = Object.values(await getUserTokens({ agent, user }));
+      const newTokens = Object.values(await getUserTokens({ agent, user: window.ic.plug.principalId }))
       inventoryTokens = clone(newTokens)
       setInventoryBoxes(getInventoryBoxes(inventoryTokens))
+
+      // if user is guest, join the trade
       if (tradeId) {
         startTrade()
       }
@@ -75,257 +75,101 @@ export const Trade = () => {
     })()
   }, [principal])
 
+  // run when starting trade
   useEffect(() => {
     (async () => {
-      if (!plugActor || !localUser) return
+      if (!plugActor) return
       setLoading(true)
       console.log('plugActor: ', plugActor)
-      let trade
+      let trade, tempLocalUserId
 
       if (tradeId) {
         console.log("***** TRADE DETECTED *****")
         trade = await plugActor.get_trade_by_id(tradeId)
+        tempLocalUserId = Principal.fromUint8Array(trade.guest._arr).toText()
         setIsCreator(false)
       } else {
         trade = await plugActor.create_trade()
+        tempLocalUserId = Principal.fromUint8Array(trade.host._arr).toText()
         setIsCreator(true)
       }
 
+      console.log('tempLocalUserId: ', tempLocalUserId)
       console.log('trade: ', trade)
-      setCurTradeId(trade.id)
+      setLocalUserId(tempLocalUserId)
       setTradeData(trade)
+      setCurTradeId(trade.id)
       setTradeStarted(true)
       setLoading(false)
     })()
   }, [plugActor])
 
-  // update the trade data
+  // fetch data from IC in real time (run if trade is existed)
   useEffect(() => {
-    // local boxes changed, which means the user has changed the inventory
-    // update the trade data
-    
-    // first, is the user host or guest?
-    const user = window?.ic?.plug?.principalId;
-    if(!user) return;
+    if (!curTradeId || !plugActor) return
+    console.log('curTradeId: ', curTradeId)
+    // const interval = setInterval(async () => {
+    //   const trade = await plugActor.get_trade_by_id(curTradeId)
+    //   setTradeData(trade)
+    // }, 2000)
+    // return () => {
+    //   clearInterval(interval)
+    // }
+  }, [curTradeId])
 
-    // compare rtTrade to tradeData
-    // if different, update tradeData
-    const host = Principal.fromUint8Array(tradeData.host._arr).toText();
-    const guest = Principal.fromUint8Array(tradeData.guest._arr).toText();
-
-    const userIsHost = user === host;
-    const userIsGuest = user === guest;
-
-    // type Trade = {
-    //   id: string;
-    //   host_data: Item[];
-    //   guest_data: Item[];
-    //   host_escrow: Item[];
-    //   guest_escrow: Item[];
-    //   host_accept: boolean;
-    //   guest_accept: boolean;
-    //   host: Principal;
-    //   guest: Principal;
-    //   fulfilled: boolean;
-    // };
-
-    let data = []
-    // if the user is the host, update the host's inventory
-    if (userIsHost) {
-      data = tradeData.host_data;
-    } else if(userIsGuest) {
-      data = tradeData.guest_data;
-    } else {
-      throw new Error("User is not host or guest");
-    }
-
-    // if the length of localBoxes and data are the same, do nothing and return
-    if (localBoxes.length === data.length) {
-      return;
-    }
-
-    // iterate through trade data and check if this item is also contained in localBoxes
-    // if it is in localBoxes but not in tradeData, add it to tradeData
-    // if it is in tradeData but not in localBoxes, remove it from tradeData
-    let added = false;
-    for (let i = 0; i < localBoxes.length; i++) {
-      // iterate through the localBoxes, which are the user's local trade items
-      const localBox = localBoxes[i];
-      const index = data.findIndex((element) => element.id === localBox.id);
-      if (index === -1 && localBox.item) {
-        const item = localBox.item;
-        console.log('***** ADDING ITEM', item)
-        console.log('***** tradeData', tradeData)
-
-        // type Item = {
-        //   name: string;
-        //   canister_id: Principal;
-        //   token_id: int;
-        // }
-
-        // can item.index (BigInt) to int
-        const token_id = Number(item.index);
-        console.log('tradeData.id, {name: item.collection, canister: Principal.fromText(item.canister), token_id')
-        console.log(tradeData.id, {name: item.metadata.name, canister_id: item.canister, token_id})
-
-        // item is not in tradeData, add it
-        plugActor.add_item_to_trade(tradeData.id, {name: item.collection, canister_id: Principal.fromText(item.canister), token_id}).then((tradeResponse) => {
-            console.log ('tradeResponse', tradeResponse)
-            updateTradeData(tradeResponse[0]);
-          });
-          added = true;
-        }
-    }
-    // no items were added, but the lengths aren't the same, so we assume an item has been removed
-    if(!added) {
-      let removed = false; // we don't need this but useful for debug
-      for (let i = 0; i < data.length; i++) {
-        const item = data[i];
-        const index = localBoxes.findIndex((element) => element.id === item.id);
-        if (index === -1) {
-          // item is not in localBoxes, remove it
-          plugActor.remove_item_from_trade(tradeId, item.id);
-          return removed = true;
-        }
-      }
-
-      if(!removed) {
-        throw new Error("something went wrong");
-      }
-    }
-  }, [localBoxes])
-
-  // TODO: need me? review
-  // Host listen for joining guest
-  useEffect(() => {
-    if (!plugActor || !tradeData || partner) return;
-    const interval = setInterval(async () => {
-      const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-      console.log("rtTrade: ", rtTrade);
-      const guest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
-
-      if (
-        guest !== null &&
-        guest !== "" &&
-        guest !== nullPrincipal &&
-        guest !== nullPartner // &&
-        // partner !== guest // comment out to prevent self trade
-      ) {
-        updatePartner(guest);
-        clearInterval(interval);
-        console.log("Trade partner found! guest: ", guest);
-      }
-
-      // Todo: synchronization
-    }, 1000);
-  }, [plugActor, tradeData]);
-
-  // TODO: need me? review
-  // update user data and inventory after plug login
+  // update game status whenever trade data is changed
   useEffect(() => {
     (async () => {
-      if (!plugActor && !curTradeId && !tradeData) return
+      if (!plugActor || !curTradeId || !tradeData || !localUserId) return
       setLoading(true)
-      // const host = Principal.fromUint8Array(tradeData.host._arr).toText()
-      // const guest = Principal.fromUint8Array(tradeData.guest._arr).toText()
-      const host = tradeData.host
-      const guest = tradeData.guest
-      // console.log('host: ', host)
-      // console.log('guest: ', guest)
+      const hostId = Principal.fromUint8Array(tradeData.host._arr).toText()
+      const guestId = Principal.fromUint8Array(tradeData.guest._arr).toText()
+      console.log('hostId: ', hostId)
+      console.log('guestId: ', guestId)
 
-      if (!isCreator && guest !== nullPrincipalId && guest !== localUser) {
+      if (!isCreator && guestId !== nullPrincipalId && guestId !== localUserId) {
         return console.error(
           "Trade already initialized to another wallet: ",
-          guest
+          guestId
         )
       }
 
-      if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host && guest !== partner) {
-        console.log('trade partner found(guest): ', guest)
-        updatePartner(guest)
+      if (isCreator && guestId !== nullPrincipalId && guestId !== localUserId && guestId !== hostId && guestId !== partnerId) {
+        console.log('trade partner found(guestId): ', guestId)
+        updatePartnerId(guestId)
       }
 
-      if (!isCreator && host !== nullPrincipalId && host !== localUser && host !== partner) {
-        console.log('trade partner found(host): ', host)
+      if (!isCreator && hostId !== nullPrincipalId && hostId !== localUserId && hostId !== partnerId) {
+        console.log('trade partner found(hostId): ', hostId)
         await plugActor.join_trade(curTradeId)
-        updatePartner(host)
+        updatePartnerId(hostId)
       }
 
-      if (isCreator) {
-        const rb = getRemoteBoxes(tradeData.guest_data)
-        console.log('guest_data: ', tradeData.guest_data)
-        console.log('remoteBoxes: ', rb)
-        setRemoteBoxes(rb)
-      } else {
-        const rb = getRemoteBoxes(tradeData.host_data)
-        console.log('host_data: ', tradeData.host_data)
-        console.log('remoteBoxes: ', rb)
-        setRemoteBoxes(rb)
-      }
+      // if (isCreator) {
+      //   const rb = getRemoteBoxes(tradeData.guest_data)
+      //   console.log('guest_data: ', tradeData.guest_data)
+      //   console.log('remoteBoxes: ', rb)
+      //   setRemoteBoxes(rb)
+      // } else {
+      //   const rb = getRemoteBoxes(tradeData.host_data)
+      //   console.log('host_data: ', tradeData.host_data)
+      //   console.log('remoteBoxes: ', rb)
+      //   setRemoteBoxes(rb)
+      // }
 
       setLoading(false)
     })()
   }, [tradeData])
 
-  // Fetch data from IC in real time
-  useEffect(() => {
-    if (!plugActor) return
-    const interval = setInterval(async () => {
-      const trade = await plugActor.get_trade_by_id(curTradeId)
-      setTradeData(trade)
-    }, 10)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [curTradeId])
-
-    // Fetch data from IC in real time
-    useEffect(() => {
-      if (!plugActor || !tradeData || !partner) return;
-      const interval = setInterval(async () => {
-        const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
-        
-        // if rtTrade !== tradeData, update tradeData
-        if (JSON.stringify(rtTrade[0]) === JSON.stringify(tradeData)) return;
-        console.log('updated!')
-        
-        updateTradeData(rtTrade[0])
-        const user = window.ic.plug.principalId.toText();
-
-        // compare rtTrade to tradeData
-        // if different, update tradeData
-        const rtHost = Principal.fromUint8Array(rtTrade[0].host._arr).toText();
-        const rtGuest = Principal.fromUint8Array(rtTrade[0].guest._arr).toText();
-
-        const userIsHost = user === rtHost;
-        const userIsGuest = user === rtGuest;
-
-        if(!userIsHost && !userIsGuest){
-          throw new Error('User is not in this trade!');  
-        }
-
-        if (rtHost !== tradeData.host) {
-          // this should probably be immutable unless we want eject functionality
-          throw new Error('host changed!')
-        }
-
-        if (rtGuest !== tradeData.guest) {
-          // this should probably be immutable unless we want eject functionality
-          throw new Error('guest changed!')
-        }
-        // Todo: synchronization
-      }, 1000);
-      return () => clearInterval(interval);
-    }, [plugActor, tradeData, partner]);
-  
-    const connect = async () => {
-      console.log('connecting...')
-      login();
-    }
 
 
   const startTrade = async () => {
     setPlugActor(trade_canister)
+  }
+
+  const onConnect = async () => {
+    console.log('connecting...')
+    login()
   }
 
   const onAccept = () => {
@@ -358,12 +202,12 @@ export const Trade = () => {
       <DndProvider backend={HTML5Backend}>
         <ItemDetails />
         <div className="absolute top-0 left-0 w-3/4 h-full">
-        <Loading />
+          <Loading />
 
-        {!authenticated && (
+          {!authenticated && (
             <Frame className="absolute w-full h-full">
               <div className="flex items-center justify-center w-full h-full">
-                <Button variant="contained" onClick={connect}>
+                <Button variant="contained" onClick={onConnect}>
                   Connect
                 </Button>
               </div>
@@ -383,92 +227,92 @@ export const Trade = () => {
               </div>
             </Frame>
           )}
-            <div className="absolute w-full h-full overflow-auto">
+          <div className="absolute w-full h-full overflow-auto">
             {authenticated && tradeData && (
-              <React.Fragment>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl">Their Trade</div>
-                    <div className="text-xl text-blue-900">
-                      {(isCreator && tradeData.guest_accept) ||
-                        (!isCreator && tradeData.host_accept)
-                        ? "TRADE ACCEPTED"
-                        : ""}
+              <>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl">Their Trade</div>
+                      <div className="text-xl text-blue-900">
+                        {(isCreator && tradeData.guest_accept) ||
+                          (!isCreator && tradeData.host_accept)
+                          ? "TRADE ACCEPTED"
+                          : ""}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {remoteBoxes.map((box, index) => {
+                        return (
+                          <RemoteBox key={box.id}>
+                            <BagItem
+                              key={`remote_${box.id}`}
+                              item={clone(box.item)}
+                              index={index}
+                              tradeBoxes={clone(remoteBoxes)}
+                              updateTradeBoxes={setRemoteBoxes}
+                              tradeLayer="remote"
+                            />
+                          </RemoteBox>
+                        )
+                      })}
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-3">
-                    {remoteBoxes.map((box, index) => {
-                      return (
-                        <RemoteBox key={box.id}>
-                          <BagItem
-                            key={`remote_${box.id}`}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(remoteBoxes)}
-                            updateTradeBoxes={setRemoteBoxes}
-                            tradeLayer="remote"
-                          />
-                        </RemoteBox>
-                      )
-                    })}
+                </Frame>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-2xl">Your Trade</div>
+                    <div className="flex flex-wrap gap-3">
+                      {localBoxes.map((box, index) => {
+                        return (
+                          <BagBox key={box.id}>
+                            <BagItem
+                              key={`local_${box.id}`}
+                              isForTrade={true}
+                              item={clone(box.item)}
+                              index={index}
+                              tradeBoxes={clone(localBoxes)}
+                              updateTradeBoxes={setLocalBoxes}
+                              tradeLayer="local"
+                            />
+                          </BagBox>
+                        )
+                      })}
+                    </div>
                   </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="text-2xl">Your Trade</div>
-                  <div className="flex flex-wrap gap-3">
-                    {localBoxes.map((box, index) => {
-                      return (
-                        <BagBox key={box.id}>
-                          <BagItem
-                            key={`local_${box.id}`}
-                            isForTrade={true}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(localBoxes)}
-                            updateTradeBoxes={setLocalBoxes}
-                            tradeLayer="local"
-                          />
-                        </BagBox>
-                      )
-                    })}
+                </Frame>
+                <Frame>
+                  <div className="flex flex-wrap items-center justify-center w-full h-full gap-8">
+                    <Button
+                      variant="contained"
+                      onClick={onAccept}
+                      disabled={accepted || !existItems(localBoxes)}
+                      color="success"
+                    >
+                      Accept
+                    </Button>
+                    <div className="flex items-center justify-center gap-2">
+                      {/* Numerical input for amount of ICP to add to trade */}
+                      <label htmlFor="icp">ICP: </label>
+                      <input
+                        className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
+                        id="icp"
+                        type="number"
+                      />
+                    </div>
+                    <Button
+                      variant="contained"
+                      onClick={onCancel}
+                      disabled={!accepted && existItems(localBoxes)}
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
                   </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-wrap items-center justify-center w-full h-full gap-8">
-                  <Button
-                    variant="contained"
-                    onClick={onAccept}
-                    disabled={accepted || !existItems(localBoxes)}
-                    color="success"
-                  >
-                    Accept
-                  </Button>
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Numerical input for amount of ICP to add to trade */}
-                    <label htmlFor="icp">ICP: </label>
-                    <input
-                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
-                      id="icp"
-                      type="number"
-                    />
-                  </div>
-                  <Button
-                    variant="contained"
-                    onClick={onCancel}
-                    disabled={!accepted && existItems(localBoxes)}
-                    color="error"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </Frame>
-              </React.Fragment>
-              )}
-              {principal && (
+                </Frame>
+              </>
+            )}
+            {principal && (
               <Frame>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
@@ -506,8 +350,8 @@ export const Trade = () => {
                   </div>
                 </div>
               </Frame>
-              )}
-              </div>
+            )}
+          </div>
         </div>
         <div className="absolute top-0 right-0 w-1/4 h-full">
           <Frame className="h-full">
@@ -519,7 +363,7 @@ export const Trade = () => {
                 : "Waiting for IC wallet connection..."}
               <br />
               <br />
-              {tradeStarted && tradeData && !partner && !tradeId && (
+              {tradeStarted && tradeData && !partnerId && !tradeId && (
                 <>
                   <b> WAITING FOR TRADE PARTNER... </b>
                   <br />
@@ -533,8 +377,8 @@ export const Trade = () => {
                   </a>
                 </>
               )}
-              {tradeStarted && tradeData && partner && (
-                <>Trading with {partner}</>
+              {tradeStarted && tradeData && partnerId && (
+                <>Trading with {partnerId}</>
               )}
             </div>
           </Frame>

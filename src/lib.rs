@@ -1,11 +1,9 @@
 // define queries, updates, etc from macros
 use ic_cdk_macros::*;
 
-use ic_cdk::{
-    export::{
-        candid::{CandidType, Deserialize},
-        Principal,
-    },
+use ic_cdk::export::{
+    candid::{CandidType, Deserialize},
+    Principal,
 };
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -45,7 +43,11 @@ fn create_trade() -> Trade {
         guest: Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap(),
         fulfilled: false,
     };
-    TRADE_STORE.with(|store| store.borrow_mut().insert(id.try_into().unwrap(), trade.clone()));
+    TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .insert(id.try_into().unwrap(), trade.clone())
+    });
     trade
 }
 
@@ -56,20 +58,40 @@ fn delete_trade(id: String) -> Trade {
 
 #[query(name = "join_trade")]
 fn join_trade(id: String) -> Trade {
-    let mut trade = TRADE_STORE.with(|store| store.borrow_mut().get_mut(&id.parse().unwrap()).unwrap().clone());
+    let mut trade = TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .get_mut(&id.parse().unwrap())
+            .unwrap()
+            .clone()
+    });
     trade.guest = ic_cdk::caller();
-    TRADE_STORE.with(|store| store.borrow_mut().insert(id.parse().unwrap(), trade.clone()));
+    TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .insert(id.parse().unwrap(), trade.clone())
+    });
     trade
 }
 
 #[query(name = "leave_trade")]
 fn leave_trade(id: String) -> Trade {
-    let mut trade = TRADE_STORE.with(|store| store.borrow_mut().get_mut(&id.parse().unwrap()).unwrap().clone());
+    let mut trade = TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .get_mut(&id.parse().unwrap())
+            .unwrap()
+            .clone()
+    });
     if trade.host == ic_cdk::caller() {
         delete_trade(id)
     } else if trade.guest == ic_cdk::caller() {
         trade.guest = Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap();
-        TRADE_STORE.with(|store| store.borrow_mut().insert(id.parse().unwrap(), trade.clone()));
+        TRADE_STORE.with(|store| {
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone())
+        });
         trade
     } else {
         trade
@@ -93,11 +115,10 @@ fn add_item_to_trade(id: String, item: Item) -> Trade {
         if ic_cdk::caller() == trade.host {
             let mut host_data = trade.host_data;
             host_data.push(item);
-            let trade = Trade {
-                host_data,
-                ..trade
-            };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            let trade = Trade { host_data, ..trade };
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if ic_cdk::caller() == trade.guest {
             let mut guest_data = trade.guest_data;
@@ -106,7 +127,9 @@ fn add_item_to_trade(id: String, item: Item) -> Trade {
                 guest_data,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
@@ -127,21 +150,30 @@ fn remove_item_from_trade(id: String, item: Item) -> Trade {
         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
         if ic_cdk::caller() == trade.host {
             let mut host_data = trade.host_data;
-            host_data.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
-            let trade = Trade {
-                host_data,
-                ..trade
-            };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            host_data.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
+            let trade = Trade { host_data, ..trade };
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if ic_cdk::caller() == trade.guest {
             let mut guest_data = trade.guest_data;
-            guest_data.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
+            guest_data.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
             let trade = Trade {
                 guest_data,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
@@ -158,14 +190,18 @@ fn accept(id: String) -> Trade {
                 host_accept: true,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if trade.guest == ic_cdk::caller() {
             let trade = Trade {
                 guest_accept: true,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
@@ -182,14 +218,18 @@ fn cancel(id: String) -> Trade {
                 host_accept: false,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if trade.guest == ic_cdk::caller() && !trade.host_accept {
             let trade = Trade {
                 guest_accept: false,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
@@ -199,7 +239,6 @@ fn cancel(id: String) -> Trade {
 
 #[update(name = "add_item_to_escrow")]
 fn add_item_to_escrow(id: String, item: Item) -> Trade {
-
     // TODO: item needs to actually be sent to escrow and validated
 
     TRADE_STORE.with(|store| {
@@ -211,7 +250,9 @@ fn add_item_to_escrow(id: String, item: Item) -> Trade {
                 host_escrow,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if ic_cdk::caller() == trade.guest {
             let mut guest_escrow = trade.guest_escrow;
@@ -220,7 +261,9 @@ fn add_item_to_escrow(id: String, item: Item) -> Trade {
                 guest_escrow,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
@@ -230,7 +273,6 @@ fn add_item_to_escrow(id: String, item: Item) -> Trade {
 
 #[update(name = "remove_item_from_escrow")]
 fn remove_item_from_escrow(id: String, item: Item) -> Trade {
-
     // TODO: item needs to actually be removed from escrow and updated
 
     TRADE_STORE.with(|store| {
@@ -239,28 +281,40 @@ fn remove_item_from_escrow(id: String, item: Item) -> Trade {
             trade
         } else if ic_cdk::caller() == trade.host {
             let mut host_escrow = trade.host_escrow;
-            host_escrow.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
+            host_escrow.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
             let trade = Trade {
                 host_escrow,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else if ic_cdk::caller() == trade.guest {
             let mut guest_escrow = trade.guest_escrow;
-            guest_escrow.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
+            guest_escrow.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
             let trade = Trade {
                 guest_escrow,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             trade
         } else {
             trade
         }
     })
 }
-  
+
 #[query(name = "get_escrow_items")]
 fn get_escrow_items(id: String) -> Vec<Item> {
     TRADE_STORE.with(|store| {
@@ -296,9 +350,19 @@ fn withdraw_from_escrow(id: String, item: Item) -> Item {
         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
         if trade.fulfilled {
             if ic_cdk::caller() == trade.host {
-                trade.guest_escrow.iter().find(|i| i.name == item.name).unwrap().clone()
+                trade
+                    .guest_escrow
+                    .iter()
+                    .find(|i| i.name == item.name)
+                    .unwrap()
+                    .clone()
             } else if ic_cdk::caller() == trade.guest {
-                trade.host_escrow.iter().find(|i| i.name == item.name).unwrap().clone()
+                trade
+                    .host_escrow
+                    .iter()
+                    .find(|i| i.name == item.name)
+                    .unwrap()
+                    .clone()
             } else {
                 item
             }

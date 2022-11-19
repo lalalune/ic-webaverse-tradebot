@@ -13,7 +13,7 @@ const canister_id = "lj532-6iaaa-aaaah-qcc7a-cai";
 // Whitelist the canister id for Plug permissions
 const whitelist = [canister_id, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"];
 
-export const App = ({type}) => {
+export const App = ({ type }) => {
   return (
     <StateProvider>
       <PlugProvider whitelist={whitelist}>

@@ -83,7 +83,7 @@ const BagItem = ({
   tradeLayer,
 }) => {
   const ref = useRef(null);
-  const { plugActor, tradeData, localUser } = useContext(StateContext);
+  const { plugActor, tradeData, localUserId } = useContext(StateContext);
   if (!item) item = {};
   item.isForTrade = isForTrade;
   // console.log("item: ", item);
@@ -124,14 +124,14 @@ const BagItem = ({
       // Time to combine with ic
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
-          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, cloneDragTradeItem);
+          const res = await plugActor.add_item_to_trade(localUserId, tradeData.id, cloneDragTradeItem);
           console.log('add_item_to_trade res: ', res)
         })();
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
         (async () => {
-          const res = await plugActor.remove_item_from_trade(localUser, tradeData.id, cloneDragTradeItem.id);
+          const res = await plugActor.remove_item_from_trade(localUserId, tradeData.id, cloneDragTradeItem.id);
           console.log("remove_item_from_trade res: ", res);
         })();
       }

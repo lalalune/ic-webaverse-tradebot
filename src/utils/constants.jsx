@@ -1,5 +1,3 @@
-import { Principal } from 'azle'
-
 export const tradeBoxNum = 6
 
 export const inventoryBoxNum = 45
@@ -10,4 +8,4 @@ export const itemTypes = {
   LAYER1: 'layer1',
 }
 
-export const nullPrincipalId = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+export const nullPrincipalId = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
