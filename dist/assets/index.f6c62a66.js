@@ -1,4 +1,4 @@
-import { C as Certificate, A as AgentError, t as toHex, l as lebDecode, P as PipeArrayBuffer, d as decode, a as Principal } from "./index.e6461292.js";
+import { C as Certificate, A as AgentError, t as toHex, l as lebDecode, P as PipeArrayBuffer, d as decode, a as Principal } from "./index.2930d419.js";
 const request = async (options) => {
   const { canisterId, agent, paths } = options;
   const uniquePaths = [...new Set(paths)];

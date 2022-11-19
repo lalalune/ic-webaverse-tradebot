@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import nodePolyfills from 'vite-plugin-node-stdlib-browser'
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
+import tailwindcss from 'tailwindcss';
 
 import inject from '@rollup/plugin-inject'
 
@@ -11,8 +12,8 @@ import inlineImage from "esbuild-plugin-inline-image"
 
 // https://vitejs.dev/config/
 const config = defineConfig({
-  assetsInclude: ['**/*.png'],
-  plugins: [react()],
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg'],
+  plugins: [react(),tailwindcss()],
   build: {
     rollupOptions: {
         plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
@@ -25,6 +26,7 @@ const config = defineConfig({
             global: "globalThis",
         },
         plugins: [
+          inlineImage(),
           NodeModulesPolyfillPlugin(),
           NodeGlobalsPolyfillPlugin({
                 process: true,
@@ -47,7 +49,7 @@ resolve: {
 if (process.env.COMPONENT) {
   config.build = {
       rollupOptions: {
-          plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+          plugins: [tailwindcss(), inject({ Buffer: ['buffer', 'Buffer'] })],
             external: ['react', 'react-dom'],
             output: {
               globals: {
@@ -56,7 +58,7 @@ if (process.env.COMPONENT) {
               },
             },
       },
-    assetsInlineLimit: 100000,
+    assetsInlineLimit: 10000000,
     emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, 'src/App.jsx'),

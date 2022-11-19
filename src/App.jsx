@@ -1,3 +1,8 @@
+import css from "./index.css";
+import styleInject from 'style-inject';
+
+styleInject(css);
+
 import React from "react";
 
 import { Trade } from "./Trade";
@@ -13,9 +18,11 @@ const whitelist = [canister_id, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaa
 export const App = ({type}) => {
   return (
       <PlugProvider whitelist={whitelist}>
+      <div className="body">
         <div className="fixed top-0 bottom-0 left-0 right-0">
           <Trade type={type} />
         </div>
+      </div>
       </PlugProvider>
   );
 };
