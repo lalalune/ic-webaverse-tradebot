@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "concurrently \"npm run start:tailwind\" \"npm run dev\"",
     "start:tailwind": "npx tailwindcss -i ./index.css -o ./tailwind.css --watch",
     "dev": "vite",
     "dev:webaverse": "npx serve -p 8001 --cors",
@@ -22,6 +23,7 @@
     "@psychedelic/dab-js": "^1.5.0",
     "@raydeck/useplug": "^1.0.3",
     "classnames": "^2.3.2",
+    "concurrently": "^7.5.0",
     "esbuild-plugin-inline-image": "^0.0.8",
     "react": "^18.2.0",
     "react-3d-viewer": "^1.0.12",
