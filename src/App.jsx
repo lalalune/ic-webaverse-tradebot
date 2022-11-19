@@ -1,11 +1,8 @@
-import { Buffer } from 'buffer'
-globalThis.Buffer = Buffer
 import React from "react";
 
 import { Trade } from "./Trade";
 
 import { PlugProvider } from "@raydeck/useplug";
-import { StateProvider } from "./StateProvider";
 
 // The mainnet Router Canister Id
 const canister_id = "lj532-6iaaa-aaaah-qcc7a-cai";
@@ -15,13 +12,11 @@ const whitelist = [canister_id, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaa
 
 export const App = ({type}) => {
   return (
-    <StateProvider>
       <PlugProvider whitelist={whitelist}>
         <div className="fixed top-0 bottom-0 left-0 right-0">
           <Trade type={type} />
         </div>
       </PlugProvider>
-    </StateProvider>
   );
 };
 

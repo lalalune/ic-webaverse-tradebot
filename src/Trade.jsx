@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useEffect } from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -6,8 +6,9 @@ import { usePlug } from "@raydeck/useplug"
 
 import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
-import { StateContext } from "./StateProvider";
+import { useStore } from "./store";
 import { trade_canister } from "./trade_canister/index"
+import { Principal } from "@dfinity/principal";
 
 import Frame from "./Frame"
 import RemoteBox from "./RemoteBox"
@@ -51,7 +52,7 @@ export const Trade = () => {
     setLocalUser,
     curTradeId,
     setCurTradeId,
-  } = useContext(StateContext);
+  } = useStore();
 
   const principalString = principal ? window.ic.plug.principalId : "<none>"
 

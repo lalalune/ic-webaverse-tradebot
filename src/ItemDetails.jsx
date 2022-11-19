@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useContext } from "react";
+import React, { useRef, useEffect } from "react";
 import { GLTFModel } from "react-3d-viewer";
 
-import { StateContext } from "./StateProvider";
+import { useStore } from "./store";
 import { isImage, isMedia, isModel } from "./utils/funcs";
 
 export const ItemDetails = () => {
-  const { selItem } = useContext(StateContext);
+  const { selItem } = useStore();
   const modelRef = useRef(null);
 
   useEffect(() => {

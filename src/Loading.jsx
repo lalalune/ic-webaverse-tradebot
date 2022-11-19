@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import classnames from "classnames";
 
-import { StateContext } from "./StateProvider";
+import { useStore } from "./store";
 
 export const Loading = () => {
-  const { loading } = useContext(StateContext);
+  const { loading } = useStore();
 
   return (
     <div
