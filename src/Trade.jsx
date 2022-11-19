@@ -1,117 +1,103 @@
-import React, { useEffect } from "react";
-import { Button } from "@mui/material";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { Principal } from "@dfinity/principal";
-import { usePlug } from "@raydeck/useplug";
+import React, { useContext, useEffect } from "react"
+import { Button } from "@mui/material"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { usePlug } from "@raydeck/useplug"
 
-import { inventoryBoxNum } from "./utils/constants";
-import { clone, getInventoryBoxes, getUserTokens } from "./utils/funcs";
-import { useStore } from "./utils/store";
-import { idlFactory } from "./trade_canister/trade_canister.did.js";
+import { inventoryBoxNum, nullPrincipalId } from "./utils/constants"
+import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
+import { StateContext } from "./StateProvider";
+import { trade_canister } from "./trade_canister/index"
 
-import Frame from "./Frame";
-import RemoteBox from "./RemoteBox";
-import BagBox from "./BagBox";
-import BagItem from "./BagItem";
-import { Loading } from "./Loading";
-import { ItemDetails } from "./ItemDetails";
+import Frame from "./Frame"
+import RemoteBox from "./RemoteBox"
+import BagBox from "./BagBox"
+import BagItem from "./BagItem"
+import { Loading } from "./Loading"
+import { ItemDetails } from "./ItemDetails"
 
-const nullPartner = Principal.fromUint8Array(
-  new Uint8Array([0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
-).toText();
-const nullPrincipal = "rrkah-fqaaa-aaaaa-aaaaq-cai";
-const url = new URL(window.location.href);
-let inventoryTokens = [];
-const tradeId = url.searchParams.get("tradeId");
-console.log("tradeId: ", tradeId);
+const url = new URL(window.location.href)
+const tradeId = url.searchParams.get("tradeId")
+tradeId && console.log("I'm joiner. tradeId: ", tradeId)
+let inventoryTokens = []
+let partner
+const updatePartner = val => {
+  partner = val
+}
 
 export const Trade = () => {
-  // principal is a byte array that should be converted to a string
-  // convert using a browser-friendly es6 method
-  const { authenticated, principal, login, agent } = usePlug();
+  const { authenticated, principal, login, agent } = usePlug()
   const {
     isCreator,
-    updateIsCreator,
+    setIsCreator,
     tradeData,
-    updateTradeData,
+    setTradeData,
     remoteBoxes,
-    updateRemoteBoxes,
+    setRemoteBoxes,
     localBoxes,
-    updateLocalBoxes,
+    setLocalBoxes,
     inventoryBoxes,
-    updateInventoryBoxes,
-    partner,
-    updatePartner,
+    setInventoryBoxes,
     plugActor,
-    updatePlugActor,
-    existTrade,
-    updateExistTrade,
+    setPlugActor,
+    tradeStarted,
+    setTradeStarted,
     accepted,
-    updateAccepted,
+    setAccepted,
     boxNumPerPage,
-    updateBoxNumPerPage,
     curPage,
-    updateCurPage,
-    loading,
-    updateLoading,
-    updateLocalUser,
-  } = useStore();
-
-  const principalString = principal ? window.ic.plug.principalId : "<none>";
+    setCurPage,
+    setLoading,
+    localUser,
+    setLocalUser,
+    curTradeId,
+    setCurTradeId,
+  } = useContext(StateContext);
+  const principalString = principal ? window.ic.plug.principalId : "<none>"
 
   // handle guest joining existing trade from link
   useEffect(() => {
     (async () => {
-      // If tradeId is not null, then we are in a trade
+      if (!principal) return
+      setLoading(true)
+      const user = window.ic.plug.principalId
+      console.log("local user: ", user)
+      setLocalUser(user)
+      // const balance = await window.ic.plug.requestBalance()
+      // console.log("balance: ", balance)
+      const newTokens = Object.values(await getUserTokens({ agent, user }));
+      inventoryTokens = clone(newTokens)
+      setInventoryBoxes(getInventoryBoxes(inventoryTokens))
       if (tradeId) {
-        updateLoading(true);
-        const actor = await window.ic.plug.createActor({
-          canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-          interfaceFactory: idlFactory,
-        });
-        updatePlugActor(actor);
-        const trade = await actor.get_trade_by_id(tradeId);
-        console.log("get_trade_by_id trade: ", trade);
-        updateTradeData(trade);
-        updateIsCreator(false);
-        const guest = Principal.fromUint8Array(trade[0].guest._arr).toText();
-        console.log("get_trade_by_id guest: ", guest);
-        const host = Principal.fromUint8Array(trade[0].host._arr).toText();
-        console.log("get_trade_by_id host: ", host);
-
-        if (
-          guest !== null &&
-          guest !== "" &&
-          guest !== nullPrincipal &&
-          guest !== nullPartner
-        ) {
-          if (guest !== principal) {
-            return console.error(
-              "Trade already initialized to another wallet! guest: ",
-              guest
-            );
-          }
-        }
-
-        if (
-          host !== null &&
-          host !== "" &&
-          host !== nullPrincipal &&
-          host !== nullPartner
-        ) {
-          console.log("Trade partner found! host: ", host);
-          updatePartner(host);
-        }
-
-        const tradeJoined = await actor.join_trade(tradeId);
-        console.log("tradeJoined: ", tradeJoined);
-        updateExistTrade(true);
-        console.log("***** TRADE DETECTED *****");
-        updateLoading(false);
+        startTrade()
       }
-    })();
-  }, []);
+      setLoading(false)
+    })()
+  }, [principal])
+
+  useEffect(() => {
+    (async () => {
+      if (!plugActor || !localUser) return
+      setLoading(true)
+      console.log('plugActor: ', plugActor)
+      let trade
+
+      if (tradeId) {
+        console.log("***** TRADE DETECTED *****")
+        trade = await plugActor.get_trade_by_id(tradeId)
+        setIsCreator(false)
+      } else {
+        trade = await plugActor.create_trade(localUser)
+        setIsCreator(true)
+      }
+
+      console.log('trade: ', trade)
+      setCurTradeId(trade.id)
+      setTradeData(trade)
+      setTradeStarted(true)
+      setLoading(false)
+    })()
+  }, [plugActor])
 
   // update the trade data
   useEffect(() => {
@@ -209,23 +195,7 @@ export const Trade = () => {
     }
   }, [localBoxes])
 
-  // update user data and inventory after plug login
-  useEffect(() => {
-    if (!principal) return;
-    (async () => {
-      updateLoading(true);
-      const user = window.ic.plug.principalId;
-      const balance = await window.ic.plug.requestBalance();
-      console.log("user: ", user);
-      console.log("balance: ", balance);
-      const newTokens = await getUserTokens({ agent, user });
-      inventoryTokens = clone(newTokens);
-      updateLocalUser(user);
-      updateInventoryBoxes(getInventoryBoxes(newTokens));
-      updateLoading(false);
-    })();
-  }, [principal]);
-
+  // TODO: need me? review
   // Host listen for joining guest
   useEffect(() => {
     if (!plugActor || !tradeData || partner) return;
@@ -249,6 +219,65 @@ export const Trade = () => {
       // Todo: synchronization
     }, 1000);
   }, [plugActor, tradeData]);
+
+  // TODO: need me? review
+  // update user data and inventory after plug login
+  useEffect(() => {
+    (async () => {
+      if (!plugActor && !curTradeId && !tradeData) return
+      setLoading(true)
+      // const host = Principal.fromUint8Array(tradeData.host._arr).toText()
+      // const guest = Principal.fromUint8Array(tradeData.guest._arr).toText()
+      const host = tradeData.host
+      const guest = tradeData.guest
+      // console.log('host: ', host)
+      // console.log('guest: ', guest)
+
+      if (!isCreator && guest !== nullPrincipalId && guest !== localUser) {
+        return console.error(
+          "Trade already initialized to another wallet: ",
+          guest
+        )
+      }
+
+      if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host && guest !== partner) {
+        console.log('trade partner found(guest): ', guest)
+        updatePartner(guest)
+      }
+
+      if (!isCreator && host !== nullPrincipalId && host !== localUser && host !== partner) {
+        console.log('trade partner found(host): ', host)
+        await plugActor.join_trade(localUser, curTradeId)
+        updatePartner(host)
+      }
+
+      if (isCreator) {
+        const rb = getRemoteBoxes(tradeData.guestData)
+        console.log('guestData: ', tradeData.guestData)
+        console.log('remoteBoxes: ', rb)
+        setRemoteBoxes(rb)
+      } else {
+        const rb = getRemoteBoxes(tradeData.hostData)
+        console.log('hostData: ', tradeData.hostData)
+        console.log('remoteBoxes: ', rb)
+        setRemoteBoxes(rb)
+      }
+
+      setLoading(false)
+    })()
+  }, [tradeData])
+
+  // Fetch data from IC in real time
+  useEffect(() => {
+    if (!plugActor) return
+    const interval = setInterval(async () => {
+      const trade = await plugActor.get_trade_by_id(curTradeId)
+      setTradeData(trade)
+    }, 10)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [curTradeId])
 
     // Fetch data from IC in real time
     useEffect(() => {
@@ -296,44 +325,33 @@ export const Trade = () => {
 
 
   const startTrade = async () => {
-    updateLoading(true);
-    const actor = await window.ic.plug.createActor({
-      canisterId: "jljwu-oiaaa-aaaam-qbala-cai",
-      interfaceFactory: idlFactory,
-    });
-    updatePlugActor(actor);
-    const trade = await actor.create_trade();
-    console.log("new trade: ", trade);
-    updateTradeData(trade);
-    updateIsCreator(true);
-    updateExistTrade(true);
-    updateLoading(false);
-  };
+    setPlugActor(trade_canister)
+  }
 
   const onAccept = () => {
-    if (!plugActor) return;
-    plugActor.accept(tradeData.id);
-    updateAccepted(true);
-    console.log("Trade accepted!");
-  };
+    if (!plugActor) return
+    plugActor.accept(localUser, tradeData.id)
+    setAccepted(true)
+    console.log("Trade accepted!")
+  }
 
   const onCancel = () => {
-    if (!plugActor) return;
-    plugActor.cancel(tradeData.id);
-    updateAccepted(false);
-    console.log("Trade canceled!");
-  };
+    if (!plugActor) return
+    plugActor.cancel(localUser, tradeData.id)
+    setAccepted(false)
+    console.log("Trade canceled!")
+  }
 
   const onPrevPage = () => {
-    if (curPage <= 1) return;
-    updateCurPage(curPage - 1);
-  };
+    if (curPage <= 1) return
+    setCurPage(curPage - 1)
+  }
 
   const onNextPage = () => {
-    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage);
-    if (curPage >= pageNum) return;
-    updateCurPage(curPage + 1);
-  };
+    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage)
+    if (curPage >= pageNum) return
+    setCurPage(curPage + 1)
+  }
 
   return (
     <div className="w-full h-full">
@@ -354,12 +372,12 @@ export const Trade = () => {
           {authenticated && !tradeData && (
             <Frame className="absolute w-full">
               <div className="flex items-center justify-center w-full h-full">
-                {!existTrade && (
+                {!tradeStarted && (
                   <Button variant="contained" onClick={startTrade}>
                     Start Trade
                   </Button>
                 )}
-                {existTrade && !tradeData && (
+                {tradeStarted && !tradeData && (
                   <Button variant="disabled">Starting...</Button>
                 )}
               </div>
@@ -374,7 +392,7 @@ export const Trade = () => {
                     <div className="text-2xl">Their Trade</div>
                     <div className="text-xl text-blue-900">
                       {(isCreator && tradeData.guestAccept) ||
-                      (!isCreator && tradeData.hostAccept)
+                        (!isCreator && tradeData.hostAccept)
                         ? "TRADE ACCEPTED"
                         : ""}
                     </div>
@@ -388,11 +406,11 @@ export const Trade = () => {
                             item={clone(box.item)}
                             index={index}
                             tradeBoxes={clone(remoteBoxes)}
-                            updateTradeBoxes={updateRemoteBoxes}
+                            updateTradeBoxes={setRemoteBoxes}
                             tradeLayer="remote"
                           />
                         </RemoteBox>
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -410,11 +428,11 @@ export const Trade = () => {
                             item={clone(box.item)}
                             index={index}
                             tradeBoxes={clone(localBoxes)}
-                            updateTradeBoxes={updateLocalBoxes}
+                            updateTradeBoxes={setLocalBoxes}
                             tradeLayer="local"
                           />
                         </BagBox>
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -424,7 +442,7 @@ export const Trade = () => {
                   <Button
                     variant="contained"
                     onClick={onAccept}
-                    disabled={accepted}
+                    disabled={accepted || !existItems(localBoxes)}
                     color="success"
                   >
                     Accept
@@ -441,7 +459,7 @@ export const Trade = () => {
                   <Button
                     variant="contained"
                     onClick={onCancel}
-                    disabled={!accepted}
+                    disabled={!accepted && existItems(localBoxes)}
                     color="error"
                   >
                     Cancel
@@ -479,11 +497,11 @@ export const Trade = () => {
                               item={clone(box.item)}
                               index={(curPage - 1) * boxNumPerPage + index}
                               tradeBoxes={clone(inventoryBoxes)}
-                              updateTradeBoxes={updateInventoryBoxes}
+                              updateTradeBoxes={setInventoryBoxes}
                               tradeLayer="inventory"
                             />
                           </BagBox>
-                        );
+                        )
                       })}
                   </div>
                 </div>
@@ -501,7 +519,7 @@ export const Trade = () => {
                 : "Waiting for IC wallet connection..."}
               <br />
               <br />
-              {existTrade && tradeData && !partner && !tradeId && (
+              {tradeStarted && tradeData && !partner && !tradeId && (
                 <>
                   <b> WAITING FOR TRADE PARTNER... </b>
                   <br />
@@ -515,7 +533,7 @@ export const Trade = () => {
                   </a>
                 </>
               )}
-              {existTrade && tradeData && partner && (
+              {tradeStarted && tradeData && partner && (
                 <>Trading with {partner}</>
               )}
             </div>
@@ -523,5 +541,5 @@ export const Trade = () => {
         </div>
       </DndProvider>
     </div>
-  );
-};
+  )
+}
