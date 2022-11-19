@@ -11,7 +11,7 @@ import { StateProvider } from "./StateProvider";
 const canisterId = "lj532-6iaaa-aaaah-qcc7a-cai";
 
 // Whitelist the canister id for Plug permissions
-const whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai"];
+const whitelist = [canisterId, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"];
 
 export const App = ({type}) => {
   return (

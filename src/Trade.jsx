@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { usePlug } from "@raydeck/useplug"
 
-import { inventoryBoxNum, nullPrincipalId } from "./utils/constants"
+import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
 import { StateContext } from "./StateProvider";
 import { trade_canister } from "./trade_canister/index"
@@ -44,7 +44,6 @@ export const Trade = () => {
     setTradeStarted,
     accepted,
     setAccepted,
-    boxNumPerPage,
     curPage,
     setCurPage,
     setLoading,
@@ -53,6 +52,7 @@ export const Trade = () => {
     curTradeId,
     setCurTradeId,
   } = useContext(StateContext);
+
   const principalString = principal ? window.ic.plug.principalId : "<none>"
 
   // handle guest joining existing trade from link
@@ -87,7 +87,7 @@ export const Trade = () => {
         trade = await plugActor.get_trade_by_id(tradeId)
         setIsCreator(false)
       } else {
-        trade = await plugActor.create_trade(localUser)
+        trade = await plugActor.create_trade()
         setIsCreator(true)
       }
 
@@ -184,7 +184,7 @@ export const Trade = () => {
         const index = localBoxes.findIndex((element) => element.id === item.id);
         if (index === -1) {
           // item is not in localBoxes, remove it
-          // plugActor.remove_item_from_trade(tradeId, item.id);
+          plugActor.remove_item_from_trade(tradeId, item.id);
           return removed = true;
         }
       }
@@ -247,7 +247,7 @@ export const Trade = () => {
 
       if (!isCreator && host !== nullPrincipalId && host !== localUser && host !== partner) {
         console.log('trade partner found(host): ', host)
-        await plugActor.join_trade(localUser, curTradeId)
+        await plugActor.join_trade(curTradeId)
         updatePartner(host)
       }
 
@@ -330,14 +330,14 @@ export const Trade = () => {
 
   const onAccept = () => {
     if (!plugActor) return
-    plugActor.accept(localUser, tradeData.id)
+    plugActor.accept(tradeData.id)
     setAccepted(true)
     console.log("Trade accepted!")
   }
 
   const onCancel = () => {
     if (!plugActor) return
-    plugActor.cancel(localUser, tradeData.id)
+    plugActor.cancel(tradeData.id)
     setAccepted(false)
     console.log("Trade canceled!")
   }
@@ -348,7 +348,7 @@ export const Trade = () => {
   }
 
   const onNextPage = () => {
-    const pageNum = Math.ceil(inventoryBoxNum / boxNumPerPage)
+    const pageNum = Math.ceil(inventoryBoxNum / pageBoxNum)
     if (curPage >= pageNum) return
     setCurPage(curPage + 1)
   }
@@ -486,8 +486,8 @@ export const Trade = () => {
                   <div className="flex flex-wrap gap-3">
                     {inventoryBoxes
                       .slice(
-                        (curPage - 1) * boxNumPerPage,
-                        curPage * boxNumPerPage
+                        (curPage - 1) * pageBoxNum,
+                        curPage * pageBoxNum
                       )
                       .map((box, index) => {
                         return (
@@ -495,7 +495,7 @@ export const Trade = () => {
                             <BagItem
                               key={`inventory_${box.id}`}
                               item={clone(box.item)}
-                              index={(curPage - 1) * boxNumPerPage + index}
+                              index={(curPage - 1) * pageBoxNum + index}
                               tradeBoxes={clone(inventoryBoxes)}
                               updateTradeBoxes={setInventoryBoxes}
                               tradeLayer="inventory"

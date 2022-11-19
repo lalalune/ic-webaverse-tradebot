@@ -32,7 +32,6 @@ export const StateProvider = ({children}) => {
     const [localBoxes, setLocalBoxes] = useState(initLocalBoxes);
     const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes);
     const [accepted, setAccepted] = useState(false);
-    const [boxNumberPerPage, setBoxNumberPerPage] = useState(pageBoxNum);
     const [curPage, setCurPage] = useState(1);
     const [selItem, setSelItem] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -57,8 +56,6 @@ export const StateProvider = ({children}) => {
         setInventoryBoxes,
         accepted,
         setAccepted,
-        boxNumberPerPage,
-        setBoxNumberPerPage,
         curPage,
         setCurPage,
         selItem,
