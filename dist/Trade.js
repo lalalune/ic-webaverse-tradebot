@@ -1,5 +1,6 @@
-import { b, b as e } from "./App.28d22994.js";
+import "react";
+import { b as r, b as t } from "./App.b8d03562.js";
 export {
-  b as App,
-  e as default
+  r as App,
+  t as default
 };

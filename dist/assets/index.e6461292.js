@@ -41595,7 +41595,7 @@ class HttpAgent {
     return decode(await response.arrayBuffer());
   }
   async syncTime(canisterId) {
-    const CanisterStatus = await __vitePreload(() => import("./index.47da914c.js"), true ? [] : void 0);
+    const CanisterStatus = await __vitePreload(() => import("./index.e4ae38c3.js"), true ? [] : void 0);
     const callTime = Date.now();
     try {
       if (!canisterId) {
@@ -42258,7 +42258,7 @@ const createActor = (canister_id2, options = {}) => {
   });
   return Actor.createActor(idlFactory, {
     agent,
-    canister_id: canister_id2,
+    canisterId: canister_id2,
     ...options.actorOptions
   });
 };

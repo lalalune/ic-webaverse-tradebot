@@ -1,5 +1,5 @@
 import metaversefile from "metaversefile";
-const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
+const { useApp, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
@@ -55,12 +55,8 @@ export default (e) => {
     }, 1000 / 60);
   };
 
-  const frameCb = null;
   useActivate(() => {
     activateCb && activateCb();
-  });
-  useFrame(() => {
-    frameCb && frameCb();
   });
 
   let live = true;
@@ -81,7 +77,7 @@ export default (e) => {
       app.add(o);
 
       {
-        const u = `${import.meta.url}trade.react`;
+        const u = `${baseUrl}/trade.react`;
         reactApp = await metaversefile.createAppAsync({
           start_url: u,
         });

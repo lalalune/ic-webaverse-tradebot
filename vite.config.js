@@ -48,6 +48,13 @@ if (process.env.COMPONENT) {
   config.build = {
       rollupOptions: {
           plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+            external: ['react', 'react-dom'],
+            output: {
+              globals: {
+                react: 'React',
+                'react-dom': 'ReactDOM'
+              },
+            },
       },
     assetsInlineLimit: 100000,
     emptyOutDir: false,
