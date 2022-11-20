@@ -63,4 +63,9 @@ export const useStore = create((set) => ({
 
   loading: false,
   setLoading: (newVal) => set((state) => ({ loading: newVal })),
+  authenticated: false,
+  setAuthenticated: (newVal) => set((state) => ({ authenticated: newVal })),
+
+  principal: null,
+  setPrincipal: (newVal) => set((state) => ({ principal: newVal }))
 }));

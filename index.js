@@ -1,5 +1,5 @@
 import metaversefile from "metaversefile";
-const { useApp, useActivate, useLoaders, usePhysics, useCleanup } =
+const { useApp, useWorld, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
@@ -24,7 +24,15 @@ export default (e) => {
     console.log("item url: ", item.url);
     metaversefile.createAppAsync({
       start_url: item.url,
-    });
+      position: [app.position.x + Math.random() * .1, app.position.y+1+ Math.random() * .1, app.position.z+1+ Math.random() * .1],
+
+      // 90 degree y rotation quaternion
+      quaternion: [0, 0.7071067811865476, 0, 0.7071067811865475],
+      scale: [0.5, 0.5, 0.5],
+    }).then(newApp => {
+
+      useWorld().appManager.importApp(newApp);
+    })
   };
 
   const activateCb = () => {

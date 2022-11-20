@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
@@ -11,25 +11,34 @@ import StyledBagItem from "./BagItem.style";
 
 export const PresentationalBagItem = ({ drag, isDragging, item }) => {
   const { setSelItem } = useStore();
-  const modelRef = useRef(null);
+  const modelRef = React.useRef(null);
 
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
+        console.log('handling click')
         if (window && window.openInWebaverse) {
+          console.log('webaverse click!')
           window.openInWebaverse(item);
+          setSelItem(item);
         } else {
+          console.log('single click for item select')
           setSelItem(item);
         }
         break;
       case 2:
+        console.log('handling double click')
         break;
       case 3:
+        console.log('handling triple click')
+        break;
+      default:
+        console.log('handling default click')
         break;
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const interval = setInterval(() => {
       const refContainer = modelRef && modelRef.current && modelRef.current.$container;
       if (refContainer && refContainer.children && refContainer.children.length > 1) {
@@ -48,17 +57,30 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
       isDragging={isDragging}
       onClick={handleClick}
     >
-      {isImage(item && item.url) && (
-        <img className="w-full h-full" src={item.url} />
+      {(isImage(item && item.url) || 
+        (!isImage(item && item.url) && !isMedia(item && item.url) && !isModel(item && item.url))) && (
+          <span onClick={handleClick}>
+          <img
+          crossOrigin="anonymous"
+          referrerPolicy="no-referer-on-downgrade"
+          className="w-full h-full"
+          src={item.url}
+          onClick={handleClick}
+          />
+          </span>
       )}
       {isMedia(item && item.url) && (
+        <span onClick={handleClick}>
         <video
+          crossOrigin="anonymous"
+          referrerPolicy="no-referer-on-downgrade"
           className="w-full h-full"
           src={item.url}
           autoPlay
           loop
           muted
         />
+        </span>
       )}
       {isModel(item && item.url) && (
         <GLTFModel
@@ -68,6 +90,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
           src={item.url}
           enabled={false}
           position={{ x: -0.15, y: -0.3, z: -0.3 }}
+          onClick={handleClick}
         />
       )}
     </StyledBagItem>
@@ -82,7 +105,7 @@ const BagItem = ({
   updateTradeBoxes,
   tradeLayer,
 }) => {
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const { plugActor, tradeData, localUser } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;

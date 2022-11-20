@@ -65,10 +65,15 @@ export const getUserTokens = async ({ agent, user }) => {
   //   },
   // ];
 
-  const collections = await getAllUserNFTs({
+  let collections
+  
+  try{ collections = await getAllUserNFTs({
     agent,
     user,
   });
+} catch (e) {
+  console.log(e)
+}
   console.log("collections: ", collections);
 
   // Make an array of all collections[i].tokens
@@ -81,13 +86,16 @@ export const getUserTokens = async ({ agent, user }) => {
           let newToken = { id: slot.toString(), canister_id: token.canister, collection: token.collection, index: token.index.toString(), slot }
           const jsonMetadata = token.metadata?.json?.value.TextContent;
 
+        // regex token.url and set isImage to true if it is an image
+        const isImage = token.url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+
           if (jsonMetadata) {
             const parseMetadata = JSON.parse(jsonMetadata);
             newToken.name = parseMetadata.name
-            newToken.url = parseMetadata.animation_url ?? parseMetadata.image
+            newToken.url = collection.icon
           } else {
             newToken.name = token.collection
-            newToken.url = token.url
+            newToken.url = collection.icon
           }
 
           newTokens[slot] = newToken
