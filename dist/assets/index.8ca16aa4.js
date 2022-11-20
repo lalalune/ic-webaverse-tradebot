@@ -7601,807 +7601,7 @@ var m$5 = reactDom.exports;
   client.createRoot = m$5.createRoot;
   client.hydrateRoot = m$5.hydrateRoot;
 }
-const css$2 = `/*
-! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com
-*/
-
-/*
-1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
-2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
-*/
-
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  /* 1 */
-  border-width: 0;
-  /* 2 */
-  border-style: solid;
-  /* 2 */
-  border-color: #e5e7eb;
-  /* 2 */
-}
-
-::before,
-::after {
-  --tw-content: '';
-}
-
-/*
-1. Add the correct height in Firefox.
-2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
-3. Ensure horizontal rules are visible by default.
-*/
-
-hr {
-  height: 0;
-  /* 1 */
-  color: inherit;
-  /* 2 */
-  border-top-width: 1px;
-  /* 3 */
-}
-
-/*
-Add the correct text decoration in Chrome, Edge, and Safari.
-*/
-
-abbr:where([title]) {
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
-}
-
-/*
-Remove the default font size and weight for headings.
-*/
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-/*
-Reset links to optimize for opt-in styling instead of opt-out.
-*/
-
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-/*
-Add the correct font weight in Edge and Safari.
-*/
-
-b,
-strong {
-  font-weight: bolder;
-}
-
-/*
-1. Use the user's configured \`mono\` font family by default.
-2. Correct the odd \`em\` font sizing in all browsers.
-*/
-
-code,
-kbd,
-samp,
-pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  /* 1 */
-  font-size: 1em;
-  /* 2 */
-}
-
-/*
-Add the correct font size in all browsers.
-*/
-
-small {
-  font-size: 80%;
-}
-
-/*
-Prevent \`sub\` and \`sup\` elements from affecting the line height in all browsers.
-*/
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-sup {
-  top: -0.5em;
-}
-
-/*
-1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
-2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
-3. Remove gaps between table borders by default.
-*/
-
-table {
-  text-indent: 0;
-  /* 1 */
-  border-color: inherit;
-  /* 2 */
-  border-collapse: collapse;
-  /* 3 */
-}
-
-/*
-1. Change the font styles in all browsers.
-2. Remove the margin in Firefox and Safari.
-3. Remove default padding in all browsers.
-*/
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit;
-  /* 1 */
-  font-size: 100%;
-  /* 1 */
-  font-weight: inherit;
-  /* 1 */
-  line-height: inherit;
-  /* 1 */
-  color: inherit;
-  /* 1 */
-  margin: 0;
-  /* 2 */
-  padding: 0;
-  /* 3 */
-}
-
-/*
-Remove the inheritance of text transform in Edge and Firefox.
-*/
-
-button,
-select {
-  text-transform: none;
-}
-
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Remove default button styles.
-*/
-
-button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
-  -webkit-appearance: button;
-  /* 1 */
-  background-color: transparent;
-  /* 2 */
-  background-image: none;
-  /* 2 */
-}
-
-/*
-Use the modern Firefox focus style for all focusable elements.
-*/
-
-:-moz-focusring {
-  outline: auto;
-}
-
-/*
-Remove the additional \`:invalid\` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
-*/
-
-:-moz-ui-invalid {
-  box-shadow: none;
-}
-
-/*
-Add the correct vertical alignment in Chrome and Firefox.
-*/
-
-progress {
-  vertical-align: baseline;
-}
-
-/*
-Correct the cursor style of increment and decrement buttons in Safari.
-*/
-
-::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
-  height: auto;
-}
-
-/*
-1. Correct the odd appearance in Chrome and Safari.
-2. Correct the outline style in Safari.
-*/
-
-[type='search'] {
-  -webkit-appearance: textfield;
-  /* 1 */
-  outline-offset: -2px;
-  /* 2 */
-}
-
-/*
-Remove the inner padding in Chrome and Safari on macOS.
-*/
-
-::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Change font properties to \`inherit\` in Safari.
-*/
-
-::-webkit-file-upload-button {
-  -webkit-appearance: button;
-  /* 1 */
-  font: inherit;
-  /* 2 */
-}
-
-/*
-Add the correct display in Chrome and Safari.
-*/
-
-summary {
-  display: list-item;
-}
-
-/*
-Removes the default spacing and border for appropriate elements.
-*/
-
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
-  margin: 0;
-}
-
-fieldset {
-  margin: 0;
-  padding: 0;
-}
-
-legend {
-  padding: 0;
-}
-
-ol,
-ul,
-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/*
-Prevent resizing textareas horizontally by default.
-*/
-
-textarea {
-  resize: vertical;
-}
-
-/*
-1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
-2. Set the default placeholder color to the user's configured gray 400 color.
-*/
-
-input::-moz-placeholder, textarea::-moz-placeholder {
-  opacity: 1;
-  /* 1 */
-  color: #9ca3af;
-  /* 2 */
-}
-
-input::placeholder,
-textarea::placeholder {
-  opacity: 1;
-  /* 1 */
-  color: #9ca3af;
-  /* 2 */
-}
-
-/*
-Set the default cursor for buttons.
-*/
-
-button,
-[role="button"] {
-  cursor: pointer;
-}
-
-/*
-Make sure disabled buttons don't get the pointer cursor.
-*/
-
-:disabled {
-  cursor: default;
-}
-
-/*
-1. Make replaced elements \`display: block\` by default. (https://github.com/mozdevs/cssremedy/issues/14)
-2. Add \`vertical-align: middle\` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
-   This can trigger a poorly considered lint error in some tools but is included by design.
-*/
-
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-  /* 1 */
-  vertical-align: middle;
-  /* 2 */
-}
-
-/*
-Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
-*/
-
-img,
-video {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Make elements with the HTML hidden attribute stay hidden by default */
-
-[hidden] {
-  display: none;
-}
-
-*, ::before, ::after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-}
-
-::backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-}
-
-.container {
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
-
-.fixed {
-  position: fixed;
-}
-
-.absolute {
-  position: absolute;
-}
-
-.relative {
-  position: relative;
-}
-
-.top-0 {
-  top: 0px;
-}
-
-.bottom-0 {
-  bottom: 0px;
-}
-
-.left-0 {
-  left: 0px;
-}
-
-.right-0 {
-  right: 0px;
-}
-
-.z-10 {
-  z-index: 10;
-}
-
-.flex {
-  display: flex;
-}
-
-.hidden {
-  display: none;
-}
-
-.h-full {
-  height: 100%;
-}
-
-.h-32 {
-  height: 8rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.w-1\\/4 {
-  width: 25%;
-}
-
-.w-4\\/5 {
-  width: 80%;
-}
-
-.w-32 {
-  width: 8rem;
-}
-
-.w-3\\/4 {
-  width: 75%;
-}
-
-.transform {
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.gap-1 {
-  gap: 0.25rem;
-}
-
-.gap-2 {
-  gap: 0.5rem;
-}
-
-.gap-3 {
-  gap: 0.75rem;
-}
-
-.gap-8 {
-  gap: 2rem;
-}
-
-.overflow-auto {
-  overflow: auto;
-}
-
-.rounded {
-  border-radius: 0.25rem;
-}
-
-.rounded-full {
-  border-radius: 9999px;
-}
-
-.border {
-  border-width: 1px;
-}
-
-.border-8 {
-  border-width: 8px;
-}
-
-.border-t-green-900 {
-  --tw-border-opacity: 1;
-  border-top-color: rgb(20 83 45 / var(--tw-border-opacity));
-}
-
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
-
-.bg-white {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-amber-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(120 53 15 / var(--tw-bg-opacity));
-}
-
-.bg-\\[url\\(\\'\\/frame\\/bg\\.jpg\\'\\)\\] {
-  background-image: url('/frame/bg.jpg');
-}
-
-.bg-cover {
-  background-size: cover;
-}
-
-.bg-center {
-  background-position: center;
-}
-
-.p-3 {
-  padding: 0.75rem;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
-.p-0\\.5 {
-  padding: 0.125rem;
-}
-
-.p-0 {
-  padding: 0px;
-}
-
-.p-2 {
-  padding: 0.5rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.font-bold {
-  font-weight: 700;
-}
-
-.text-red-900 {
-  --tw-text-opacity: 1;
-  color: rgb(127 29 29 / var(--tw-text-opacity));
-}
-
-.text-blue-900 {
-  --tw-text-opacity: 1;
-  color: rgb(30 58 138 / var(--tw-text-opacity));
-}
-
-.opacity-30 {
-  opacity: 0.3;
-}
-
-.shadow-inner {
-  --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.body {
-  line-height: 1.5;
-  /* 1 */
-  -webkit-text-size-adjust: 100%;
-  /* 2 */
-  -moz-tab-size: 4;
-  /* 3 */
-  -o-tab-size: 4;
-     tab-size: 4;
-  /* 3 */
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  /* 4 */
-  font-feature-settings: normal;
-  /* 5 */
-  margin: 0;
-  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  width: 100%;
-  background-color: black;
-}
-
-.body:before {
-  content: "";
-  background-repeat: repeat;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-#root {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  border: 0;
-}`;
+const css$2 = '/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  border-top-width: 1px;\n  /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user\'s configured `mono` font family by default.\n2. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0;\n  /* 1 */\n  border-color: inherit;\n  /* 2 */\n  border-collapse: collapse;\n  /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  font-weight: inherit;\n  /* 1 */\n  line-height: inherit;\n  /* 1 */\n  color: inherit;\n  /* 1 */\n  margin: 0;\n  /* 2 */\n  padding: 0;\n  /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\n[type=\'button\'],\n[type=\'reset\'],\n[type=\'submit\'] {\n  -webkit-appearance: button;\n  /* 1 */\n  background-color: transparent;\n  /* 2 */\n  background-image: none;\n  /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type=\'search\'] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user\'s configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role="button"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don\'t get the pointer cursor.\n*/\n\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block;\n  /* 1 */\n  vertical-align: middle;\n  /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n\n[hidden] {\n  display: none;\n}\n\n*, ::before, ::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n}\n\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n}\n\n.container {\n  width: 100%;\n}\n\n@media (min-width: 640px) {\n  .container {\n    max-width: 640px;\n  }\n}\n\n@media (min-width: 768px) {\n  .container {\n    max-width: 768px;\n  }\n}\n\n@media (min-width: 1024px) {\n  .container {\n    max-width: 1024px;\n  }\n}\n\n@media (min-width: 1280px) {\n  .container {\n    max-width: 1280px;\n  }\n}\n\n@media (min-width: 1536px) {\n  .container {\n    max-width: 1536px;\n  }\n}\n\n.fixed {\n  position: fixed;\n}\n\n.absolute {\n  position: absolute;\n}\n\n.relative {\n  position: relative;\n}\n\n.top-0 {\n  top: 0px;\n}\n\n.bottom-0 {\n  bottom: 0px;\n}\n\n.left-0 {\n  left: 0px;\n}\n\n.right-0 {\n  right: 0px;\n}\n\n.z-10 {\n  z-index: 10;\n}\n\n.flex {\n  display: flex;\n}\n\n.hidden {\n  display: none;\n}\n\n.h-full {\n  height: 100%;\n}\n\n.h-32 {\n  height: 8rem;\n}\n\n.w-full {\n  width: 100%;\n}\n\n.w-1\\/4 {\n  width: 25%;\n}\n\n.w-4\\/5 {\n  width: 80%;\n}\n\n.w-32 {\n  width: 8rem;\n}\n\n.w-3\\/4 {\n  width: 75%;\n}\n\n.transform {\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n.animate-spin {\n  animation: spin 1s linear infinite;\n}\n\n.cursor-pointer {\n  cursor: pointer;\n}\n\n.flex-col {\n  flex-direction: column;\n}\n\n.flex-wrap {\n  flex-wrap: wrap;\n}\n\n.items-center {\n  align-items: center;\n}\n\n.justify-center {\n  justify-content: center;\n}\n\n.justify-between {\n  justify-content: space-between;\n}\n\n.gap-1 {\n  gap: 0.25rem;\n}\n\n.gap-2 {\n  gap: 0.5rem;\n}\n\n.gap-3 {\n  gap: 0.75rem;\n}\n\n.gap-8 {\n  gap: 2rem;\n}\n\n.overflow-auto {\n  overflow: auto;\n}\n\n.rounded {\n  border-radius: 0.25rem;\n}\n\n.rounded-full {\n  border-radius: 9999px;\n}\n\n.border {\n  border-width: 1px;\n}\n\n.border-8 {\n  border-width: 8px;\n}\n\n.border-t-green-900 {\n  --tw-border-opacity: 1;\n  border-top-color: rgb(20 83 45 / var(--tw-border-opacity));\n}\n\n.bg-black {\n  --tw-bg-opacity: 1;\n  background-color: rgb(0 0 0 / var(--tw-bg-opacity));\n}\n\n.bg-white {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 255 255 / var(--tw-bg-opacity));\n}\n\n.bg-amber-900 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(120 53 15 / var(--tw-bg-opacity));\n}\n\n.bg-\\[url\\(\\\'\\/frame\\/bg\\.jpg\\\'\\)\\] {\n  background-image: url(\'/frame/bg.jpg\');\n}\n\n.bg-cover {\n  background-size: cover;\n}\n\n.bg-center {\n  background-position: center;\n}\n\n.p-3 {\n  padding: 0.75rem;\n}\n\n.p-4 {\n  padding: 1rem;\n}\n\n.p-0\\.5 {\n  padding: 0.125rem;\n}\n\n.p-0 {\n  padding: 0px;\n}\n\n.p-2 {\n  padding: 0.5rem;\n}\n\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\n\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\n\n.font-bold {\n  font-weight: 700;\n}\n\n.text-red-900 {\n  --tw-text-opacity: 1;\n  color: rgb(127 29 29 / var(--tw-text-opacity));\n}\n\n.text-blue-900 {\n  --tw-text-opacity: 1;\n  color: rgb(30 58 138 / var(--tw-text-opacity));\n}\n\n.opacity-30 {\n  opacity: 0.3;\n}\n\n.shadow-inner {\n  --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\n\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\n\n* {\n  box-sizing: border-box;\n}\n\n.body {\n  margin: 0;\n  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",\n    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  height: 100%;\n  width: 100%;\n  background-color: black;\n}\n\n.body:before {\n  content: "";\n  background-repeat: repeat;\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",\n    monospace;\n}\n\nul {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n}\n\n#root {\n  width: 100vw;\n  height: 100vh;\n  margin: 0;\n  border: 0;\n}\n';
 function styleInject(css2, ref) {
   if (ref === void 0)
     ref = {};
@@ -42420,7 +41620,7 @@ class HttpAgent {
     return decode(await response.arrayBuffer());
   }
   async syncTime(canisterId) {
-    const CanisterStatus = await __vitePreload(() => import("./index.f6c62a66.js"), true ? [] : void 0);
+    const CanisterStatus = await __vitePreload(() => import("./index.8c7bc9a2.js"), true ? [] : void 0);
     const callTime = Date.now();
     try {
       if (!canisterId) {
@@ -60151,7 +59351,7 @@ const Loading = () => {
   const {
     loading
   } = useStore();
-  return /* @__PURE__ */ jsx("div", {
+  return !loading ? null : /* @__PURE__ */ jsx("div", {
     className: classnames("absolute top-0 bottom-0 left-0 right-0 z-10 flex justify-center items-center opacity-30 bg-white", {
       hidden: !loading
     }),
@@ -60488,137 +59688,139 @@ const Trade = () => {
               children: "Connect"
             })
           })
-        }), authenticated && !tradeData && /* @__PURE__ */ jsx(Frame, {
-          className: "absolute w-full",
-          children: /* @__PURE__ */ jsxs("div", {
-            className: "flex items-center justify-center w-full h-full",
-            children: [!tradeStarted && /* @__PURE__ */ jsx(Button$1, {
-              variant: "contained",
-              onClick: startTrade,
-              children: "Start Trade"
-            }), tradeStarted && !tradeData && /* @__PURE__ */ jsx(Button$1, {
-              variant: "disabled",
-              children: "Starting..."
-            })]
-          })
-        }), /* @__PURE__ */ jsxs("div", {
-          className: "absolute w-full h-full overflow-auto",
-          children: [authenticated && tradeData && /* @__PURE__ */ jsxs(React.Fragment, {
-            children: [/* @__PURE__ */ jsx(Frame, {
+        }), authenticated && !tradeData && /* @__PURE__ */ jsxs(React.Fragment, {
+          children: [/* @__PURE__ */ jsx(Frame, {
+            className: "absolute w-full",
+            children: /* @__PURE__ */ jsxs("div", {
+              className: "flex items-center justify-center w-full h-full",
+              children: [!tradeStarted && /* @__PURE__ */ jsx(Button$1, {
+                variant: "contained",
+                onClick: startTrade,
+                children: "Start Trade"
+              }), tradeStarted && !tradeData && /* @__PURE__ */ jsx(Button$1, {
+                variant: "disabled",
+                children: "Starting..."
+              })]
+            })
+          }), /* @__PURE__ */ jsxs("div", {
+            className: "absolute w-full h-full overflow-auto",
+            children: [authenticated && tradeData && /* @__PURE__ */ jsxs(React.Fragment, {
+              children: [/* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-col gap-2",
+                  children: [/* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center justify-between",
+                    children: [/* @__PURE__ */ jsx("div", {
+                      className: "text-2xl",
+                      children: "Their Trade"
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "text-xl text-blue-900",
+                      children: isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept ? "TRADE ACCEPTED" : ""
+                    })]
+                  }), /* @__PURE__ */ jsx("div", {
+                    className: "flex flex-wrap gap-3",
+                    children: remoteBoxes.map((box, index2) => {
+                      return /* @__PURE__ */ jsx(RemoteBox$1, {
+                        children: /* @__PURE__ */ jsx(BagItem, {
+                          item: clone(box.item),
+                          index: index2,
+                          tradeBoxes: clone(remoteBoxes),
+                          updateTradeBoxes: setRemoteBoxes,
+                          tradeLayer: "remote"
+                        }, `remote_${box.id}`)
+                      }, box.id);
+                    })
+                  })]
+                })
+              }), /* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-col gap-2",
+                  children: [/* @__PURE__ */ jsx("div", {
+                    className: "text-2xl",
+                    children: "Your Trade"
+                  }), /* @__PURE__ */ jsx("div", {
+                    className: "flex flex-wrap gap-3",
+                    children: localBoxes.map((box, index2) => {
+                      return /* @__PURE__ */ jsx(BagBox$1, {
+                        children: /* @__PURE__ */ jsx(BagItem, {
+                          isForTrade: true,
+                          item: clone(box.item),
+                          index: index2,
+                          tradeBoxes: clone(localBoxes),
+                          updateTradeBoxes: setLocalBoxes,
+                          tradeLayer: "local"
+                        }, `local_${box.id}`)
+                      }, box.id);
+                    })
+                  })]
+                })
+              }), /* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-wrap items-center justify-center w-full h-full gap-8",
+                  children: [/* @__PURE__ */ jsx(Button$1, {
+                    variant: "contained",
+                    onClick: onAccept,
+                    disabled: accepted || !existItems(localBoxes),
+                    color: "success",
+                    children: "Accept"
+                  }), /* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center justify-center gap-2",
+                    children: [/* @__PURE__ */ jsx("label", {
+                      htmlFor: "icp",
+                      children: "ICP: "
+                    }), /* @__PURE__ */ jsx("input", {
+                      className: "w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900",
+                      id: "icp",
+                      type: "number"
+                    })]
+                  }), /* @__PURE__ */ jsx(Button$1, {
+                    variant: "contained",
+                    onClick: onCancel,
+                    disabled: !accepted && existItems(localBoxes),
+                    color: "error",
+                    children: "Cancel"
+                  })]
+                })
+              })]
+            }), principal && /* @__PURE__ */ jsx(Frame, {
               children: /* @__PURE__ */ jsxs("div", {
                 className: "flex flex-col gap-2",
                 children: [/* @__PURE__ */ jsxs("div", {
                   className: "flex items-center justify-between",
                   children: [/* @__PURE__ */ jsx("div", {
                     className: "text-2xl",
-                    children: "Their Trade"
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "text-xl text-blue-900",
-                    children: isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept ? "TRADE ACCEPTED" : ""
+                    children: "Inventory"
+                  }), /* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center gap-2 text-xl",
+                    children: [/* @__PURE__ */ jsx("div", {
+                      className: "cursor-pointer",
+                      onClick: onPrevPage,
+                      children: "<"
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "text-blue-900",
+                      children: curPage
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "cursor-pointer",
+                      onClick: onNextPage,
+                      children: ">"
+                    })]
                   })]
                 }), /* @__PURE__ */ jsx("div", {
                   className: "flex flex-wrap gap-3",
-                  children: remoteBoxes.map((box, index2) => {
-                    return /* @__PURE__ */ jsx(RemoteBox$1, {
-                      children: /* @__PURE__ */ jsx(BagItem, {
-                        item: clone(box.item),
-                        index: index2,
-                        tradeBoxes: clone(remoteBoxes),
-                        updateTradeBoxes: setRemoteBoxes,
-                        tradeLayer: "remote"
-                      }, `remote_${box.id}`)
-                    }, box.id);
-                  })
-                })]
-              })
-            }), /* @__PURE__ */ jsx(Frame, {
-              children: /* @__PURE__ */ jsxs("div", {
-                className: "flex flex-col gap-2",
-                children: [/* @__PURE__ */ jsx("div", {
-                  className: "text-2xl",
-                  children: "Your Trade"
-                }), /* @__PURE__ */ jsx("div", {
-                  className: "flex flex-wrap gap-3",
-                  children: localBoxes.map((box, index2) => {
+                  children: inventoryBoxes.slice((curPage - 1) * pageBoxNum, curPage * pageBoxNum).map((box, index2) => {
                     return /* @__PURE__ */ jsx(BagBox$1, {
                       children: /* @__PURE__ */ jsx(BagItem, {
-                        isForTrade: true,
                         item: clone(box.item),
-                        index: index2,
-                        tradeBoxes: clone(localBoxes),
-                        updateTradeBoxes: setLocalBoxes,
-                        tradeLayer: "local"
-                      }, `local_${box.id}`)
+                        index: (curPage - 1) * pageBoxNum + index2,
+                        tradeBoxes: clone(inventoryBoxes),
+                        updateTradeBoxes: setInventoryBoxes,
+                        tradeLayer: "inventory"
+                      }, `inventory_${box.id}`)
                     }, box.id);
                   })
-                })]
-              })
-            }), /* @__PURE__ */ jsx(Frame, {
-              children: /* @__PURE__ */ jsxs("div", {
-                className: "flex flex-wrap items-center justify-center w-full h-full gap-8",
-                children: [/* @__PURE__ */ jsx(Button$1, {
-                  variant: "contained",
-                  onClick: onAccept,
-                  disabled: accepted || !existItems(localBoxes),
-                  color: "success",
-                  children: "Accept"
-                }), /* @__PURE__ */ jsxs("div", {
-                  className: "flex items-center justify-center gap-2",
-                  children: [/* @__PURE__ */ jsx("label", {
-                    htmlFor: "icp",
-                    children: "ICP: "
-                  }), /* @__PURE__ */ jsx("input", {
-                    className: "w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900",
-                    id: "icp",
-                    type: "number"
-                  })]
-                }), /* @__PURE__ */ jsx(Button$1, {
-                  variant: "contained",
-                  onClick: onCancel,
-                  disabled: !accepted && existItems(localBoxes),
-                  color: "error",
-                  children: "Cancel"
                 })]
               })
             })]
-          }), principal && /* @__PURE__ */ jsx(Frame, {
-            children: /* @__PURE__ */ jsxs("div", {
-              className: "flex flex-col gap-2",
-              children: [/* @__PURE__ */ jsxs("div", {
-                className: "flex items-center justify-between",
-                children: [/* @__PURE__ */ jsx("div", {
-                  className: "text-2xl",
-                  children: "Inventory"
-                }), /* @__PURE__ */ jsxs("div", {
-                  className: "flex items-center gap-2 text-xl",
-                  children: [/* @__PURE__ */ jsx("div", {
-                    className: "cursor-pointer",
-                    onClick: onPrevPage,
-                    children: "<"
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "text-blue-900",
-                    children: curPage
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "cursor-pointer",
-                    onClick: onNextPage,
-                    children: ">"
-                  })]
-                })]
-              }), /* @__PURE__ */ jsx("div", {
-                className: "flex flex-wrap gap-3",
-                children: inventoryBoxes.slice((curPage - 1) * pageBoxNum, curPage * pageBoxNum).map((box, index2) => {
-                  return /* @__PURE__ */ jsx(BagBox$1, {
-                    children: /* @__PURE__ */ jsx(BagItem, {
-                      item: clone(box.item),
-                      index: (curPage - 1) * pageBoxNum + index2,
-                      tradeBoxes: clone(inventoryBoxes),
-                      updateTradeBoxes: setInventoryBoxes,
-                      tradeLayer: "inventory"
-                    }, `inventory_${box.id}`)
-                  }, box.id);
-                })
-              })]
-            })
           })]
         })]
       }), /* @__PURE__ */ jsx("div", {

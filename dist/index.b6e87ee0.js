@@ -1,4 +1,4 @@
-import { C as k, A as g, t as x, l as P, P as A, d as v, a as D } from "./App.5a95e6c3.js";
+import { C as k, A as g, t as x, l as P, P as A, d as v, a as D } from "./App.66bb0dd6.js";
 import "react";
 const T = async (t) => {
   const { canisterId: o, agent: d, paths: r } = t, c = [...new Set(r)], a = c.map((e) => f(e, o)), n = /* @__PURE__ */ new Map(), b = c.map((e, l) => (async () => {

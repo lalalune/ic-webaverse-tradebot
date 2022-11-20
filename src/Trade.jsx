@@ -371,6 +371,7 @@ export const Trade = () => {
             </Frame>
           )}
           {authenticated && !tradeData && (
+            <React.Fragment>
             <Frame className="absolute w-full">
               <div className="flex items-center justify-center w-full h-full">
                 {!tradeStarted && (
@@ -383,7 +384,6 @@ export const Trade = () => {
                 )}
               </div>
             </Frame>
-          )}
             <div className="absolute w-full h-full overflow-auto">
             {authenticated && tradeData && (
               <React.Fragment>
@@ -509,6 +509,8 @@ export const Trade = () => {
               </Frame>
               )}
               </div>
+              </React.Fragment>
+          )}
         </div>
         <div className="absolute top-0 right-0 w-1/4 h-full">
           <Frame className="h-full">

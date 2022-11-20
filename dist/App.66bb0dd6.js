@@ -1,6 +1,6 @@
 import * as React from "react";
 import React__default, { useLayoutEffect, forwardRef, useContext, createContext, createElement, Fragment as Fragment$1, useRef, Children, isValidElement, cloneElement, memo, useEffect, useState, useCallback, useMemo, useDebugValue, Component } from "react";
-const css$2 = `*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.top-0{top:0px}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.z-10{z-index:10}.flex{display:flex}.hidden{display:none}.h-full{height:100%}.h-32{height:8rem}.w-full{width:100%}.w-1\\/4{width:25%}.w-4\\/5{width:80%}.w-32{width:8rem}.w-3\\/4{width:75%}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-8{gap:2rem}.overflow-auto{overflow:auto}.rounded{border-radius:.25rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-8{border-width:8px}.border-t-green-900{--tw-border-opacity: 1;border-top-color:rgb(20 83 45 / var(--tw-border-opacity))}.bg-black{--tw-bg-opacity: 1;background-color:rgb(0 0 0 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-amber-900{--tw-bg-opacity: 1;background-color:rgb(120 53 15 / var(--tw-bg-opacity))}.bg-\\[url\\(\\'\\/frame\\/bg\\.jpg\\'\\)\\]{background-image:url(/frame/bg.jpg)}.bg-cover{background-size:cover}.bg-center{background-position:center}.p-3{padding:.75rem}.p-4{padding:1rem}.p-0\\.5{padding:.125rem}.p-0{padding:0}.p-2{padding:.5rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.text-red-900{--tw-text-opacity: 1;color:rgb(127 29 29 / var(--tw-text-opacity))}.text-blue-900{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity))}.opacity-30{opacity:.3}.shadow-inner{--tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / .05);--tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}*{box-sizing:border-box}.body{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;margin:0;font-family:Roboto,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;height:100%;width:100%;background-color:#000}.body:before{content:"";background-repeat:repeat;position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}code{font-family:source-code-pro,Menlo,Monaco,Consolas,Courier New,monospace}ul{list-style-type:none;margin:0;padding:0}#root{width:100vw;height:100vh;margin:0;border:0}
+const css$2 = `hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.top-0{top:0px}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.z-10{z-index:10}.flex{display:flex}.hidden{display:none}.h-full{height:100%}.h-32{height:8rem}.w-full{width:100%}.w-1\\/4{width:25%}.w-4\\/5{width:80%}.w-32{width:8rem}.w-3\\/4{width:75%}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-8{gap:2rem}.overflow-auto{overflow:auto}.rounded{border-radius:.25rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-8{border-width:8px}.border-t-green-900{--tw-border-opacity: 1;border-top-color:rgb(20 83 45 / var(--tw-border-opacity))}.bg-black{--tw-bg-opacity: 1;background-color:rgb(0 0 0 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-amber-900{--tw-bg-opacity: 1;background-color:rgb(120 53 15 / var(--tw-bg-opacity))}.bg-\\[url\\(\\'\\/frame\\/bg\\.jpg\\'\\)\\]{background-image:url(/frame/bg.jpg)}.bg-cover{background-size:cover}.bg-center{background-position:center}.p-3{padding:.75rem}.p-4{padding:1rem}.p-0\\.5{padding:.125rem}.p-0{padding:0}.p-2{padding:.5rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.text-red-900{--tw-text-opacity: 1;color:rgb(127 29 29 / var(--tw-text-opacity))}.text-blue-900{--tw-text-opacity: 1;color:rgb(30 58 138 / var(--tw-text-opacity))}.opacity-30{opacity:.3}.shadow-inner{--tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / .05);--tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}*{box-sizing:border-box}.body{margin:0;font-family:Roboto,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;height:100%;width:100%;background-color:#000}.body:before{content:"";background-repeat:repeat;position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}code{font-family:source-code-pro,Menlo,Monaco,Consolas,Courier New,monospace}ul{list-style-type:none;margin:0;padding:0}#root{width:100vw;height:100vh;margin:0;border:0}
 `;
 function styleInject(Q, ee) {
   ee === void 0 && (ee = {});
@@ -26679,7 +26679,7 @@ class HttpAgent {
     return decode(await ye.arrayBuffer());
   }
   async syncTime(ee) {
-    const ne = await import("./index.00390454.js"), ie = Date.now();
+    const ne = await import("./index.b6e87ee0.js"), ie = Date.now();
     try {
       ee || console.log("Syncing time with the IC. No canisterId provided, so falling back to ryjl3-tyaaa-aaaaa-aaaba-cai");
       const ce = (await ne.request({
@@ -45854,14 +45854,14 @@ const PresentationalBagItem = ({
   const {
     loading: Q
   } = useStore();
-  return /* @__PURE__ */ jsx("div", {
+  return Q ? /* @__PURE__ */ jsx("div", {
     className: classnames("absolute top-0 bottom-0 left-0 right-0 z-10 flex justify-center items-center opacity-30 bg-white", {
       hidden: !Q
     }),
     children: /* @__PURE__ */ jsx("div", {
       className: "w-32 h-32 border-8 rounded-full border-t-green-900 animate-spin"
     })
-  });
+  }) : null;
 }, ItemDetails = () => {
   const {
     selItem: Q
@@ -46095,131 +46095,133 @@ const updatePartner = (Q) => {
               children: "Connect"
             })
           })
-        }), Q && !le && /* @__PURE__ */ jsx(Frame, {
-          className: "absolute w-full",
-          children: /* @__PURE__ */ jsxs("div", {
-            className: "flex items-center justify-center w-full h-full",
-            children: [!Oe && /* @__PURE__ */ jsx(Button$1, {
-              variant: "contained",
-              onClick: Gt,
-              children: "Start Trade"
-            }), Oe && !le && /* @__PURE__ */ jsx(Button$1, {
-              variant: "disabled",
-              children: "Starting..."
-            })]
-          })
-        }), /* @__PURE__ */ jsxs("div", {
-          className: "absolute w-full h-full overflow-auto",
-          children: [Q && le && /* @__PURE__ */ jsxs(React__default.Fragment, {
-            children: [/* @__PURE__ */ jsx(Frame, {
+        }), Q && !le && /* @__PURE__ */ jsxs(React__default.Fragment, {
+          children: [/* @__PURE__ */ jsx(Frame, {
+            className: "absolute w-full",
+            children: /* @__PURE__ */ jsxs("div", {
+              className: "flex items-center justify-center w-full h-full",
+              children: [!Oe && /* @__PURE__ */ jsx(Button$1, {
+                variant: "contained",
+                onClick: Gt,
+                children: "Start Trade"
+              }), Oe && !le && /* @__PURE__ */ jsx(Button$1, {
+                variant: "disabled",
+                children: "Starting..."
+              })]
+            })
+          }), /* @__PURE__ */ jsxs("div", {
+            className: "absolute w-full h-full overflow-auto",
+            children: [Q && le && /* @__PURE__ */ jsxs(React__default.Fragment, {
+              children: [/* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-col gap-2",
+                  children: [/* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center justify-between",
+                    children: [/* @__PURE__ */ jsx("div", {
+                      className: "text-2xl",
+                      children: "Their Trade"
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "text-xl text-blue-900",
+                      children: ae && le.guest_accept || !ae && le.host_accept ? "TRADE ACCEPTED" : ""
+                    })]
+                  }), /* @__PURE__ */ jsx("div", {
+                    className: "flex flex-wrap gap-3",
+                    children: ye.map((Ht, Lt) => /* @__PURE__ */ jsx(RemoteBox$1, {
+                      children: /* @__PURE__ */ jsx(BagItem, {
+                        item: clone(Ht.item),
+                        index: Lt,
+                        tradeBoxes: clone(ye),
+                        updateTradeBoxes: fe,
+                        tradeLayer: "remote"
+                      }, `remote_${Ht.id}`)
+                    }, Ht.id))
+                  })]
+                })
+              }), /* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-col gap-2",
+                  children: [/* @__PURE__ */ jsx("div", {
+                    className: "text-2xl",
+                    children: "Your Trade"
+                  }), /* @__PURE__ */ jsx("div", {
+                    className: "flex flex-wrap gap-3",
+                    children: Be.map((Ht, Lt) => /* @__PURE__ */ jsx(BagBox$1, {
+                      children: /* @__PURE__ */ jsx(BagItem, {
+                        isForTrade: !0,
+                        item: clone(Ht.item),
+                        index: Lt,
+                        tradeBoxes: clone(Be),
+                        updateTradeBoxes: Ee,
+                        tradeLayer: "local"
+                      }, `local_${Ht.id}`)
+                    }, Ht.id))
+                  })]
+                })
+              }), /* @__PURE__ */ jsx(Frame, {
+                children: /* @__PURE__ */ jsxs("div", {
+                  className: "flex flex-wrap items-center justify-center w-full h-full gap-8",
+                  children: [/* @__PURE__ */ jsx(Button$1, {
+                    variant: "contained",
+                    onClick: pt,
+                    disabled: Se || !existItems(Be),
+                    color: "success",
+                    children: "Accept"
+                  }), /* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center justify-center gap-2",
+                    children: [/* @__PURE__ */ jsx("label", {
+                      htmlFor: "icp",
+                      children: "ICP: "
+                    }), /* @__PURE__ */ jsx("input", {
+                      className: "w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900",
+                      id: "icp",
+                      type: "number"
+                    })]
+                  }), /* @__PURE__ */ jsx(Button$1, {
+                    variant: "contained",
+                    onClick: xt,
+                    disabled: !Se && existItems(Be),
+                    color: "error",
+                    children: "Cancel"
+                  })]
+                })
+              })]
+            }), ee && /* @__PURE__ */ jsx(Frame, {
               children: /* @__PURE__ */ jsxs("div", {
                 className: "flex flex-col gap-2",
                 children: [/* @__PURE__ */ jsxs("div", {
                   className: "flex items-center justify-between",
                   children: [/* @__PURE__ */ jsx("div", {
                     className: "text-2xl",
-                    children: "Their Trade"
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "text-xl text-blue-900",
-                    children: ae && le.guest_accept || !ae && le.host_accept ? "TRADE ACCEPTED" : ""
+                    children: "Inventory"
+                  }), /* @__PURE__ */ jsxs("div", {
+                    className: "flex items-center gap-2 text-xl",
+                    children: [/* @__PURE__ */ jsx("div", {
+                      className: "cursor-pointer",
+                      onClick: Yt,
+                      children: "<"
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "text-blue-900",
+                      children: Fe
+                    }), /* @__PURE__ */ jsx("div", {
+                      className: "cursor-pointer",
+                      onClick: Jt,
+                      children: ">"
+                    })]
                   })]
                 }), /* @__PURE__ */ jsx("div", {
                   className: "flex flex-wrap gap-3",
-                  children: ye.map((Ht, Lt) => /* @__PURE__ */ jsx(RemoteBox$1, {
+                  children: me.slice((Fe - 1) * pageBoxNum, Fe * pageBoxNum).map((Ht, Lt) => /* @__PURE__ */ jsx(BagBox$1, {
                     children: /* @__PURE__ */ jsx(BagItem, {
                       item: clone(Ht.item),
-                      index: Lt,
-                      tradeBoxes: clone(ye),
-                      updateTradeBoxes: fe,
-                      tradeLayer: "remote"
-                    }, `remote_${Ht.id}`)
+                      index: (Fe - 1) * pageBoxNum + Lt,
+                      tradeBoxes: clone(me),
+                      updateTradeBoxes: ge,
+                      tradeLayer: "inventory"
+                    }, `inventory_${Ht.id}`)
                   }, Ht.id))
-                })]
-              })
-            }), /* @__PURE__ */ jsx(Frame, {
-              children: /* @__PURE__ */ jsxs("div", {
-                className: "flex flex-col gap-2",
-                children: [/* @__PURE__ */ jsx("div", {
-                  className: "text-2xl",
-                  children: "Your Trade"
-                }), /* @__PURE__ */ jsx("div", {
-                  className: "flex flex-wrap gap-3",
-                  children: Be.map((Ht, Lt) => /* @__PURE__ */ jsx(BagBox$1, {
-                    children: /* @__PURE__ */ jsx(BagItem, {
-                      isForTrade: !0,
-                      item: clone(Ht.item),
-                      index: Lt,
-                      tradeBoxes: clone(Be),
-                      updateTradeBoxes: Ee,
-                      tradeLayer: "local"
-                    }, `local_${Ht.id}`)
-                  }, Ht.id))
-                })]
-              })
-            }), /* @__PURE__ */ jsx(Frame, {
-              children: /* @__PURE__ */ jsxs("div", {
-                className: "flex flex-wrap items-center justify-center w-full h-full gap-8",
-                children: [/* @__PURE__ */ jsx(Button$1, {
-                  variant: "contained",
-                  onClick: pt,
-                  disabled: Se || !existItems(Be),
-                  color: "success",
-                  children: "Accept"
-                }), /* @__PURE__ */ jsxs("div", {
-                  className: "flex items-center justify-center gap-2",
-                  children: [/* @__PURE__ */ jsx("label", {
-                    htmlFor: "icp",
-                    children: "ICP: "
-                  }), /* @__PURE__ */ jsx("input", {
-                    className: "w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900",
-                    id: "icp",
-                    type: "number"
-                  })]
-                }), /* @__PURE__ */ jsx(Button$1, {
-                  variant: "contained",
-                  onClick: xt,
-                  disabled: !Se && existItems(Be),
-                  color: "error",
-                  children: "Cancel"
                 })]
               })
             })]
-          }), ee && /* @__PURE__ */ jsx(Frame, {
-            children: /* @__PURE__ */ jsxs("div", {
-              className: "flex flex-col gap-2",
-              children: [/* @__PURE__ */ jsxs("div", {
-                className: "flex items-center justify-between",
-                children: [/* @__PURE__ */ jsx("div", {
-                  className: "text-2xl",
-                  children: "Inventory"
-                }), /* @__PURE__ */ jsxs("div", {
-                  className: "flex items-center gap-2 text-xl",
-                  children: [/* @__PURE__ */ jsx("div", {
-                    className: "cursor-pointer",
-                    onClick: Yt,
-                    children: "<"
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "text-blue-900",
-                    children: Fe
-                  }), /* @__PURE__ */ jsx("div", {
-                    className: "cursor-pointer",
-                    onClick: Jt,
-                    children: ">"
-                  })]
-                })]
-              }), /* @__PURE__ */ jsx("div", {
-                className: "flex flex-wrap gap-3",
-                children: me.slice((Fe - 1) * pageBoxNum, Fe * pageBoxNum).map((Ht, Lt) => /* @__PURE__ */ jsx(BagBox$1, {
-                  children: /* @__PURE__ */ jsx(BagItem, {
-                    item: clone(Ht.item),
-                    index: (Fe - 1) * pageBoxNum + Lt,
-                    tradeBoxes: clone(me),
-                    updateTradeBoxes: ge,
-                    tradeLayer: "inventory"
-                  }, `inventory_${Ht.id}`)
-                }, Ht.id))
-              })]
-            })
           })]
         })]
       }), /* @__PURE__ */ jsx("div", {
