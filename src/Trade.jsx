@@ -1,8 +1,7 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import { usePlug } from "@raydeck/useplug"
 
 import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
@@ -17,6 +16,15 @@ import BagItem from "./BagItem"
 import { Loading } from "./Loading"
 import { ItemDetails } from "./ItemDetails"
 
+const { ic } = window;
+export const plug = ic?.plug;
+
+// The mainnet Router Canister Id
+const canister_id = "lj532-6iaaa-aaaah-qcc7a-cai";
+
+// Whitelist the canister id for Plug permissions
+const whitelist = [canister_id, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"];
+
 const url = new URL(window.location.href)
 const tradeId = url.searchParams.get("tradeId")
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
@@ -26,8 +34,10 @@ const updatePartner = val => {
   partner = val
 }
 
+const host = "https://mainnet.dfinity.network";
+const timeout = 120000;
+
 export const Trade = () => {
-  const { authenticated, principal, login, agent } = usePlug()
   const {
     isCreator,
     setIsCreator,
@@ -52,12 +62,35 @@ export const Trade = () => {
     setLocalUser,
     curTradeId,
     setCurTradeId,
+    principal,
+    setPrincipal,
+    authenticated,
+    setAuthenticated
   } = useStore();
+
+  const login = async () => {
+    try {
+      if (plug) {
+        const publicKey = await plug.requestConnect({
+          whitelist,
+          host,
+          timeout,
+        });
+        if (publicKey) {
+          const principal = await plug.agent.getPrincipal();
+          setPrincipal(principal);
+          setAuthenticated(true);
+        }
+      }
+    } catch (e) {
+      console.log("Error", e);
+    }
+  }
 
   const principalString = principal ? window.ic.plug.principalId : "<none>"
 
   // handle guest joining existing trade from link
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       if (!principal) return
       setLoading(true)
@@ -66,7 +99,7 @@ export const Trade = () => {
       setLocalUser(user)
       // const balance = await window.ic.plug.requestBalance()
       // console.log("balance: ", balance)
-      const newTokens = Object.values(await getUserTokens({ agent, user }));
+      const newTokens = Object.values(await getUserTokens({ agent: plug.agent, user }));
       inventoryTokens = clone(newTokens)
       setInventoryBoxes(getInventoryBoxes(inventoryTokens))
       if (tradeId) {
@@ -76,7 +109,7 @@ export const Trade = () => {
     })()
   }, [principal])
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       if (!plugActor || !localUser) return
       setLoading(true)
@@ -101,7 +134,7 @@ export const Trade = () => {
   }, [plugActor])
 
   // update the trade data
-  useEffect(() => {
+  React.useEffect(() => {
     // local boxes changed, which means the user has changed the inventory
     // update the trade data
     
@@ -198,7 +231,7 @@ export const Trade = () => {
 
   // TODO: need me? review
   // Host listen for joining guest
-  useEffect(() => {
+  React.useEffect(() => {
     if (!plugActor || !tradeData || partner) return;
     const interval = setInterval(async () => {
       const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
@@ -223,7 +256,7 @@ export const Trade = () => {
 
   // TODO: need me? review
   // update user data and inventory after plug login
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       if (!plugActor && !curTradeId && !tradeData) return
       setLoading(true)
@@ -269,7 +302,7 @@ export const Trade = () => {
   }, [tradeData])
 
   // Fetch data from IC in real time
-  useEffect(() => {
+  React.useEffect(() => {
     if (!plugActor) return
     const interval = setInterval(async () => {
       const trade = await plugActor.get_trade_by_id(curTradeId)
@@ -281,7 +314,7 @@ export const Trade = () => {
   }, [curTradeId])
 
     // Fetch data from IC in real time
-    useEffect(() => {
+    React.useEffect(() => {
       if (!plugActor || !tradeData || !partner) return;
       const interval = setInterval(async () => {
         const rtTrade = await plugActor.get_trade_by_id(tradeData.id);
@@ -371,6 +404,7 @@ export const Trade = () => {
             </Frame>
           )}
           {authenticated && !tradeData && (
+            <React.Fragment>
             <Frame className="absolute w-full">
               <div className="flex items-center justify-center w-full h-full">
                 {!tradeStarted && (
@@ -383,7 +417,6 @@ export const Trade = () => {
                 )}
               </div>
             </Frame>
-          )}
             <div className="absolute w-full h-full overflow-auto">
             {authenticated && tradeData && (
               <React.Fragment>
@@ -509,6 +542,8 @@ export const Trade = () => {
               </Frame>
               )}
               </div>
+              </React.Fragment>
+          )}
         </div>
         <div className="absolute top-0 right-0 w-1/4 h-full">
           <Frame className="h-full">

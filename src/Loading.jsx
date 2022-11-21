@@ -6,7 +6,7 @@ import { useStore } from "./store";
 export const Loading = () => {
   const { loading } = useStore();
 
-  return (
+  return !loading ? null : (
     <div
       className={classnames(
         "absolute top-0 bottom-0 left-0 right-0 z-10 flex justify-center items-center opacity-30 bg-white",

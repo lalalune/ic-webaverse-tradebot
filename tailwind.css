@@ -41,7 +41,7 @@ html {
   -moz-tab-size: 4;
   /* 3 */
   -o-tab-size: 4;
-     tab-size: 4;
+  tab-size: 4;
   /* 3 */
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
@@ -82,7 +82,7 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 
 abbr:where([title]) {
   -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+  text-decoration: underline dotted;
 }
 
 /*
@@ -595,15 +595,6 @@ video {
   height: 8rem;
 }
 
-.max-h-full {
-  max-height: 100%;
-}
-
-.min-h-min {
-  min-height: -moz-min-content;
-  min-height: min-content;
-}
-
 .w-full {
   width: 100%;
 }
@@ -624,13 +615,8 @@ video {
   width: 75%;
 }
 
-.min-w-min {
-  min-width: -moz-min-content;
-  min-width: min-content;
-}
-
-.max-w-full {
-  max-width: 100%;
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 @keyframes spin {
@@ -789,31 +775,89 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-*::-webkit-scrollbar {
-  width: 8px;
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-*::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 4px #fefefe;
-  border-radius: 4px;
+* {
+  box-sizing: border-box;
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #5d402d;
-  outline: 1px solid #5d402d;
-  border-radius: 4px;
-}
-
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+.body {
+  margin: 0;
+  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+}
+
+.body:before {
+  content: "";
+  background-repeat: repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.body {
+  margin: 0;
+  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+}
+
+.body:before {
+  content: "";
+  background-repeat: repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
 #root {

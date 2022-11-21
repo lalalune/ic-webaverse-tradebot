@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 
 import StyledBagBox from "./BagBox.style";
 
@@ -9,4 +9,4 @@ const RemoteBox = ({ className, children }) => {
     </StyledBagBox>
   );
 };
-export default memo(RemoteBox);
+export default React.memo(RemoteBox);
