@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "concurrently \"npm run start:tailwind\" \"npm run dev\"",
+    "start:tailwind": "npx tailwindcss -i ./index.css -o ./tailwind.css --watch",
     "dev": "vite",
     "dev:webaverse": "npx serve -p 8001 --cors",
     "build": "vite build && npm run build:component",
@@ -37,7 +39,6 @@
     "react-scripts": "3.3.0",
     "react-tooltip": "^3.11.2",
     "rollup-plugin-polyfill-node": "^0.11.0",
-    "style-inject": "^0.3.0",
     "styled-components": "^4.4.1",
     "three": "^0.146.0",
     "util": "^0.12.5",

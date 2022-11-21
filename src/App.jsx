@@ -1,7 +1,7 @@
-import css from "./index.css";
-import styleInject from 'style-inject';
+// import css from "./index.css";
+// import styleInject from 'style-inject';
 
-styleInject(css);
+// styleInject(css);
 
 import React from "react";
 
