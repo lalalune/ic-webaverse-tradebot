@@ -13,51 +13,51 @@ import inlineImage from "esbuild-plugin-inline-image"
 // https://vitejs.dev/config/
 const config = defineConfig({
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg'],
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {
-        plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
     },
     minify: false
-},
+  },
   optimizeDeps: {
     esbuildOptions: {
-        define: {
-            global: "globalThis",
-        },
-        plugins: [
-          inlineImage(),
-          NodeModulesPolyfillPlugin(),
-          NodeGlobalsPolyfillPlugin({
-                process: true,
-                buffer: true,
-            }),
-        ],
+      define: {
+        global: "globalThis",
+      },
+      plugins: [
+        inlineImage(),
+        NodeModulesPolyfillPlugin(),
+        NodeGlobalsPolyfillPlugin({
+          process: true,
+          buffer: true,
+        }),
+      ],
     },
-},
-resolve: {
+  },
+  resolve: {
     alias: {
-        process: "process/browser",
-        stream: "stream-browserify",
-        zlib: "browserify-zlib",
-        util: "util",
+      process: "process/browser",
+      stream: "stream-browserify",
+      zlib: "browserify-zlib",
+      util: "util",
     },
-},
+  },
 })
 
 // if --component flag is passed, we are building a component
 if (process.env.COMPONENT) {
   config.build = {
-      rollupOptions: {
-          plugins: [tailwindcss(), inject({ Buffer: ['buffer', 'Buffer'] })],
-            external: ['react', 'react-dom'],
-            output: {
-              globals: {
-                react: 'React',
-                'react-dom': 'ReactDOM'
-              },
-            },
+    rollupOptions: {
+      plugins: [tailwindcss(), inject({ Buffer: ['buffer', 'Buffer'] })],
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        },
       },
+    },
     assetsInlineLimit: 10000000,
     emptyOutDir: false,
     lib: {

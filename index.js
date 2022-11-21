@@ -24,7 +24,7 @@ export default (e) => {
     console.log("item url: ", item.url);
     metaversefile.createAppAsync({
       start_url: item.url,
-      position: [app.position.x + Math.random() * .1, app.position.y+1+ Math.random() * .1, app.position.z+1+ Math.random() * .1],
+      position: [app.position.x + Math.random() * .1, app.position.y + 1 + Math.random() * .1, app.position.z + 1 + Math.random() * .1],
 
       // 90 degree y rotation quaternion
       quaternion: [0, 0.7071067811865476, 0, 0.7071067811865475],
@@ -75,7 +75,7 @@ export default (e) => {
       const u = `${baseUrl}console_fantasy.glb`;
       let o = await new Promise((accept, reject) => {
         const { gltfLoader } = useLoaders();
-        gltfLoader.load(u, accept, function onprogress() {}, reject);
+        gltfLoader.load(u, accept, function onprogress() { }, reject);
       });
       if (!live) {
         o.destroy();
