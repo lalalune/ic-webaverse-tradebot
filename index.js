@@ -1,9 +1,6 @@
 import metaversefile from "metaversefile";
-const { useApp, useFrame, useActivate, useLoaders, usePhysics, useCleanup } =
+const { useApp, useWorld, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
-  import { Buffer } from 'buffer'
-  globalThis.Buffer = Buffer
-  window.Buffer = Buffer
 const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
 
 export default (e) => {
@@ -27,7 +24,15 @@ export default (e) => {
     console.log("item url: ", item.url);
     metaversefile.createAppAsync({
       start_url: item.url,
-    });
+      position: [app.position.x + Math.random() * .1, app.position.y+1+ Math.random() * .1, app.position.z+1+ Math.random() * .1],
+
+      // 90 degree y rotation quaternion
+      quaternion: [0, 0.7071067811865476, 0, 0.7071067811865475],
+      scale: [0.5, 0.5, 0.5],
+    }).then(newApp => {
+
+      useWorld().appManager.importApp(newApp);
+    })
   };
 
   const activateCb = () => {
@@ -58,12 +63,8 @@ export default (e) => {
     }, 1000 / 60);
   };
 
-  const frameCb = null;
   useActivate(() => {
     activateCb && activateCb();
-  });
-  useFrame(() => {
-    frameCb && frameCb();
   });
 
   let live = true;
@@ -84,7 +85,7 @@ export default (e) => {
       app.add(o);
 
       {
-        const u = `${import.meta.url}trade.react`;
+        const u = `${baseUrl}/trade.react`;
         reactApp = await metaversefile.createAppAsync({
           start_url: u,
         });

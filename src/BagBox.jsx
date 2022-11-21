@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 
 import StyledBagBox from "./BagBox.style";
 
@@ -10,4 +10,4 @@ const BagBox = ({ className, children, isOver, canDrop }) => {
   );
 };
 
-export default memo(BagBox);
+export default React.memo(BagBox);

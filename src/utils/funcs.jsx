@@ -65,10 +65,16 @@ export const getUserTokens = async ({ agent, user }) => {
     },
   ];
 
-  const collections = await getAllUserNFTs({
-    agent,
-    user,
-  });
+  let collections
+
+  try {
+    collections = await getAllUserNFTs({
+      agent,
+      user,
+    });
+  } catch (e) {
+    console.log(e)
+  }
   console.log("collections: ", collections);
 
   // Make an array of all collections[i].tokens
@@ -76,22 +82,27 @@ export const getUserTokens = async ({ agent, user }) => {
   let slot = 0;
 
   collections.forEach((collection) => {
-    collection.tokens.forEach((token) => {
-      let newToken = { id: slot.toString(), canister_id: token.canister, collection: token.collection, index: token.index.toString(), slot }
-      const jsonMetadata = token.metadata?.json?.value.TextContent;
+    if (!collection.name.toLowerCase().includes("cipher")) {
+      collection.tokens.forEach((token) => {
+        let newToken = { id: slot.toString(), canister_id: token.canister, collection: token.collection, index: token.index.toString(), slot }
+        const jsonMetadata = token.metadata?.json?.value.TextContent;
 
-      if (jsonMetadata) {
-        const parseMetadata = JSON.parse(jsonMetadata);
-        newToken.name = parseMetadata.name
-        newToken.url = parseMetadata.animation_url ?? parseMetadata.image
-      } else {
-        newToken.name = token.collection
-        newToken.url = token.url
-      }
+        // regex token.url and set isImage to true if it is an image
+        const isImage = token.url.match(/\.(jpeg|jpg|gif|png)$/) != null;
 
-      newTokens[slot] = newToken
-      slot++;
-    });
+        if (jsonMetadata) {
+          const parseMetadata = JSON.parse(jsonMetadata);
+          newToken.name = parseMetadata.name
+          newToken.url = collection.icon
+        } else {
+          newToken.name = token.collection
+          newToken.url = collection.icon
+        }
+
+        newTokens[slot] = newToken
+        slot++;
+      });
+    }
   });
 
   console.log("newTokens: ", newTokens);
