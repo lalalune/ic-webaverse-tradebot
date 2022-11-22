@@ -5,12 +5,8 @@ use ic_cdk::export::{
     candid::{CandidType, Deserialize},
     Principal,
 };
-
-// use chrono::Utc;
-use once_cell::sync::Lazy;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
-use std::sync::Mutex;
 
 type TradeStore = BTreeMap<i32, Trade>;
 
@@ -37,19 +33,6 @@ struct Item {
 
 thread_local! {
     static TRADE_STORE: RefCell<TradeStore> = RefCell::default();
-}
-
-static GLOBAL_STR: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new("global_str".to_string()));
-
-#[query(name = "set_global_str")]
-fn set_global_str(str: String) -> String {
-    *GLOBAL_STR.lock().unwrap() = str;
-    GLOBAL_STR.lock().unwrap().to_string()
-}
-
-#[query(name = "get_global_str")]
-fn get_global_str() -> String {
-    GLOBAL_STR.lock().unwrap().to_string()
 }
 
 #[query(name = "create_trade")]

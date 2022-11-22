@@ -18,9 +18,6 @@ type Item = record {
 };
 
 service: {
-    "set_global_str": (text) -> (text);
-    "get_global_str": () -> (text);
-
     "create_trade": () -> (Trade);
     "get_all_trades": () -> (vec Trade) query;
     "get_trade_by_id": (text) -> (opt Trade) query;

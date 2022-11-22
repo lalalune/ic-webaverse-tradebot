@@ -122,17 +122,20 @@ export const Trade = () => {
         setIsCreator(false)
       } else {
         trade = await plugActor.create_trade()
+        console.log('trade: ', trade)
+        const tempTrades = await plugActor.get_all_trades()
+        console.log('tempTrades: ', tempTrades)
         tempLocalUserId = Principal.fromUint8Array(trade.host._arr).toText()
         setIsCreator(true)
       }
 
-      console.log('tempLocalUserId: ', tempLocalUserId)
-      console.log('trade: ', trade)
-      setLocalUserId(tempLocalUserId)
-      setTradeData(trade)
-      setCurTradeId(trade.id)
-      setTradeStarted(true)
-      setLoading(false)
+      // console.log('tempLocalUserId: ', tempLocalUserId)
+      // console.log('trade: ', trade)
+      // setLocalUserId(tempLocalUserId)
+      // setTradeData(trade)
+      // setCurTradeId(trade.id)
+      // setTradeStarted(true)
+      // setLoading(false)
     })()
   }, [plugActor])
 
