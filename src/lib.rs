@@ -26,11 +26,20 @@ struct Trade {
     pub fulfilled: bool,
 }
 
-thread_local! {
-    static TRADE_STORE: RefCell<TradeStore> = RefCell::default();
+#[derive(Clone, CandidType, Deserialize)]
+struct Item {
+    pub name: String,
+    pub canister_id: Principal,
+    pub token_id: i32,
 }
 
-#[query(name = "create_trade")]
+thread_local! {
+    // local static global variable that can be accessed from all canisters
+    // stable memory
+    static TRADE_STORE: RefCell<TradeStore> = RefCell::new(BTreeMap::new());
+}
+
+#[update(name = "create_trade")]
 fn create_trade() -> Trade {
     let id = TRADE_STORE.with(|store| store.borrow().len());
     let trade = Trade {
@@ -45,13 +54,21 @@ fn create_trade() -> Trade {
         guest: Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap(),
         fulfilled: false,
     };
+    
     TRADE_STORE.with(|store| store.borrow_mut().insert(id.try_into().unwrap(), trade.clone()));
+
     trade
 }
 
-#[query(name = "delete_trade")]
+#[update(name = "delete_trade")]
 fn delete_trade(id: String) -> Trade {
     TRADE_STORE.with(|store| store.borrow_mut().remove(&id.parse().unwrap()).unwrap())
+}
+
+#[query(name = "get_all_trades")]
+fn get_all_trades() -> Vec<Trade> {
+    // return all values of TRADE_STORE as an array
+    TRADE_STORE.with(|store| store.borrow().values().cloned().collect())
 }
 
 #[query(name = "join_trade")]
@@ -81,11 +98,6 @@ fn get_trade_by_id(id: String) -> Trade {
     TRADE_STORE.with(|store| store.borrow().get(&id.parse().unwrap()).unwrap().clone())
 }
 
-#[query(name = "get_all_trades")]
-fn get_all_trades() -> Vec<Trade> {
-    TRADE_STORE.with(|store| store.borrow().values().cloned().collect())
-}
-
 #[update(name = "add_item_to_trade")]
 fn add_item_to_trade(id: String, item: Item) -> Trade {
     TRADE_STORE.with(|store| {
@@ -112,13 +124,6 @@ fn add_item_to_trade(id: String, item: Item) -> Trade {
             trade
         }
     })
-}
-
-#[derive(Clone, CandidType, Deserialize)]
-struct Item {
-    pub name: String,
-    pub canister_id: Principal,
-    pub token_id: i32,
 }
 
 #[update(name = "remove_item_from_trade")]
