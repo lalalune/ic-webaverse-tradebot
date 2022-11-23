@@ -18,25 +18,19 @@ type Item = record {
 };
 
 service: {
-    "set_global_str": (text) -> (text);
-    "get_global_str": () -> (text);
-
     "create_trade": () -> (Trade);
-    "get_all_trades": () -> (vec Trade) query;
-    "get_trade_by_id": (text) -> (opt Trade) query;
-    "join_trade": (text) -> (Trade);
-    "leave_trade": (text) -> (Trade);
     "delete_trade": (text) -> (Trade);
-
-    "add_item_to_trade": (text, Item) -> (Trade);
-    "remove_item_from_trade": (text, Item) -> (Trade);
-
-    "add_item_to_escrow": (text, Item) -> (Trade);
+    "get_all_trades": () -> (vec Trade) query;
+    "get_trade_by_id": (text) -> (Trade) query;
     "get_escrow_items": (text) -> (vec Item) query;
     "get_escrow_items_self": (text) -> (vec Item) query;
-    "remove_item_from_escrow": (text, Item) -> (Trade);
-    "withdraw_from_escrow": (text, Item) -> (Item);
-
     "accept": (text) -> (Trade);
     "cancel": (text) -> (Trade);
+    "join_trade": (text) -> (Trade);
+    "leave_trade": (text) -> (Trade);
+    "add_item_to_trade": (text, Item) -> (Trade);
+    "remove_item_from_trade": (text, Item) -> (Trade);
+    "add_item_to_escrow": (text, Item) -> (Trade);
+    "remove_item_from_escrow": (text, Item) -> (Trade);
+    "withdraw_from_escrow": (text, Item) -> (Item);
 }
