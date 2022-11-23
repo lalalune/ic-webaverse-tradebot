@@ -18,14 +18,14 @@ type Item = record {
 };
 
 service: {
-    "get_trade_by_id": (text) -> (opt Trade) query;
+    "create_trade": () -> (Trade);
+    "delete_trade": (text) -> (Trade);
     "get_all_trades": () -> (vec Trade) query;
+    "get_trade_by_id": (text) -> (opt Trade) query;
     "get_escrow_items": (text) -> (vec Item) query;
     "get_escrow_items_self": (text) -> (vec Item) query;
-    "create_trade": () -> (Trade);
     "accept": (text) -> (Trade);
     "cancel": (text) -> (Trade);
-    "delete_trade": (text) -> (Trade);
     "join_trade": (text) -> (Trade);
     "leave_trade": (text) -> (Trade);
     "add_item_to_trade": (text, Item) -> (Trade);
