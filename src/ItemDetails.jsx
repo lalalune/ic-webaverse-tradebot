@@ -20,13 +20,13 @@ export const ItemDetails = () => {
     };
   }, []);
 
-  console.log('selItem: ', selItem, isImage(selItem?.url))
+  // console.log('selItem: ', selItem, isImage(selItem?.url))
 
-  return selItem ? (
+  return selItem?.canister_id ? (
     <div className="absolute bottom-0 right-0 z-10 flex flex-col w-1/4 gap-1 p-4 bg-black-100">
       <div className="flex flex-col gap-1 font-bold text-red-900">
-        <div>{selItem?.collection}</div>
-        <div>{"#7849"}</div>
+        <div>{selItem?.name}</div>
+        <div>{`#${selItem?.token_id}`}</div>
       </div>
       <div className="flex items-center justify-center w-full p-4 bg-black">
         {(isImage(selItem?.url) ||

@@ -37,7 +37,7 @@ export const getInventoryBoxes = (inventoryItems) => {
 export const getUserTokens = async ({ agent, user }) => {
   return [
     {
-      token_id: '1',
+      token_id: '8510',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 1",
       name: "token 1",
@@ -45,7 +45,7 @@ export const getUserTokens = async ({ agent, user }) => {
       slot: 0,
     },
     {
-      token_id: '2',
+      token_id: '8511',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 2",
       name: "token 2",
@@ -53,7 +53,7 @@ export const getUserTokens = async ({ agent, user }) => {
       slot: 1,
     },
     {
-      token_id: '3',
+      token_id: '8512',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 3",
       name: "token 3",
