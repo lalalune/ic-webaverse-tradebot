@@ -1,6 +1,6 @@
 export const idlFactory = ({ IDL }) => {
   const Item = IDL.Record({
-    'token_id' : IDL.Int,
+    'token_id' : IDL.Text,
     'name' : IDL.Text,
     'canister_id' : IDL.Principal,
   });
@@ -26,7 +26,7 @@ export const idlFactory = ({ IDL }) => {
     'get_all_trades' : IDL.Func([], [IDL.Vec(Trade)], ['query']),
     'get_escrow_items' : IDL.Func([IDL.Text], [IDL.Vec(Item)], ['query']),
     'get_escrow_items_self' : IDL.Func([IDL.Text], [IDL.Vec(Item)], ['query']),
-    'get_trade_by_id' : IDL.Func([IDL.Text], [IDL.Opt(Trade)], ['query']),
+    'get_trade_by_id' : IDL.Func([IDL.Text], [Trade], ['query']),
     'join_trade' : IDL.Func([IDL.Text], [Trade], []),
     'leave_trade' : IDL.Func([IDL.Text], [Trade], []),
     'remove_item_from_escrow' : IDL.Func([IDL.Text, Item], [Trade], []),

@@ -27,8 +27,8 @@ export const useStore = create((set) => ({
   isCreator: false,
   setIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
 
-  localUser: null,
-  setLocalUser: (newVal) => set((state) => ({ localUser: newVal })),
+  localUserId: null,
+  setLocalUserId: (newVal) => set((state) => ({ localUserId: newVal })),
 
   curTradeId: null,
   setCurTradeId: (newVal) => set((state) => ({ curTradeId: newVal })),

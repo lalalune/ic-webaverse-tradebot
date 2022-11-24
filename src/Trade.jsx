@@ -33,7 +33,6 @@ let partnerId
 const updatePartnerId = val => {
   partnerId = val
 }
-
 const host = "https://mainnet.dfinity.network"
 const timeout = 120000
 
@@ -76,6 +75,7 @@ export const Trade = () => {
           host,
           timeout,
         })
+
         if (publicKey) {
           const principal = await plug.agent.getPrincipal()
           setPrincipal(principal)
@@ -87,18 +87,18 @@ export const Trade = () => {
     }
   }
 
-  const principalString = principal ? window.ic.plug.principalId : "<none>"
+  const principalString = principal ? plug.principalId : "<none>"
 
   // handle guest joining existing trade from link
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       if (!principal) return
       setLoading(true)
-      // const balance = await window.ic.plug.requestBalance()
+      // const balance = await plug.requestBalance()
       // console.log("balance: ", balance)
-      const newTokens = Object.values(await getUserTokens({ agent: plug.agent, user: window.ic.plug.principalId }))
+      const newTokens = Object.values(await getUserTokens({ agent: plug.agent, user: plug.principalId }))
       inventoryTokens = clone(newTokens)
-      setInventoryBoxes(getInventoryBoxes(inventoryTokens))
+      setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // if user is guest, join the trade
       if (tradeId) {
@@ -122,20 +122,17 @@ export const Trade = () => {
         setIsCreator(false)
       } else {
         trade = await plugActor.create_trade()
-        console.log('trade: ', trade)
-        const tempTrades = await plugActor.get_all_trades()
-        console.log('tempTrades: ', tempTrades)
         tempLocalUserId = Principal.fromUint8Array(trade.host._arr).toText()
         setIsCreator(true)
       }
 
-      // console.log('tempLocalUserId: ', tempLocalUserId)
-      // console.log('trade: ', trade)
-      // setLocalUserId(tempLocalUserId)
-      // setTradeData(trade)
-      // setCurTradeId(trade.id)
-      // setTradeStarted(true)
-      // setLoading(false)
+      console.log('tempLocalUserId: ', tempLocalUserId)
+      console.log('trade: ', trade)
+      setLocalUserId(tempLocalUserId)
+      setTradeData(trade)
+      setCurTradeId(trade.id)
+      setTradeStarted(true)
+      setLoading(false)
     })()
   }, [plugActor])
 
@@ -180,18 +177,9 @@ export const Trade = () => {
         updatePartnerId(hostId)
       }
 
-      // if (isCreator) {
-      //   const rb = getRemoteBoxes(tradeData.guest_data)
-      //   console.log('guest_data: ', tradeData.guest_data)
-      //   console.log('remoteBoxes: ', rb)
-      //   setRemoteBoxes(rb)
-      // } else {
-      //   const rb = getRemoteBoxes(tradeData.host_data)
-      //   console.log('host_data: ', tradeData.host_data)
-      //   console.log('remoteBoxes: ', rb)
-      //   setRemoteBoxes(rb)
-      // }
-
+      const rbs = isCreator ? getRemoteBoxes(tradeData.guest_data) : getRemoteBoxes(tradeData.host_data)
+      console.log('remoteBoxes: ', rbs)
+      setRemoteBoxes(rbs)
       setLoading(false)
     })()
   }, [tradeData])
@@ -237,8 +225,8 @@ export const Trade = () => {
         <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
           <Loading />
           {!authenticated && (
-            <Frame className="absolute w-full h-full">
-              <div className="flex items-center justify-center w-full h-full">
+            <Frame className="h-full">
+              <div className="flex items-center justify-center h-full">
                 <Button variant="contained" onClick={onConnect}>
                   Connect
                 </Button>
@@ -246,8 +234,8 @@ export const Trade = () => {
             </Frame>
           )}
           {authenticated && !tradeData && (
-            <Frame className="w-full">
-              <div className="flex items-center justify-center w-full h-full">
+            <Frame>
+              <div className="flex items-center justify-center h-full">
                 {!tradeStarted && (
                   <Button variant="contained" onClick={startTrade}>
                     Start Trade
@@ -261,7 +249,7 @@ export const Trade = () => {
           )}
           {authenticated && tradeData && (
             <>
-              <Frame className="w-full">
+              <Frame>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <div className="text-2xl">Their Trade</div>
@@ -291,7 +279,7 @@ export const Trade = () => {
                 </div>
               </Frame>
               <Frame>
-                <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-col gap-2">
                   <div className="text-2xl">Your Trade</div>
                   <div className="flex flex-wrap gap-3">
                     {localBoxes.map((box, index) => {
@@ -312,37 +300,39 @@ export const Trade = () => {
                   </div>
                 </div>
               </Frame>
-              <Frame className="flex flex-wrap items-center justify-center w-full h-full gap-8">
-                <Button
-                  variant="contained"
-                  onClick={onAccept}
-                  disabled={accepted || !existItems(localBoxes)}
-                  color="success"
-                >
-                  Accept
-                </Button>
-                <div className="flex items-center justify-center gap-2">
-                  {/* Numerical input for amount of ICP to add to trade */}
-                  <label htmlFor="icp">ICP: </label>
-                  <input
-                    className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
-                    id="icp"
-                    type="number"
-                  />
+              <Frame>
+                <div className="flex flex-wrap items-center justify-center gap-8">
+                  <Button
+                    variant="contained"
+                    onClick={onAccept}
+                    disabled={accepted || !existItems(localBoxes)}
+                    color="success"
+                  >
+                    Accept
+                  </Button>
+                  <div className="flex items-center justify-center gap-2">
+                    {/* Numerical input for amount of ICP to add to trade */}
+                    <label htmlFor="icp">ICP: </label>
+                    <input
+                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
+                      id="icp"
+                      type="number"
+                    />
+                  </div>
+                  <Button
+                    variant="contained"
+                    onClick={onCancel}
+                    disabled={!accepted && existItems(localBoxes)}
+                    color="error"
+                  >
+                    Cancel
+                  </Button>
                 </div>
-                <Button
-                  variant="contained"
-                  onClick={onCancel}
-                  disabled={!accepted && existItems(localBoxes)}
-                  color="error"
-                >
-                  Cancel
-                </Button>
               </Frame>
             </>
           )}
           {principal && inventoryTokens.length && (
-            <Frame className="w-full">
+            <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <div className="text-2xl">Inventory</div>

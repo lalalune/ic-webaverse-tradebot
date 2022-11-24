@@ -28,7 +28,7 @@ struct Trade {
 struct Item {
     pub name: String,
     pub canister_id: Principal,
-    pub token_id: i32,
+    pub token_id: String,
 }
 
 thread_local! {

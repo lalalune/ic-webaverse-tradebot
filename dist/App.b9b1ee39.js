@@ -24300,9 +24300,9 @@ const createImpl = (e) => {
   setIsCreator: (n) => e((o) => ({
     isCreator: n
   })),
-  localUser: null,
-  setLocalUser: (n) => e((o) => ({
-    localUser: n
+  localUserId: null,
+  setLocalUserId: (n) => e((o) => ({
+    localUserId: n
   })),
   curTradeId: null,
   setCurTradeId: (n) => e((o) => ({
@@ -45240,7 +45240,7 @@ const PresentationalBagItem = ({
   const g = React__default.useRef(null), {
     plugActor: m,
     tradeData: w,
-    localUser: B
+    localUserId: B
   } = useStore();
   e || (e = {}), e.isForTrade = n;
   const [{
@@ -45369,8 +45369,8 @@ const updatePartner = (e) => {
     curPage: D,
     setCurPage: V,
     setLoading: O,
-    localUser: H,
-    setLocalUser: q,
+    localUserId: H,
+    setLocalUserId: q,
     curTradeId: $,
     setCurTradeId: re,
     principal: ce,

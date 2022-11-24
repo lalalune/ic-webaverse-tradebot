@@ -38514,9 +38514,9 @@ const useStore = create((set) => ({
   setIsCreator: (newVal) => set((state) => ({
     isCreator: newVal
   })),
-  localUser: null,
-  setLocalUser: (newVal) => set((state) => ({
-    localUser: newVal
+  localUserId: null,
+  setLocalUserId: (newVal) => set((state) => ({
+    localUserId: newVal
   })),
   curTradeId: null,
   setCurTradeId: (newVal) => set((state) => ({
@@ -58459,7 +58459,7 @@ const BagItem = ({
   const {
     plugActor,
     tradeData,
-    localUser
+    localUserId
   } = useStore();
   if (!item)
     item = {};
@@ -58491,13 +58491,13 @@ const BagItem = ({
       console.log("cloneDragTradeItem: ", cloneDragTradeItem);
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
-          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, cloneDragTradeItem);
+          const res = await plugActor.add_item_to_trade(localUserId, tradeData.id, cloneDragTradeItem);
           console.log("add_item_to_trade res: ", res);
         })();
       }
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
         (async () => {
-          const res = await plugActor.remove_item_from_trade(localUser, tradeData.id, cloneDragTradeItem.id);
+          const res = await plugActor.remove_item_from_trade(localUserId, tradeData.id, cloneDragTradeItem.id);
           console.log("remove_item_from_trade res: ", res);
         })();
       }
@@ -58631,8 +58631,8 @@ const Trade = () => {
     curPage,
     setCurPage,
     setLoading,
-    localUser,
-    setLocalUser,
+    localUserId,
+    setLocalUserId,
     curTradeId,
     setCurTradeId,
     principal,
@@ -58666,7 +58666,7 @@ const Trade = () => {
       setLoading(true);
       const user = window.ic.plug.principalId;
       console.log("local user: ", user);
-      setLocalUser(user);
+      setLocalUserId(user);
       const newTokens = Object.values(await getUserTokens({
         agent: plug.agent,
         user
@@ -58681,7 +58681,7 @@ const Trade = () => {
   }, [principal]);
   React.useEffect(() => {
     (async () => {
-      if (!plugActor || !localUser)
+      if (!plugActor || !localUserId)
         return;
       setLoading(true);
       console.log("plugActor: ", plugActor);
@@ -58783,14 +58783,14 @@ const Trade = () => {
       setLoading(true);
       const host2 = tradeData.host;
       const guest = tradeData.guest;
-      if (!isCreator && guest !== nullPrincipalId && guest !== localUser) {
+      if (!isCreator && guest !== nullPrincipalId && guest !== localUserId) {
         return console.error("Trade already initialized to another wallet: ", guest);
       }
-      if (isCreator && guest !== nullPrincipalId && guest !== localUser && guest !== host2 && guest !== partner) {
+      if (isCreator && guest !== nullPrincipalId && guest !== localUserId && guest !== host2 && guest !== partner) {
         console.log("trade partner found(guest): ", guest);
         updatePartner(guest);
       }
-      if (!isCreator && host2 !== nullPrincipalId && host2 !== localUser && host2 !== partner) {
+      if (!isCreator && host2 !== nullPrincipalId && host2 !== localUserId && host2 !== partner) {
         console.log("trade partner found(host): ", host2);
         await plugActor.join_trade(curTradeId);
         updatePartner(host2);

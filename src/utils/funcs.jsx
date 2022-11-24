@@ -37,28 +37,25 @@ export const getInventoryBoxes = (inventoryItems) => {
 export const getUserTokens = async ({ agent, user }) => {
   return [
     {
-      id: '1',
-      canister_id: "canister 1",
+      token_id: '1',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 1",
-      index: "1",
       name: "token 1",
       url: "assets/armor.png",
       slot: 0,
     },
     {
-      id: '2',
-      canister_id: "canister 2",
+      token_id: '2',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 2",
-      index: "2",
       name: "token 2",
       url: "assets/bastard-sword.png",
       slot: 1,
     },
     {
-      id: '3',
-      canister_id: "canister 3",
+      token_id: '3',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 3",
-      index: "3",
       name: "token 3",
       url: "models/chest.glb",
       slot: 2,
@@ -75,6 +72,7 @@ export const getUserTokens = async ({ agent, user }) => {
   } catch (e) {
     console.log(e)
   }
+
   console.log("collections: ", collections);
 
   // Make an array of all collections[i].tokens
@@ -82,27 +80,24 @@ export const getUserTokens = async ({ agent, user }) => {
   let slot = 0;
 
   collections.forEach((collection) => {
-    if (!collection.name.toLowerCase().includes("cipher")) {
-      collection.tokens.forEach((token) => {
-        let newToken = { id: slot.toString(), canister_id: token.canister, collection: token.collection, index: token.index.toString(), slot }
-        const jsonMetadata = token.metadata?.json?.value.TextContent;
+    // if (!collection.name.toLowerCase().includes("cipher")) {
+    collection.tokens.forEach((token) => {
+      let newToken = { canister_id: token.canister, collection: token.collection, token_id: token.index.toString(), slot }
+      const jsonMetadata = token.metadata?.json?.value.TextContent;
 
-        // regex token.url and set isImage to true if it is an image
-        const isImage = token.url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+      if (jsonMetadata) {
+        const parseMetadata = JSON.parse(jsonMetadata);
+        newToken.name = parseMetadata.name
+        newToken.url = collection.icon
+      } else {
+        newToken.name = token.collection
+        newToken.url = collection.icon
+      }
 
-        if (jsonMetadata) {
-          const parseMetadata = JSON.parse(jsonMetadata);
-          newToken.name = parseMetadata.name
-          newToken.url = collection.icon
-        } else {
-          newToken.name = token.collection
-          newToken.url = collection.icon
-        }
-
-        newTokens[slot] = newToken
-        slot++;
-      });
-    }
+      newTokens[slot] = newToken
+      slot++;
+    });
+    // }
   });
 
   console.log("newTokens: ", newTokens);
@@ -117,6 +112,7 @@ export const getExtension = (url) => {
 
 export const isImage = (url) => {
   if (!url) return false;
+  // const flag = url.match(/\.(jpeg|jpg|gif|png)$/) != null;
   const imageExtensions = [
     "apng",
     "avif",

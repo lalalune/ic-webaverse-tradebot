@@ -2,7 +2,7 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface Item {
-  'token_id' : bigint,
+  'token_id' : string,
   'name' : string,
   'canister_id' : Principal,
 }
@@ -28,7 +28,7 @@ export interface _SERVICE {
   'get_all_trades' : ActorMethod<[], Array<Trade>>,
   'get_escrow_items' : ActorMethod<[string], Array<Item>>,
   'get_escrow_items_self' : ActorMethod<[string], Array<Item>>,
-  'get_trade_by_id' : ActorMethod<[string], [] | [Trade]>,
+  'get_trade_by_id' : ActorMethod<[string], Trade>,
   'join_trade' : ActorMethod<[string], Trade>,
   'leave_trade' : ActorMethod<[string], Trade>,
   'remove_item_from_escrow' : ActorMethod<[string, Item], Trade>,
