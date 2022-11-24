@@ -403,7 +403,7 @@ export const Trade = () => {
               </div>
             </Frame>
           )}
-          {authenticated && !tradeData && (
+          {authenticated && (
             <React.Fragment>
             <Frame className="absolute w-full">
               <div className="flex items-center justify-center w-full h-full">
