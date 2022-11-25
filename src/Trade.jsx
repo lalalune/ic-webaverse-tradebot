@@ -6,7 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
 import { useStore } from "./store"
-import { trade_canister } from "./declarations/trade_canister/index"
+import { trade_canister } from "../trade_canister/src/declarations/trade_canister/index"
 import { Principal } from "@dfinity/principal"
 
 import Frame from "./Frame"
