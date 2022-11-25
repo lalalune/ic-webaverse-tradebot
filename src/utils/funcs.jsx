@@ -1,5 +1,6 @@
 import { inventoryBoxNum, tradeBoxNum } from "./constants";
 import { getAllUserNFTs } from "@psychedelic/dab-js";
+import { Principal } from "@dfinity/principal"
 
 export const clone = (obj) => {
   // const cloneObj = JSON.parse(JSON.stringify(obj));
@@ -158,4 +159,10 @@ export const existItems = boxes => {
   const flag = !!(boxes.filter(box => box?.item?.canister_id).length)
   // console.log('existItems: ', flag)
   return flag
+}
+
+export const getPrincipalId = pricipal => {
+  const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : ''
+  console.log('principalId: ', principalId)
+  return principalId
 }

@@ -24,11 +24,14 @@ export const useStore = create((set) => ({
   plugActor: null,
   setPlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
 
+  inventoryTokens: [],
+  setInventoryTokens: (newVal) => set((state) => ({ inventoryTokens: newVal })),
+
   isCreator: false,
   setIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),
 
-  localUserId: null,
-  setLocalUserId: (newVal) => set((state) => ({ localUserId: newVal })),
+  partnerId: false,
+  setPartnerId: (newVal) => set((state) => ({ partnerId: newVal })),
 
   curTradeId: null,
   setCurTradeId: (newVal) => set((state) => ({ curTradeId: newVal })),

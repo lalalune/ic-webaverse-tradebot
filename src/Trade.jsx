@@ -3,11 +3,10 @@ import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
-import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
+import { inventoryBoxNum, pageBoxNum } from "./utils/constants"
+import { clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
 import { useStore } from "./store"
-import { trade_canister } from "../trade_canister/src/declarations/trade_canister/index"
-import { Principal } from "@dfinity/principal"
+import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import Frame from "./Frame"
 import RemoteBox from "./RemoteBox"
@@ -17,29 +16,23 @@ import { Loading } from "./Loading"
 import { ItemDetails } from "./ItemDetails"
 
 const { ic } = window
-export const plug = ic?.plug
+const { plug } = ic
 
-// The mainnet Router Canister Id
-const canister_id = "lj532-6iaaa-aaaah-qcc7a-cai"
-
-// Whitelist the canister id for Plug permissions
-const whitelist = [canister_id, "vlhm2-4iaaa-aaaam-qaatq-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
+const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
+const whitelist = [canisterId]
+const host = 'http://127.0.0.1:4943'
+const timeout = 50000
 
 const url = new URL(window.location.href)
 const tradeId = url.searchParams.get("tradeId")
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
-let inventoryTokens = []
-let partnerId
-const updatePartnerId = val => {
-  partnerId = val
-}
-const host = "https://mainnet.dfinity.network"
-const timeout = 120000
 
 export const Trade = () => {
   const {
     isCreator,
     setIsCreator,
+    partnerId,
+    setPartnerId,
     tradeData,
     setTradeData,
     remoteBoxes,
@@ -57,37 +50,46 @@ export const Trade = () => {
     curPage,
     setCurPage,
     setLoading,
-    localUserId,
-    setLocalUserId,
     curTradeId,
     setCurTradeId,
     principal,
     setPrincipal,
     authenticated,
-    setAuthenticated
+    setAuthenticated,
+    inventoryTokens,
+    setInventoryTokens,
   } = useStore()
 
-  const login = async () => {
-    try {
-      if (plug) {
-        const publicKey = await plug.requestConnect({
-          whitelist,
-          host,
-          timeout,
-        })
+  const localUserId = principal ? plug.principalId : ''
 
-        if (publicKey) {
-          const principal = await plug.agent.getPrincipal()
-          setPrincipal(principal)
-          setAuthenticated(true)
-        }
+  const login = async () => {
+    if (!plug) return
+    console.log('initial plug: ', plug)
+
+    // const isConnected = await plug?.isConnected()
+    // console.log('isConnected: ', isConnected)
+    // if (!isConnected) return
+
+    const publicKey = await plug.requestConnect({
+      whitelist, host, timeout,
+      onConnectionUpdate: () => {
+        console.log('sessionData: ', plug.sessionManager.sessionData)
       }
-    } catch (e) {
-      console.error(e)
+    })
+
+    if (publicKey) {
+      console.log('publicKey: ', publicKey)
+      await onConnected()
     }
   }
 
-  const principalString = principal ? plug.principalId : "<none>"
+  const onConnected = async () => {
+    console.log('plug: ', plug)
+    if (!plug.agent) return
+    const principal = await plug.agent.getPrincipal()
+    setPrincipal(principal)
+    setAuthenticated(true)
+  }
 
   // handle guest joining existing trade from link
   useEffect(() => {
@@ -97,7 +99,7 @@ export const Trade = () => {
       // const balance = await plug.requestBalance()
       // console.log("balance: ", balance)
       const newTokens = Object.values(await getUserTokens({ agent: plug.agent, user: plug.principalId }))
-      inventoryTokens = clone(newTokens)
+      setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // if user is guest, join the trade
@@ -113,22 +115,18 @@ export const Trade = () => {
       if (!plugActor) return
       setLoading(true)
       console.log('plugActor: ', plugActor)
-      let trade, tempLocalUserId
+      let trade
 
       if (tradeId) {
         console.log("***** TRADE DETECTED *****")
         trade = await plugActor.get_trade_by_id(tradeId)
-        tempLocalUserId = Principal.fromUint8Array(trade.guest._arr).toText()
         setIsCreator(false)
       } else {
         trade = await plugActor.create_trade()
-        tempLocalUserId = Principal.fromUint8Array(trade.host._arr).toText()
         setIsCreator(true)
       }
 
-      console.log('tempLocalUserId: ', tempLocalUserId)
       console.log('trade: ', trade)
-      setLocalUserId(tempLocalUserId)
       setTradeData(trade)
       setCurTradeId(trade.id)
       setTradeStarted(true)
@@ -143,7 +141,7 @@ export const Trade = () => {
     const interval = setInterval(async () => {
       const trade = await plugActor.get_trade_by_id(curTradeId)
       setTradeData(trade)
-    }, 1000)
+    }, 2000)
     return () => {
       clearInterval(interval)
     }
@@ -154,30 +152,30 @@ export const Trade = () => {
     (async () => {
       if (!plugActor || !curTradeId || !tradeData || !localUserId) return
       setLoading(true)
-      const hostId = Principal.fromUint8Array(tradeData.host._arr).toText()
-      const guestId = Principal.fromUint8Array(tradeData.guest._arr).toText()
+      const hostId = getPrincipalId(tradeData.host)
+      const guestId = getPrincipalId(tradeData.guest)
       console.log('hostId: ', hostId)
       console.log('guestId: ', guestId)
 
-      if (!isCreator && guestId !== nullPrincipalId && guestId !== localUserId) {
+      if (!isCreator && guestId && guestId !== localUserId) {
         return console.error(
           "Trade already initialized to another wallet: ",
           guestId
         )
       }
 
-      if (isCreator && guestId !== nullPrincipalId && guestId !== localUserId && guestId !== hostId && guestId !== partnerId) {
+      if (isCreator && guestId && guestId !== localUserId && guestId !== hostId && guestId !== partnerId) {
         console.log('trade partner found(guestId): ', guestId)
-        updatePartnerId(guestId)
+        setPartnerId(guestId)
       }
 
-      if (!isCreator && hostId !== nullPrincipalId && hostId !== localUserId && hostId !== partnerId) {
+      if (!isCreator && hostId && hostId !== localUserId && guestId !== hostId && hostId !== partnerId) {
         console.log('trade partner found(hostId): ', hostId)
         await plugActor.join_trade(curTradeId)
-        updatePartnerId(hostId)
+        setPartnerId(hostId)
       }
 
-      const rbs = isCreator ? getRemoteBoxes(tradeData.guest_data) : getRemoteBoxes(tradeData.host_data)
+      const rbs = isCreator ? getRemoteBoxes(tradeData.guest_items) : getRemoteBoxes(tradeData.host_items)
       console.log('remoteBoxes: ', rbs)
       setRemoteBoxes(rbs)
       setLoading(false)
@@ -185,11 +183,13 @@ export const Trade = () => {
   }, [tradeData])
 
   const startTrade = async () => {
-    setPlugActor(trade_canister)
+    if (!plug.createActor) return
+    const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory })
+    setPlugActor(tempPlugActor)
   }
 
   const onConnect = async () => {
-    console.log('connecting...')
+    console.log('Connecting...')
     login()
   }
 
@@ -377,7 +377,7 @@ export const Trade = () => {
               <b>CONNECTION STATUS</b>
               <br />
               {authenticated && principal
-                ? "Connected with " + principalString
+                ? "Connected with " + localUserId
                 : "Waiting for IC wallet connection..."}
               <br />
               <br />
