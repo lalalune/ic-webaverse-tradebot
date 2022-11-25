@@ -126,7 +126,7 @@ async fn remove_item_from_escrow(id: String, item: Item) -> Trade {
 }
 
 #[update(name = "withdraw_from_escrow")]
-async fn withdraw_from_escrow(id: String, item: Item) -> Trade {
+async fn withdraw_from_escrow(id: String) -> Trade {
     match trade::withdraw_from_escrow(ic_cdk::caller(), id).await {
         Ok(trade) => trade,
         Err(e) => ic_cdk::trap(&format!("Failed to withdraw from escrow: {}", e)),

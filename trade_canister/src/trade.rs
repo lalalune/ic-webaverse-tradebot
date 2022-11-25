@@ -1,9 +1,4 @@
-use ic_cdk_macros::*;
-use std::future::Future;
 use std::io::*;
-use std::result;
-
-use ic_cdk::api::call::call;
 use ic_cdk::api::call::CallResult;
 
 use ic_cdk::{
