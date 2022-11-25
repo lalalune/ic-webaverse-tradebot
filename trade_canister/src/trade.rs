@@ -1,11 +1,9 @@
 use ic_cdk_macros::*;
 use std::io::*;
 
-use ic_cdk::{
-    export::{
-        candid::{CandidType, Deserialize},
-        Principal,
-    },
+use ic_cdk::export::{
+    candid::{CandidType, Deserialize},
+    Principal,
 };
 
 use std::cell::RefCell;
@@ -65,8 +63,12 @@ pub fn create_trade(caller: Principal) -> Trade {
         guest: None,
         fulfilled: false,
     };
-    
-    TRADE_STORE.with(|store| store.borrow_mut().insert(id.try_into().unwrap(), trade.clone()));
+
+    TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .insert(id.try_into().unwrap(), trade.clone())
+    });
 
     trade
 }
@@ -74,7 +76,7 @@ pub fn create_trade(caller: Principal) -> Trade {
 pub fn get_trade_by_id(id: String) -> Result<Trade> {
     // Determine whether the trade exists within TRADE_STORE
     let trade_id: i32 = id.parse().unwrap();
-    
+
     // If the trade does not exist, return an Error
     if !TRADE_STORE.with(|store| store.borrow().contains_key(&trade_id)) {
         return Err(Error::new(ErrorKind::Other, "Trade does not exist"));
@@ -84,43 +86,75 @@ pub fn get_trade_by_id(id: String) -> Result<Trade> {
 }
 
 pub fn delete_trade(caller: Principal, id: String) -> Result<Trade> {
-    let trade = TRADE_STORE.with(|store| store.borrow().get(&id.parse::<i32>().unwrap()).unwrap().clone());
+    let trade = TRADE_STORE.with(|store| {
+        store
+            .borrow()
+            .get(&id.parse::<i32>().unwrap())
+            .unwrap()
+            .clone()
+    });
 
     if trade.host == caller {
         TRADE_STORE.with(|store| store.borrow_mut().remove(&id.parse::<i32>().unwrap()));
         Ok(trade)
     } else {
-        return Err(Error::new(ErrorKind::Other, "Trade host is not the caller"))
+        return Err(Error::new(ErrorKind::Other, "Trade host is not the caller"));
     }
 }
 
 // return the Trade, or an Error if there is an eror
 pub fn join_trade(caller: Principal, id: String) -> Result<Trade> {
-    let mut trade = TRADE_STORE.with(|store| store.borrow_mut().get_mut(&id.parse().unwrap()).unwrap().clone());
+    let mut trade = TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .get_mut(&id.parse().unwrap())
+            .unwrap()
+            .clone()
+    });
 
     // check if the caller is the trade host
     if trade.host == caller {
-        return Err(Error::new(ErrorKind::Other, "You cannot join your own trade"));
+        return Err(Error::new(
+            ErrorKind::Other,
+            "You cannot join your own trade",
+        ));
     }
-    
+
     // check if the caller is already in the trade
     if trade.guest == Some(caller) {
-        return Err(Error::new(ErrorKind::Other, "You are already in this trade"));
+        return Err(Error::new(
+            ErrorKind::Other,
+            "You are already in this trade",
+        ));
     }
 
     trade.guest = Some(caller);
-    TRADE_STORE.with(|store| store.borrow_mut().insert(id.parse().unwrap(), trade.clone()));
+    TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .insert(id.parse().unwrap(), trade.clone())
+    });
     Ok(trade)
 }
 
 pub fn leave_trade(caller: Principal, id: String) -> Result<Trade> {
-    let mut trade = TRADE_STORE.with(|store| store.borrow_mut().get_mut(&id.parse().unwrap()).unwrap().clone());
+    let mut trade = TRADE_STORE.with(|store| {
+        store
+            .borrow_mut()
+            .get_mut(&id.parse().unwrap())
+            .unwrap()
+            .clone()
+    });
     if trade.host == caller {
         delete_trade(caller, id);
         Ok(trade)
     } else if trade.guest == Some(caller) {
         trade.guest = None;
-        TRADE_STORE.with(|store| store.borrow_mut().insert(id.parse().unwrap(), trade.clone()));
+        TRADE_STORE.with(|store| {
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone())
+        });
         Ok(trade)
     } else {
         return Err(Error::new(ErrorKind::Other, "You are not in this trade"));
@@ -137,7 +171,9 @@ pub fn add_item_to_trade(caller: Principal, id: String, item: Item) -> Result<Tr
                 host_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else if Some(caller) == trade.guest {
             let mut guest_items = trade.guest_items;
@@ -146,7 +182,9 @@ pub fn add_item_to_trade(caller: Principal, id: String, item: Item) -> Result<Tr
                 guest_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else {
             // throw an error
@@ -160,21 +198,33 @@ pub fn remove_item_from_trade(caller: Principal, id: String, item: Item) -> Resu
         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
         if caller == trade.host {
             let mut host_items = trade.host_items;
-            host_items.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
+            host_items.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
             let trade = Trade {
                 host_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else if Some(caller) == trade.guest {
             let mut guest_items = trade.guest_items;
-            guest_items.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
+            guest_items.retain(|i| {
+                i.name != item.name
+                    || i.canister_id != item.canister_id
+                    || i.token_id != item.token_id
+            });
             let trade = Trade {
                 guest_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else {
             return Err(Error::new(ErrorKind::Other, "You are not in this trade"));
@@ -190,14 +240,18 @@ pub fn accept(caller: Principal, id: String) -> Result<Trade> {
                 host_accept: true,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else if trade.guest == Some(caller) {
             let trade = Trade {
                 guest_accept: true,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else {
             return Err(Error::new(ErrorKind::Other, "You are not in this trade"));
@@ -213,14 +267,18 @@ pub fn cancel(caller: Principal, id: String) -> Result<Trade> {
                 host_accept: false,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else if trade.guest == Some(caller) && !trade.host_accept {
             let trade = Trade {
                 guest_accept: false,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else {
             return Err(Error::new(ErrorKind::Other, "You are not in this trade"));
@@ -234,8 +292,7 @@ pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Result<T
     TRADE_STORE.with(|store| {
         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
         if caller == trade.host {
-            let mut host_escrow_items= trade.host_escrow_items;
-
+            let mut host_escrow_items = trade.host_escrow_items;
 
             // perform intercanister call to check if the item exists
             // if it does, add it to the escrow
@@ -251,7 +308,6 @@ pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Result<T
             //     return Err(Error::new(ErrorKind::Other, "Item does not exist"));
             // }
 
-
             // if the item exists, add it to the escrow
 
             host_escrow_items.push(item);
@@ -259,7 +315,9 @@ pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Result<T
                 host_escrow_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else if Some(caller) == trade.guest {
             let mut guest_escrow_items = trade.guest_escrow_items;
@@ -268,7 +326,9 @@ pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Result<T
                 guest_escrow_items,
                 ..trade
             };
-            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            store
+                .borrow_mut()
+                .insert(id.parse().unwrap(), trade.clone());
             Ok(trade)
         } else {
             // throw an error

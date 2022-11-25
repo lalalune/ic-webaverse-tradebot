@@ -91,6 +91,15 @@ export const Trade = () => {
     setAuthenticated(true)
   }
 
+  const getRemoteTokens = tradeItems => {
+
+  }
+
+  useEffect(() => {
+    if (!plug.agent) return
+
+  }, [partnerId])
+
   // handle guest joining existing trade from link
   useEffect(() => {
     (async () => {
@@ -102,10 +111,10 @@ export const Trade = () => {
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
-      // if user is guest, join the trade
-      if (tradeId) {
-        startTrade()
-      }
+      // // if user is guest, join the trade
+      // if (tradeId) {
+      //   startTrade()
+      // }
       setLoading(false)
     })()
   }, [principal])
@@ -140,8 +149,9 @@ export const Trade = () => {
     console.log('curTradeId: ', curTradeId)
     const interval = setInterval(async () => {
       const trade = await plugActor.get_trade_by_id(curTradeId)
+      console.log('real time trade: ', trade)
       setTradeData(trade)
-    }, 2000)
+    }, 1000)
     return () => {
       clearInterval(interval)
     }
@@ -164,12 +174,12 @@ export const Trade = () => {
         )
       }
 
-      if (isCreator && guestId && guestId !== localUserId && guestId !== hostId && guestId !== partnerId) {
+      if (isCreator && guestId && guestId !== partnerId) {
         console.log('trade partner found(guestId): ', guestId)
         setPartnerId(guestId)
       }
 
-      if (!isCreator && hostId && hostId !== localUserId && guestId !== hostId && hostId !== partnerId) {
+      if (!isCreator && hostId && hostId !== partnerId) {
         console.log('trade partner found(hostId): ', hostId)
         await plugActor.join_trade(curTradeId)
         setPartnerId(hostId)

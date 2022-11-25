@@ -162,6 +162,7 @@ export const existItems = boxes => {
 }
 
 export const getPrincipalId = pricipal => {
+  if (pricipal.length) pricipal = pricipal[0]
   const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : ''
   console.log('principalId: ', principalId)
   return principalId
