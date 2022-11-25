@@ -71,16 +71,21 @@ pub fn create_trade(caller: Principal) -> Trade {
     trade
 }
 
-pub fn get_trade_by_id(id: String) -> Trade {
-    // return trade by id
-    TRADE_STORE.with(|store| store.borrow().get(&id.parse::<i32>().unwrap()).unwrap().clone())
+pub fn get_trade_by_id(id: String) -> Result<Trade> {
+    // Determine whether the trade exists within TRADE_STORE
+    let trade_id: i32 = id.parse().unwrap();
+    
+    // If the trade does not exist, return an Error
+    if !TRADE_STORE.with(|store| store.borrow().contains_key(&trade_id)) {
+        return Err(Error::new(ErrorKind::Other, "Trade does not exist"));
+    }
+
+    Ok(TRADE_STORE.with(|store| store.borrow().get(&trade_id).unwrap().clone()))
 }
 
 pub fn delete_trade(caller: Principal, id: String) -> Result<Trade> {
-    // delete a trade by it's ID
-    // only the creator of the trade can delete it
-    // check if the creator of the trade is the trade host
     let trade = TRADE_STORE.with(|store| store.borrow().get(&id.parse::<i32>().unwrap()).unwrap().clone());
+
     if trade.host == caller {
         TRADE_STORE.with(|store| store.borrow_mut().remove(&id.parse::<i32>().unwrap()));
         Ok(trade)
