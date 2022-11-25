@@ -3,7 +3,7 @@ type Trade = record {
     "host_items": vec Item;
     "guest_items": vec Item;
     "host_escrow_items": vec Item;
-    "guest_escrow": vec Item;
+    "guest_escrow_items": vec Item;
     "host_accept": bool;
     "guest_accept": bool;
     "host": principal;
