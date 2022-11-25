@@ -26107,7 +26107,7 @@ class HttpAgent {
     return decode(await w.arrayBuffer());
   }
   async syncTime(n) {
-    const o = await import("./index.7313305d.js"), s = Date.now();
+    const o = await import("./index.95d175b0.js"), s = Date.now();
     try {
       n || console.log("Syncing time with the IC. No canisterId provided, so falling back to ryjl3-tyaaa-aaaaa-aaaba-cai");
       const d = (await o.request({
@@ -26591,11 +26591,11 @@ const idlFactory = ({ IDL: e }) => {
     canister_id: e.Principal
   }), o = e.Record({
     id: e.Text,
-    host_escrow: e.Vec(n),
-    host_data: e.Vec(n),
+    host_escrow_items: e.Vec(n),
+    host_items: e.Vec(n),
     fulfilled: e.Bool,
     host: e.Principal,
-    guest_data: e.Vec(n),
+    guest_items: e.Vec(n),
     host_accept: e.Bool,
     guest_escrow: e.Vec(n),
     guest: e.Principal,
@@ -45420,9 +45420,9 @@ const updatePartner = (e) => {
     const qe = Principal$3.fromUint8Array(o.host._arr).toText(), ye = Principal$3.fromUint8Array(o.guest._arr).toText(), Ue = Je === qe, ze = Je === ye;
     let X = [];
     if (Ue)
-      X = o.host_data;
+      X = o.host_items;
     else if (ze)
-      X = o.guest_data;
+      X = o.guest_items;
     else
       throw new Error("User is not host or guest");
     if (g.length === X.length)
@@ -45475,11 +45475,11 @@ const updatePartner = (e) => {
       if (!e && qe !== nullPrincipalId && qe !== H)
         return console.error("Trade already initialized to another wallet: ", qe);
       if (e && qe !== nullPrincipalId && qe !== H && qe !== Je && qe !== partner && (console.log("trade partner found(guest): ", qe), updatePartner(qe)), !e && Je !== nullPrincipalId && Je !== H && Je !== partner && (console.log("trade partner found(host): ", Je), await x.join_trade($), updatePartner(Je)), e) {
-        const ye = getRemoteBoxes(o.guest_data);
-        console.log("guest_data: ", o.guest_data), console.log("remoteBoxes: ", ye), d(ye);
+        const ye = getRemoteBoxes(o.guest_items);
+        console.log("guest_items: ", o.guest_items), console.log("remoteBoxes: ", ye), d(ye);
       } else {
-        const ye = getRemoteBoxes(o.host_data);
-        console.log("host_data: ", o.host_data), console.log("remoteBoxes: ", ye), d(ye);
+        const ye = getRemoteBoxes(o.host_items);
+        console.log("host_items: ", o.host_items), console.log("remoteBoxes: ", ye), d(ye);
       }
       O(!1);
     })();
@@ -45541,7 +45541,7 @@ const updatePartner = (e) => {
               children: "Connect"
             })
           })
-        }), Pe && !o && /* @__PURE__ */ jsxs(React__default.Fragment, {
+        }), Pe && /* @__PURE__ */ jsxs(React__default.Fragment, {
           children: [/* @__PURE__ */ jsx(Frame, {
             className: "absolute w-full",
             children: /* @__PURE__ */ jsxs("div", {

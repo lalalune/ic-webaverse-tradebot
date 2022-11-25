@@ -40794,7 +40794,7 @@ class HttpAgent {
     return decode(await response.arrayBuffer());
   }
   async syncTime(canisterId) {
-    const CanisterStatus = await __vitePreload(() => import("./index.dc0a8047.js"), true ? [] : void 0);
+    const CanisterStatus = await __vitePreload(() => import("./index.79b1fb33.js"), true ? [] : void 0);
     const callTime = Date.now();
     try {
       if (!canisterId) {
@@ -41413,11 +41413,11 @@ const idlFactory = ({ IDL: IDL2 }) => {
   });
   const Trade2 = IDL2.Record({
     "id": IDL2.Text,
-    "host_escrow": IDL2.Vec(Item),
-    "host_data": IDL2.Vec(Item),
+    "host_escrow_items": IDL2.Vec(Item),
+    "host_items": IDL2.Vec(Item),
     "fulfilled": IDL2.Bool,
     "host": IDL2.Principal,
-    "guest_data": IDL2.Vec(Item),
+    "guest_items": IDL2.Vec(Item),
     "host_accept": IDL2.Bool,
     "guest_escrow": IDL2.Vec(Item),
     "guest": IDL2.Principal,
@@ -58712,9 +58712,9 @@ const Trade = () => {
     const userIsGuest = user === guest;
     let data2 = [];
     if (userIsHost) {
-      data2 = tradeData.host_data;
+      data2 = tradeData.host_items;
     } else if (userIsGuest) {
-      data2 = tradeData.guest_data;
+      data2 = tradeData.guest_items;
     } else {
       throw new Error("User is not host or guest");
     }
@@ -58796,13 +58796,13 @@ const Trade = () => {
         updatePartner(host2);
       }
       if (isCreator) {
-        const rb2 = getRemoteBoxes(tradeData.guest_data);
-        console.log("guest_data: ", tradeData.guest_data);
+        const rb2 = getRemoteBoxes(tradeData.guest_items);
+        console.log("guest_items: ", tradeData.guest_items);
         console.log("remoteBoxes: ", rb2);
         setRemoteBoxes(rb2);
       } else {
-        const rb2 = getRemoteBoxes(tradeData.host_data);
-        console.log("host_data: ", tradeData.host_data);
+        const rb2 = getRemoteBoxes(tradeData.host_items);
+        console.log("host_items: ", tradeData.host_items);
         console.log("remoteBoxes: ", rb2);
         setRemoteBoxes(rb2);
       }
@@ -58894,7 +58894,7 @@ const Trade = () => {
               children: "Connect"
             })
           })
-        }), authenticated && !tradeData && /* @__PURE__ */ jsxs(React.Fragment, {
+        }), authenticated && /* @__PURE__ */ jsxs(React.Fragment, {
           children: [/* @__PURE__ */ jsx(Frame, {
             className: "absolute w-full",
             children: /* @__PURE__ */ jsxs("div", {
