@@ -110,25 +110,25 @@ fn cancel(id: String) -> Trade {
 }
 
 #[update(name = "add_item_to_escrow")]
-fn add_item_to_escrow(id: String, item: Item) -> Trade {
-    match trade::add_item_to_escrow(ic_cdk::caller(), id, item) {
+async fn add_item_to_escrow(id: String, item: Item) -> Trade {
+    match trade::add_item_to_escrow(ic_cdk::caller(), id, item).await {
         Ok(trade) => trade,
         Err(e) => ic_cdk::trap(&format!("Failed to add item to escrow: {}", e)),
     }
 }
 
-// #[update(name = "remove_item_from_escrow")]
-// fn remove_item_from_escrow(id: String, item: Item) -> Trade {
-//     match trade::remove_item_from_escrow(ic_cdk::caller(), id, item) {
-//         Ok(trade) => trade,
-//         Err(e) => ic_cdk::trap(&format!("Failed to remove item from escrow: {}", e)),
-//     }
-// }
+#[update(name = "remove_item_from_escrow")]
+async fn remove_item_from_escrow(id: String, item: Item) -> Trade {
+    match trade::remove_item_from_escrow(ic_cdk::caller(), id, item).await {
+        Ok(trade) => trade,
+        Err(e) => ic_cdk::trap(&format!("Failed to remove item from escrow: {}", e)),
+    }
+}
 
-// #[update(name = "withdraw_from_escrow")]
-// fn withdraw_from_escrow(id: String, item: Item) -> Trade {
-//     match trade::withdraw_from_escrow(ic_cdk::caller(), id) {
-//         Ok(trade) => trade,
-//         Err(e) => ic_cdk::trap(&format!("Failed to withdraw from escrow: {}", e)),
-//     }
-// }
+#[update(name = "withdraw_from_escrow")]
+async fn withdraw_from_escrow(id: String, item: Item) -> Trade {
+    match trade::withdraw_from_escrow(ic_cdk::caller(), id).await {
+        Ok(trade) => trade,
+        Err(e) => ic_cdk::trap(&format!("Failed to withdraw from escrow: {}", e)),
+    }
+}
