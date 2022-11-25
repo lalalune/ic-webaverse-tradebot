@@ -1,11 +1,9 @@
 import React from "react";
 import { GLTFModel } from "react-3d-viewer";
 
-import { useStore } from "./store";
 import { isImage, isMedia, isModel } from "./utils/funcs";
 
-export const ItemDetails = () => {
-  const { selItem } = useStore();
+export const ItemDetails = ({selItem}) => {
   const modelRef = React.useRef(null);
 
   React.useEffect(() => {

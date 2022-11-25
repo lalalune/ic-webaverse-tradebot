@@ -1,11 +1,10 @@
-import React from "react"
+import React, {useState} from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { inventoryBoxNum, nullPrincipalId, pageBoxNum } from "./utils/constants"
+import { inventoryBoxNum, nullPrincipalId, pageBoxNum, tradeBoxNum } from "./utils/constants"
 import { clone, existItems, getInventoryBoxes, getRemoteBoxes, getUserTokens } from "./utils/funcs"
-import { useStore } from "./store";
 import { trade_canister } from "./trade_canister/index"
 import { Principal } from "@dfinity/principal";
 
@@ -38,35 +37,38 @@ const host = "https://mainnet.dfinity.network";
 const timeout = 120000;
 
 export const Trade = () => {
-  const {
-    isCreator,
-    setIsCreator,
-    tradeData,
-    setTradeData,
-    remoteBoxes,
-    setRemoteBoxes,
-    localBoxes,
-    setLocalBoxes,
-    inventoryBoxes,
-    setInventoryBoxes,
-    plugActor,
-    setPlugActor,
-    tradeStarted,
-    setTradeStarted,
-    accepted,
-    setAccepted,
-    curPage,
-    setCurPage,
-    setLoading,
-    localUser,
-    setLocalUser,
-    curTradeId,
-    setCurTradeId,
-    principal,
-    setPrincipal,
-    authenticated,
-    setAuthenticated
-  } = useStore();
+  const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return {
+      id: i,
+      item: null,
+    };
+  });
+  
+  const initLocalBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return {
+      id: i,
+      item: null,
+    };
+  });
+  
+  const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
+    return { id: i, type: "all", item: null };
+  });
+
+  const [plugActor, setPlugActor] = useState (null);
+  const [isCreator, setIsCreator] = useState (false);
+  const [localUser, setLocalUser] = useState (null);
+  const [curTradeId, setCurTradeId] = useState (null);
+  const [tradeData, setTradeData] = useState (null);
+  const [tradeStarted, setTradeStarted] = useState (false);
+  const [remoteBoxes, setRemoteBoxes] = useState (clone(initRemoteBoxes));
+  const [localBoxes, setLocalBoxes] = useState (clone(initLocalBoxes));
+  const [inventoryBoxes, setInventoryBoxes] = useState (initInventoryBoxes);
+  const [accepted, setAccepted] = useState (false);
+  const [curPage, setCurPage] = useState (1);
+  const [selItem, setSelItem] = useState (null);
+  const [loading, setLoading] = useState (false);
+  const [principal, setPrincipal] = useState (false);
 
   const login = async () => {
     try {
@@ -79,7 +81,6 @@ export const Trade = () => {
         if (publicKey) {
           const principal = await plug.agent.getPrincipal();
           setPrincipal(principal);
-          setAuthenticated(true);
         }
       }
     } catch (e) {
@@ -128,7 +129,6 @@ export const Trade = () => {
       console.log('trade: ', trade)
       setCurTradeId(trade.id)
       setTradeData(trade)
-      setTradeStarted(true)
       setLoading(false)
     })()
   }, [plugActor])
@@ -359,6 +359,7 @@ export const Trade = () => {
 
 
   const startTrade = async () => {
+    setTradeStarted(true)
     setPlugActor(trade_canister)
   }
 
@@ -390,11 +391,11 @@ export const Trade = () => {
   return (
     <div className="w-full h-full">
       <DndProvider backend={HTML5Backend}>
-        <ItemDetails />
+        <ItemDetails setItem={selItem} />
         <div className="absolute top-0 left-0 w-3/4 h-full">
-        <Loading />
+        <Loading loading={loading}/>
 
-        {!authenticated && (
+        {!principal && (
             <Frame className="absolute w-full h-full">
               <div className="flex items-center justify-center w-full h-full">
                 <Button variant="contained" onClick={connect}>
@@ -403,10 +404,8 @@ export const Trade = () => {
               </div>
             </Frame>
           )}
-          {authenticated && (
+          {principal && (
             <React.Fragment>
-            <Frame className="absolute w-full">
-              <div className= "flex items-center justify-center w-full h-full">
                 {!tradeStarted && (
                   <Button variant="contained" onClick={startTrade}>
                     Start Trade
@@ -415,133 +414,137 @@ export const Trade = () => {
                 {tradeStarted && !tradeData && (
                   <Button variant="disabled">Starting...</Button>
                 )}
-              </div>
-            </Frame>
-            <div className="absolute w-full h-full overflow-auto">
-            {authenticated && tradeData && (
-              <React.Fragment>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl">Their Trade</div>
-                    <div className="text-xl text-blue-900">
-                      {(isCreator && tradeData.guest_accept) ||
-                        (!isCreator && tradeData.host_accept)
-                        ? "TRADE ACCEPTED"
-                        : ""}
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {remoteBoxes.map((box, index) => {
-                      return (
-                        <RemoteBox key={box.id}>
-                          <BagItem
-                            key={`remote_${box.id}`}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(remoteBoxes)}
-                            updateTradeBoxes={setRemoteBoxes}
-                            tradeLayer="remote"
-                          />
-                        </RemoteBox>
-                      )
-                    })}
-                  </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="text-2xl">Your Trade</div>
-                  <div className="flex flex-wrap gap-3">
-                    {localBoxes.map((box, index) => {
-                      return (
-                        <BagBox key={box.id}>
-                          <BagItem
-                            key={`local_${box.id}`}
-                            isForTrade={true}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(localBoxes)}
-                            updateTradeBoxes={setLocalBoxes}
-                            tradeLayer="local"
-                          />
-                        </BagBox>
-                      )
-                    })}
-                  </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-wrap items-center justify-center w-full h-full gap-8">
-                  <Button
-                    variant="contained"
-                    onClick={onAccept}
-                    disabled={accepted || !existItems(localBoxes)}
-                    color="success"
-                  >
-                    Accept
-                  </Button>
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Numerical input for amount of ICP to add to trade */}
-                    <label htmlFor="icp">ICP: </label>
-                    <input
-                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
-                      id="icp"
-                      type="number"
-                    />
-                  </div>
-                  <Button
-                    variant="contained"
-                    onClick={onCancel}
-                    disabled={!accepted && existItems(localBoxes)}
-                    color="error"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </Frame>
-              </React.Fragment>
-              )}
-              {principal && (
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl">Inventory</div>
-                    <div className="flex items-center gap-2 text-xl">
-                      <div className="cursor-pointer" onClick={onPrevPage}>
-                        &#60;
-                      </div>
-                      <div className="text-blue-900">{curPage}</div>
-                      <div className="cursor-pointer" onClick={onNextPage}>
-                        &#62;
+              {principal && tradeData && (
+                <React.Fragment>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl">Their Trade</div>
+                      <div className="text-xl text-blue-900">
+                        {(isCreator && tradeData.guest_accept) ||
+                          (!isCreator && tradeData.host_accept)
+                          ? "TRADE ACCEPTED"
+                          : ""}
                       </div>
                     </div>
+                    <div className="flex flex-wrap gap-3">
+                      {remoteBoxes.map((box, index) => {
+                        return (
+                          <RemoteBox key={box.id}>
+                            <BagItem
+                              key={`remote_${box.id}`}
+                              item={clone(box.item)}
+                              index={index}
+                              tradeBoxes={clone(remoteBoxes)}
+                              updateTradeBoxes={setRemoteBoxes}
+                              tradeLayer="remote"
+                              plugActor={plugActor}
+                              tradeData={tradeData}
+                              localUser={localUser}
+                              setSelItem={setSelItem}
+                            />
+                          </RemoteBox>
+                        )
+                      })}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-3">
-                    {inventoryBoxes
-                      .slice(
-                        (curPage - 1) * pageBoxNum,
-                        curPage * pageBoxNum
-                      )
-                      .map((box, index) => {
+                </Frame>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-2xl">Your Trade</div>
+                    <div className="flex flex-wrap gap-3">
+                      {localBoxes.map((box, index) => {
                         return (
                           <BagBox key={box.id}>
                             <BagItem
-                              key={`inventory_${box.id}`}
+                              key={`local_${box.id}`}
+                              isForTrade={true}
                               item={clone(box.item)}
-                              index={(curPage - 1) * pageBoxNum + index}
-                              tradeBoxes={clone(inventoryBoxes)}
-                              updateTradeBoxes={setInventoryBoxes}
-                              tradeLayer="inventory"
+                              index={index}
+                              tradeBoxes={clone(localBoxes)}
+                              updateTradeBoxes={setLocalBoxes}
+                              tradeLayer="local"
+                              plugActor={plugActor}
+                              tradeData={tradeData}
+                              localUser={localUser}
                             />
                           </BagBox>
                         )
                       })}
+                    </div>
                   </div>
-                </div>
-              </Frame>
-              )}
-              </div>
+                </Frame>
+                <Frame>
+                    <Button
+                      variant="contained"
+                      onClick={onAccept}
+                      disabled={accepted || !existItems(localBoxes)}
+                      color="success"
+                    >
+                      Accept
+                    </Button>
+                    <div className="flex items-center justify-center gap-2">
+                      {/* Numerical input for amount of ICP to add to trade */}
+                      <label htmlFor="icp">ICP: </label>
+                      <input
+                        className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
+                        id="icp"
+                        type="number"
+                      />
+                    </div>
+                    <Button
+                      variant="contained"
+                      onClick={onCancel}
+                      disabled={!accepted && existItems(localBoxes)}
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
+                </Frame>
+                </React.Fragment>
+                )}
+                {principal && (
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl">Inventory</div>
+                      <div className="flex items-center gap-2 text-xl">
+                        <div className="cursor-pointer" onClick={onPrevPage}>
+                          &#60;
+                        </div>
+                        <div className="text-blue-900">{curPage}</div>
+                        <div className="cursor-pointer" onClick={onNextPage}>
+                          &#62;
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {inventoryBoxes
+                        .slice(
+                          (curPage - 1) * pageBoxNum,
+                          curPage * pageBoxNum
+                        )
+                        .map((box, index) => {
+                          return (
+                            <BagBox key={box.id}>
+                              <BagItem
+                                key={`inventory_${box.id}`}
+                                item={clone(box.item)}
+                                index={(curPage - 1) * pageBoxNum + index}
+                                tradeBoxes={clone(inventoryBoxes)}
+                                updateTradeBoxes={setInventoryBoxes}
+                                tradeLayer="inventory"
+                                plugActor={plugActor}
+                                tradeData={tradeData}
+                                localUser={localUser}
+                              />
+                            </BagBox>
+                          )
+                        })}
+                    </div>
+                  </div>
+                </Frame>
+                )}
               </React.Fragment>
           )}
         </div>
@@ -550,7 +553,7 @@ export const Trade = () => {
             <div className="p-2">
               <b>CONNECTION STATUS</b>
               <br />
-              {authenticated && principal
+              {principal
                 ? "Connected with " + principalString
                 : "Waiting for IC wallet connection..."}
               <br />

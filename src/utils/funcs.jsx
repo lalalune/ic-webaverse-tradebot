@@ -35,36 +35,6 @@ export const getInventoryBoxes = (inventoryItems) => {
 };
 
 export const getUserTokens = async ({ agent, user }) => {
-  // return [
-  //   {
-  //     id: '1',
-  //     canister_id: "canister 1",
-  //     collection: "collection 1",
-  //     index: "1",
-  //     name: "token 1",
-  //     url: "assets/armor.png",
-  //     slot: 0,
-  //   },
-  //   {
-  //     id: '2',
-  //     canister_id: "canister 2",
-  //     collection: "collection 2",
-  //     index: "2",
-  //     name: "token 2",
-  //     url: "assets/bastard-sword.png",
-  //     slot: 1,
-  //   },
-  //   {
-  //     id: '3',
-  //     canister_id: "canister 3",
-  //     collection: "collection 3",
-  //     index: "3",
-  //     name: "token 3",
-  //     url: "models/chest.glb",
-  //     slot: 2,
-  //   },
-  // ];
-
   let collections
   
   try{ collections = await getAllUserNFTs({

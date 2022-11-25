@@ -646,10 +646,6 @@ video {
   background-color: rgb(120 53 15 / var(--tw-bg-opacity));
 }
 
-.bg-\[url\(\'\/frame\/bg\.jpg\'\)\] {
-  background-image: url('/frame/bg.jpg');
-}
-
 .bg-cover {
   background-size: cover;
 }
@@ -717,10 +713,14 @@ video {
 }
 
 * {
+  overflow: hidden;
+
   box-sizing: border-box;
 }
 
 .body {
+  overflow: hidden;
+  color: #fff;
   margin: 0;
   font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;

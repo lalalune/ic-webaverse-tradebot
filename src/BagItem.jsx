@@ -2,15 +2,13 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
-import {useStore} from './store.jsx'
 
 import { clone, isImage, isMedia, isModel } from "./utils/funcs";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
-export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  const { setSelItem } = useStore();
+export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
   const handleClick = (event) => {
@@ -104,9 +102,12 @@ const BagItem = ({
   tradeBoxes,
   updateTradeBoxes,
   tradeLayer,
+  plugActor,
+  tradeData,
+  localUser,
+  setSelItem
 }) => {
   const ref = React.useRef(null);
-  const { plugActor, tradeData, localUser } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
   // console.log("item: ", item);
@@ -193,7 +194,7 @@ const BagItem = ({
       ref={ref}
       data-handler-id={handlerId}
     >
-      <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} />
+      <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} setSelItem={setSelItem} />
     </div>
   );
 };

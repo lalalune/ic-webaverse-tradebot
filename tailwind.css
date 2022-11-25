@@ -55,6 +55,8 @@ html {
 */
 
 body {
+  overflow: hidden;
+  color: #fff;
   margin: 0;
   /* 1 */
   line-height: inherit;
@@ -707,10 +709,6 @@ video {
 .bg-amber-900 {
   --tw-bg-opacity: 1;
   background-color: rgb(120 53 15 / var(--tw-bg-opacity));
-}
-
-.bg-\[url\(\'\/frame\/bg\.jpg\'\)\] {
-  background-image: url('/frame/bg.jpg');
 }
 
 .bg-cover {
