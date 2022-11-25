@@ -12,7 +12,7 @@ export const idlFactory = ({ IDL }) => {
     'host' : IDL.Principal,
     'guest_items' : IDL.Vec(Item),
     'host_accept' : IDL.Bool,
-    'guest_escrow' : IDL.Vec(Item),
+    'guest_escrow_items' : IDL.Vec(Item),
     'guest' : IDL.Principal,
     'guest_accept' : IDL.Bool,
   });

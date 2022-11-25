@@ -14,7 +14,7 @@ export interface Trade {
   'host' : Principal,
   'guest_items' : Array<Item>,
   'host_accept' : boolean,
-  'guest_escrow' : Array<Item>,
+  'guest_escrow_items' : Array<Item>,
   'guest' : Principal,
   'guest_accept' : boolean,
 }

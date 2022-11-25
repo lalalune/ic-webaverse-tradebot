@@ -19,7 +19,7 @@ pub struct Trade {
     pub host_items: Vec<Item>,
     pub guest_items: Vec<Item>,
     pub host_escrow_items: Vec<Item>,
-    pub guest_escrow: Vec<Item>,
+    pub guest_escrow_items: Vec<Item>,
     pub host_accept: bool,
     pub guest_accept: bool,
     pub host: Principal,
@@ -58,7 +58,7 @@ pub fn create_trade(caller: Principal) -> Trade {
         host_items: vec![],
         guest_items: vec![],
         host_escrow_items: vec![],
-        guest_escrow: vec![],
+        guest_escrow_items: vec![],
         host_accept: false,
         guest_accept: false,
         host: caller,
@@ -228,95 +228,59 @@ pub fn cancel(caller: Principal, id: String) -> Result<Trade> {
     })
 }
 
-// pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Trade {
+pub fn add_item_to_escrow(caller: Principal, id: String, item: Item) -> Result<Trade> {
+    // get the trade and check if the caller is the host or the guest
+    // if they are neither, throw an error
+    TRADE_STORE.with(|store| {
+        let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
+        if caller == trade.host {
+            let mut host_escrow_items= trade.host_escrow_items;
 
-//     // TODO: item needs to actually be sent to escrow and validated
-//     TRADE_STORE.with(|store| {
-//         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
-//         if caller == trade.host {
-//             let mut host_escrow_items = trade.host_escrow_items;
-//             host_escrow_items.push(item);
-//             let trade = Trade {
-//                 host_escrow_items,
-//                 ..trade
-//             };
-//             store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
-//             trade
-//         } else if caller == trade.guest {
-//             let mut guest_escrow = trade.guest_escrow;
-//             guest_escrow.push(item);
-//             let trade = Trade {
-//                 guest_escrow,
-//                 ..trade
-//             };
-//             store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
-//             trade
-//         } else {
-//             ic_cdk::trap("You are not in this trade");
-//         }
-//     })
+
+            // perform intercanister call to check if the item exists
+            // if it does, add it to the escrow
+            let canister_id = item.canister_id;
+            let token_id = item.token_id;
+
+            // FIX THIS
+            // let canister = ic_cdk::api::call::call(canister_id, "get_item", (token_id,)).unwrap();
+            // let calledItem: Item = ic_cdk::api::call::decodable(canister).unwrap();
+
+            // // if the item does not exist, throw an error
+            // if calledItem.name == "" {
+            //     return Err(Error::new(ErrorKind::Other, "Item does not exist"));
+            // }
+
+
+            // if the item exists, add it to the escrow
+
+            host_escrow_items.push(item);
+            let trade = Trade {
+                host_escrow_items,
+                ..trade
+            };
+            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            Ok(trade)
+        } else if Some(caller) == trade.guest {
+            let mut guest_escrow_items = trade.guest_escrow_items;
+            guest_escrow_items.push(item);
+            let trade = Trade {
+                guest_escrow_items,
+                ..trade
+            };
+            store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
+            Ok(trade)
+        } else {
+            // throw an error
+            return Err(Error::new(ErrorKind::Other, "You are not in this trade"));
+        }
+    })
+}
+
+// pub fn remove_item_from_escrow(caller: Principal, id: String, item: Item) -> Result<Trade> {
+
 // }
 
-// #[update(name = "remove_item_from_escrow")]
-// pub fn remove_item_from_escrow(caller: Principal, id: String, item: Item) -> Trade {
+// pub fn withdraw_from_escrow(caller: Principal, id: String) -> Result<Trade> {
 
-//     // TODO: item needs to actually be removed from escrow and updated
-
-//     TRADE_STORE.with(|store| {
-//         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
-//         if trade.fulfilled {
-//             trade
-//         } else if caller == trade.host {
-//             let mut host_escrow_items = trade.host_escrow_items;
-//             host_escrow_items.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
-//             let trade = Trade {
-//                 host_escrow_items,
-//                 ..trade
-//             };
-//             store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
-//             trade
-//         } else if caller == trade.guest {
-//             let mut guest_escrow = trade.guest_escrow;
-//             guest_escrow.retain(|i| i.name != item.name || i.canister_id != item.canister_id || i.token_id != item.token_id);
-//             let trade = Trade {
-//                 guest_escrow,
-//                 ..trade
-//             };
-//             store.borrow_mut().insert(id.parse().unwrap(), trade.clone());
-//             trade
-//         } else {
-//             ic_cdk::trap("You are not in this trade");
-//         }
-//     })
-// }
-  
-// pub fn get_escrow_items(caller: Principal, id: String) -> Vec<Item> {
-//     TRADE_STORE.with(|store| {
-//         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
-//         if caller == trade.host {
-//             trade.guest_escrow
-//         } else if caller == trade.guest {
-//             trade.host_escrow_items
-//         } else {
-//             ic_cdk::trap("You are not in this trade");
-//         }
-//     })
-// }
-
-// pub fn withdraw_from_escrow(caller: Principal, id: String, item: Item) -> Item {
-//     // TODO: needs to actually handle withdrawing from escrow
-//     TRADE_STORE.with(|store| {
-//         let trade = store.borrow().get(&id.parse().unwrap()).unwrap().clone();
-//         if trade.fulfilled {
-//             if caller == trade.host {
-//                 trade.guest_escrow.iter().find(|i| i.name == item.name).unwrap().clone()
-//             } else if caller == trade.guest {
-//                 trade.host_escrow_items.iter().find(|i| i.name == item.name).unwrap().clone()
-//             } else {
-//                 ic_cdk::trap("You are not in this trade");
-//             }
-//         } else {
-//             ic_cdk::trap("Trade has not been fulfilled");
-//         }
-//     })
 // }

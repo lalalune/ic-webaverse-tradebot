@@ -155,7 +155,7 @@ export const Trade = () => {
     //   host_items: Item[];
     //   guest_items: Item[];
     //   host_escrow_items: Item[];
-    //   guest_escrow: Item[];
+    //   guest_escrow_items: Item[];
     //   host_accept: boolean;
     //   guest_accept: boolean;
     //   host: Principal;

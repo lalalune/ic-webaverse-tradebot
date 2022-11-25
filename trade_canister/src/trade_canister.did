@@ -3,7 +3,7 @@ type Trade = record {
     "host_items": vec Item;
     "guest_items": vec Item;
     "host_escrow_items": vec Item;
-    "guest_escrow": vec Item;
+    "guest_escrow_items": vec Item;
     "host_accept": bool;
     "guest_accept": bool;
     "host": principal;
@@ -14,7 +14,7 @@ type Trade = record {
 type Item = record {
     "name": text;
     "canister_id": principal;
-    "token_id": int;
+    "token_id": int32;
 };
 
 service: {
@@ -28,4 +28,5 @@ service: {
     "leave_trade": (text) -> (Trade);
     "add_item_to_trade": (text, Item) -> (Trade);
     "remove_item_from_trade": (text, Item) -> (Trade);
+    "add_item_to_escrow": (text, Item) -> (Trade);
 }
