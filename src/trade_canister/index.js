@@ -4,8 +4,7 @@ import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "./trade_canister.did.js";
 export { idlFactory } from "./trade_canister.did.js";
 
-// CANISTER_ID is replaced by webpack based on node environment
-export const canisterId = import.meta.env.CANISTER_ID ?? "rrkah-fqaaa-aaaaa-aaaaq-cai";
+export const canisterId = import.meta.env.TRADE_CANISTER_CANISTER_ID ?? "rrkah-fqaaa-aaaaa-aaaaq-cai";
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });
