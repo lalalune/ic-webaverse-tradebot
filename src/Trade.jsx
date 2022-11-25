@@ -152,9 +152,9 @@ export const Trade = () => {
 
     // type Trade = {
     //   id: string;
-    //   host_data: Item[];
-    //   guest_data: Item[];
-    //   host_escrow: Item[];
+    //   host_items: Item[];
+    //   guest_items: Item[];
+    //   host_escrow_items: Item[];
     //   guest_escrow: Item[];
     //   host_accept: boolean;
     //   guest_accept: boolean;
@@ -166,9 +166,9 @@ export const Trade = () => {
     let data = []
     // if the user is the host, update the host's inventory
     if (userIsHost) {
-      data = tradeData.host_data;
+      data = tradeData.host_items;
     } else if(userIsGuest) {
-      data = tradeData.guest_data;
+      data = tradeData.guest_items;
     } else {
       throw new Error("User is not host or guest");
     }
@@ -286,13 +286,13 @@ export const Trade = () => {
       }
 
       if (isCreator) {
-        const rb = getRemoteBoxes(tradeData.guest_data)
-        console.log('guest_data: ', tradeData.guest_data)
+        const rb = getRemoteBoxes(tradeData.guest_items)
+        console.log('guest_items: ', tradeData.guest_items)
         console.log('remoteBoxes: ', rb)
         setRemoteBoxes(rb)
       } else {
-        const rb = getRemoteBoxes(tradeData.host_data)
-        console.log('host_data: ', tradeData.host_data)
+        const rb = getRemoteBoxes(tradeData.host_items)
+        console.log('host_items: ', tradeData.host_items)
         console.log('remoteBoxes: ', rb)
         setRemoteBoxes(rb)
       }
@@ -403,10 +403,10 @@ export const Trade = () => {
               </div>
             </Frame>
           )}
-          {authenticated && !tradeData && (
+          {authenticated && (
             <React.Fragment>
             <Frame className="absolute w-full">
-              <div className="flex items-center justify-center w-full h-full">
+              <div className= "flex items-center justify-center w-full h-full">
                 {!tradeStarted && (
                   <Button variant="contained" onClick={startTrade}>
                     Start Trade
