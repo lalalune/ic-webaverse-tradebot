@@ -140,13 +140,13 @@ export const Trade = () => {
   useEffect(() => {
     if (!curTradeId || !plugActor) return
     console.log('curTradeId: ', curTradeId)
-    // const interval = setInterval(async () => {
-    //   const trade = await plugActor.get_trade_by_id(curTradeId)
-    //   setTradeData(trade)
-    // }, 2000)
-    // return () => {
-    //   clearInterval(interval)
-    // }
+    const interval = setInterval(async () => {
+      const trade = await plugActor.get_trade_by_id(curTradeId)
+      setTradeData(trade)
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
   }, [curTradeId])
 
   // update game status whenever trade data is changed
