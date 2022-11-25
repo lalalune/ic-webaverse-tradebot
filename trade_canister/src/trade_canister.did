@@ -1,8 +1,8 @@
 type Trade = record {
     "id": text;
-    "host_data": vec Item;
-    "guest_data": vec Item;
-    "host_escrow": vec Item;
+    "host_items": vec Item;
+    "guest_items": vec Item;
+    "host_escrow_items": vec Item;
     "guest_escrow": vec Item;
     "host_accept": bool;
     "guest_accept": bool;

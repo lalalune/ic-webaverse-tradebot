@@ -1,7 +1,7 @@
 {
   "canisters": {
     "trade_canister": {
-      "candid": "trade_canister/trade_canister.did",
+      "candid": "src/trade_canister.did",
       "package": "trade_canister",
       "type": "rust"
     }

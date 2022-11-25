@@ -8,11 +8,11 @@ export interface Item {
 }
 export interface Trade {
   'id' : string,
-  'host_escrow' : Array<Item>,
-  'host_data' : Array<Item>,
+  'host_escrow_items' : Array<Item>,
+  'host_items' : Array<Item>,
   'fulfilled' : boolean,
   'host' : Principal,
-  'guest_data' : Array<Item>,
+  'guest_items' : Array<Item>,
   'host_accept' : boolean,
   'guest_escrow' : Array<Item>,
   'guest' : Principal,
