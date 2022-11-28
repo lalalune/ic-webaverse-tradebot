@@ -2,9 +2,10 @@ import React, { useEffect } from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
+import { Principal } from "@dfinity/principal"
 
 import { inventoryBoxNum, pageBoxNum } from "./utils/constants"
-import { clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
+import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
 import { useStore } from "./store"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
@@ -58,6 +59,8 @@ export const Trade = () => {
     setAuthenticated,
     inventoryTokens,
     setInventoryTokens,
+    partnerTokens,
+    setPartnerTokens,
   } = useStore()
 
   const localUserId = principal ? plug.principalId : ''
@@ -91,13 +94,13 @@ export const Trade = () => {
     setAuthenticated(true)
   }
 
-  const getRemoteTokens = tradeItems => {
-
-  }
-
   useEffect(() => {
-    if (!plug.agent) return
-
+    (async () => {
+      if (!plug.agent) return
+      const tempPartnerTokens = await getUserTokens({ agent: plug.agent, user: Principal.fromText(partnerId) })
+      console.log('tempPartnerTokens: ', tempPartnerTokens)
+      setPartnerTokens(tempPartnerTokens)
+    })()
   }, [partnerId])
 
   // handle guest joining existing trade from link
@@ -107,7 +110,7 @@ export const Trade = () => {
       setLoading(true)
       // const balance = await plug.requestBalance()
       // console.log("balance: ", balance)
-      const newTokens = Object.values(await getUserTokens({ agent: plug.agent, user: plug.principalId }))
+      const newTokens = await getUserTokens({ agent: plug.agent, user: principal })
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
@@ -151,7 +154,7 @@ export const Trade = () => {
       const trade = await plugActor.get_trade_by_id(curTradeId)
       console.log('real time trade: ', trade)
       setTradeData(trade)
-    }, 1000)
+    }, 2000)
     return () => {
       clearInterval(interval)
     }
@@ -161,6 +164,7 @@ export const Trade = () => {
   useEffect(() => {
     (async () => {
       if (!plugActor || !curTradeId || !tradeData || !localUserId) return
+      console.log('tradeData: ', tradeData)
       setLoading(true)
       const hostId = getPrincipalId(tradeData.host)
       const guestId = getPrincipalId(tradeData.guest)
@@ -185,7 +189,10 @@ export const Trade = () => {
         setPartnerId(hostId)
       }
 
-      const rbs = isCreator ? getRemoteBoxes(tradeData.guest_items) : getRemoteBoxes(tradeData.host_items)
+      console.log('isCreator: ', isCreator)
+      const rts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens)
+      console.log('remoteTokens: ', rts)
+      const rbs = getRemoteBoxes(rts)
       console.log('remoteBoxes: ', rbs)
       setRemoteBoxes(rbs)
       setLoading(false)
@@ -341,7 +348,7 @@ export const Trade = () => {
               </Frame>
             </>
           )}
-          {principal && inventoryTokens.length && (
+          {principal && (
             <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">

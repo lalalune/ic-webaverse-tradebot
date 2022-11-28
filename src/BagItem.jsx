@@ -145,7 +145,7 @@ const BagItem = ({
         (async () => {
           setLoading(true)
           const res = await plugActor.add_item_to_trade(tradeData.id, {
-            token_id: cloneDragTradeItem.token_id, name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
           });
           console.log('add_item_to_trade res: ', res)
           setLoading(false)
@@ -156,7 +156,7 @@ const BagItem = ({
         (async () => {
           setLoading(true)
           const res = await plugActor.remove_item_from_trade(tradeData.id, {
-            token_id: cloneDragTradeItem.token_id, name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
           });
           console.log("remove_item_from_trade res: ", res);
           setLoading(false)

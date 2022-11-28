@@ -24,8 +24,11 @@ export const useStore = create((set) => ({
   plugActor: null,
   setPlugActor: (newVal) => set((state) => ({ plugActor: newVal })),
 
-  inventoryTokens: [],
+  inventoryTokens: {},
   setInventoryTokens: (newVal) => set((state) => ({ inventoryTokens: newVal })),
+
+  partnerTokens: {},
+  setPartnerTokens: (newVal) => set((state) => ({ partnerTokens: newVal })),
 
   isCreator: false,
   setIsCreator: (newVal) => set((state) => ({ isCreator: newVal })),

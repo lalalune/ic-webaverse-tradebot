@@ -15,6 +15,7 @@ export const clone = (obj) => {
 };
 
 export const getRemoteBoxes = (remoteItems) => {
+  remoteItems = Object.values(remoteItems)
   const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
     return { id: i, item: remoteItems.find(item => item.slot === i) ?? null };
   });
@@ -22,6 +23,7 @@ export const getRemoteBoxes = (remoteItems) => {
 };
 
 export const getLocalBoxes = (localItems) => {
+  localItems = Object.values(localItems)
   const localBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
     return { id: i, item: localItems.find(item => item.slot === i) ?? null };
   });
@@ -29,6 +31,7 @@ export const getLocalBoxes = (localItems) => {
 };
 
 export const getInventoryBoxes = (inventoryItems) => {
+  inventoryItems = Object.values(inventoryItems)
   const inventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
     return { id: i, item: inventoryItems.find(item => item.slot === i) ?? null };
   });
@@ -36,8 +39,11 @@ export const getInventoryBoxes = (inventoryItems) => {
 };
 
 export const getUserTokens = async ({ agent, user }) => {
-  return [
-    {
+  console.log('agent: ', agent)
+  console.log('user: ', user)
+
+  return {
+    '8510': {
       token_id: '8510',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 1",
@@ -45,7 +51,7 @@ export const getUserTokens = async ({ agent, user }) => {
       url: "assets/armor.png",
       slot: 0,
     },
-    {
+    '8511': {
       token_id: '8511',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 2",
@@ -53,7 +59,7 @@ export const getUserTokens = async ({ agent, user }) => {
       url: "assets/bastard-sword.png",
       slot: 1,
     },
-    {
+    '8512': {
       token_id: '8512',
       canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
       collection: "collection 3",
@@ -61,7 +67,7 @@ export const getUserTokens = async ({ agent, user }) => {
       url: "models/chest.glb",
       slot: 2,
     },
-  ];
+  };
 
   let collections
 
@@ -83,7 +89,8 @@ export const getUserTokens = async ({ agent, user }) => {
   collections.forEach((collection) => {
     // if (!collection.name.toLowerCase().includes("cipher")) {
     collection.tokens.forEach((token) => {
-      let newToken = { canister_id: token.canister, collection: token.collection, token_id: token.index.toString(), slot }
+      const token_id = token.index.toString()
+      let newToken = { canister_id: token.canister, collection: token.collection, token_id, slot }
       const jsonMetadata = token.metadata?.json?.value.TextContent;
 
       if (jsonMetadata) {
@@ -95,7 +102,7 @@ export const getUserTokens = async ({ agent, user }) => {
         newToken.url = collection.icon
       }
 
-      newTokens[slot] = newToken
+      newTokens[token_id] = newToken
       slot++;
     });
     // }
@@ -162,8 +169,22 @@ export const existItems = boxes => {
 }
 
 export const getPrincipalId = pricipal => {
-  if (pricipal.length) pricipal = pricipal[0]
+  console.log('getPrincipalId pricipal: ', pricipal)
+  if (Array.isArray(pricipal)) {
+    if (!pricipal.length) return ''
+    pricipal = pricipal[0]
+  }
   const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : ''
   console.log('principalId: ', principalId)
   return principalId
+}
+
+export const canisterItemsToTokens = (canisterItems, userTokens) => {
+  if (!Array.isArray(canisterItems) || !userTokens) return {}
+  const tokens = {}
+  canisterItems.forEach(item => {
+    tokens[item.token_id] = userTokens[item.token_id]
+  })
+  console.log('tokens: ', tokens)
+  return tokens
 }
