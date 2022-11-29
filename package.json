@@ -21,7 +21,7 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
     "@mui/material": "^5.10.13",
-    "@psychedelic/dab-js": "^1.5.0",
+    "@psychedelic/dab-js": "^1.5.2",
     "@raydeck/useplug": "^1.0.3",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",

@@ -97,7 +97,7 @@ export const Trade = () => {
   useEffect(() => {
     (async () => {
       if (!plug.agent) return
-      const tempPartnerTokens = await getUserTokens({ agent: plug.agent, user: Principal.fromText(partnerId) })
+      const tempPartnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
       console.log('tempPartnerTokens: ', tempPartnerTokens)
       setPartnerTokens(tempPartnerTokens)
     })()
@@ -106,11 +106,11 @@ export const Trade = () => {
   // handle guest joining existing trade from link
   useEffect(() => {
     (async () => {
-      if (!principal) return
+      if (!principal || !plug.principalId) return
       setLoading(true)
       // const balance = await plug.requestBalance()
       // console.log("balance: ", balance)
-      const newTokens = await getUserTokens({ agent: plug.agent, user: principal })
+      const newTokens = await getUserTokens({ agent: plug.agent, user: plug.principalId })
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 

@@ -42,34 +42,34 @@ export const getUserTokens = async ({ agent, user }) => {
   console.log('agent: ', agent)
   console.log('user: ', user)
 
-  return {
-    '8510': {
-      token_id: '8510',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 1",
-      name: "token 1",
-      url: "assets/armor.png",
-      slot: 0,
-    },
-    '8511': {
-      token_id: '8511',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 2",
-      name: "token 2",
-      url: "assets/bastard-sword.png",
-      slot: 1,
-    },
-    '8512': {
-      token_id: '8512',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 3",
-      name: "token 3",
-      url: "models/chest.glb",
-      slot: 2,
-    },
-  };
+  // return {
+  //   '8510': {
+  //     token_id: '8510',
+  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+  //     collection: "collection 1",
+  //     name: "token 1",
+  //     url: "assets/armor.png",
+  //     slot: 0,
+  //   },
+  //   '8511': {
+  //     token_id: '8511',
+  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+  //     collection: "collection 2",
+  //     name: "token 2",
+  //     url: "assets/bastard-sword.png",
+  //     slot: 1,
+  //   },
+  //   '8512': {
+  //     token_id: '8512',
+  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+  //     collection: "collection 3",
+  //     name: "token 3",
+  //     url: "models/chest.glb",
+  //     slot: 2,
+  //   },
+  // };
 
-  let collections
+  let collections = []
 
   try {
     collections = await getAllUserNFTs({
