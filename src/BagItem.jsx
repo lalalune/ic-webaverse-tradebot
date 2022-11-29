@@ -106,8 +106,8 @@ const BagItem = ({
   tradeLayer,
   plugActor,
   tradeData,
-  localUser,
-  setSelItem
+  setSelItem,
+  setLoading,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};

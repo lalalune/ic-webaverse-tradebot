@@ -55,8 +55,6 @@ html {
 */
 
 body {
-  overflow: hidden;
-  color: #fff;
   margin: 0;
   /* 1 */
   line-height: inherit;
@@ -801,6 +799,7 @@ video {
 }
 
 #root {
+  color: rgba(255, 255, 255, 0.87);
   width: 100vw;
   height: 100vh;
   margin: 0;

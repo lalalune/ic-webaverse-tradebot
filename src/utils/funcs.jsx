@@ -39,35 +39,35 @@ export const getInventoryBoxes = (inventoryItems) => {
 };
 
 export const getUserTokens = async ({ agent, user }) => {
-  console.log('agent: ', agent)
-  console.log('user: ', user)
+  console.log('getUserTokens agent: ', agent)
+  console.log('getUserTokens user: ', user)
 
-  // return {
-  //   '8510': {
-  //     token_id: '8510',
-  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-  //     collection: "collection 1",
-  //     name: "token 1",
-  //     url: "assets/armor.png",
-  //     slot: 0,
-  //   },
-  //   '8511': {
-  //     token_id: '8511',
-  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-  //     collection: "collection 2",
-  //     name: "token 2",
-  //     url: "assets/bastard-sword.png",
-  //     slot: 1,
-  //   },
-  //   '8512': {
-  //     token_id: '8512',
-  //     canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-  //     collection: "collection 3",
-  //     name: "token 3",
-  //     url: "models/chest.glb",
-  //     slot: 2,
-  //   },
-  // };
+  return {
+    '8510': {
+      token_id: '8510',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+      collection: "collection 1",
+      name: "token 1",
+      url: "assets/armor.png",
+      slot: 0,
+    },
+    '8511': {
+      token_id: '8511',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+      collection: "collection 2",
+      name: "token 2",
+      url: "assets/bastard-sword.png",
+      slot: 1,
+    },
+    '8512': {
+      token_id: '8512',
+      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+      collection: "collection 3",
+      name: "token 3",
+      url: "models/chest.glb",
+      slot: 2,
+    },
+  };
 
   let collections = []
 
@@ -77,7 +77,7 @@ export const getUserTokens = async ({ agent, user }) => {
       user,
     });
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 
   console.log("collections: ", collections);
@@ -185,6 +185,6 @@ export const canisterItemsToTokens = (canisterItems, userTokens) => {
   canisterItems.forEach(item => {
     tokens[item.token_id] = userTokens[item.token_id]
   })
-  console.log('tokens: ', tokens)
+  console.log('canisterItemsToTokens: ', tokens)
   return tokens
 }

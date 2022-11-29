@@ -28,6 +28,7 @@ export const idlFactory = ({ IDL }) => {
     'join_trade' : IDL.Func([IDL.Text], [Trade], []),
     'leave_trade' : IDL.Func([IDL.Text], [Trade], []),
     'remove_item_from_trade' : IDL.Func([IDL.Text, Item], [Trade], []),
+    'withdraw_from_escrow' : IDL.Func([IDL.Text], [Trade], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

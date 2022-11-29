@@ -30,4 +30,5 @@ export interface _SERVICE {
   'join_trade' : ActorMethod<[string], Trade>,
   'leave_trade' : ActorMethod<[string], Trade>,
   'remove_item_from_trade' : ActorMethod<[string, Item], Trade>,
+  'withdraw_from_escrow' : ActorMethod<[string], Trade>,
 }
