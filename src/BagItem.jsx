@@ -192,7 +192,7 @@ const BagItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: itemTypes.LAYER1,
-    canDrag: !!item.canister_id,
+    canDrag: !!item.canister_id && tradeLayer !== 'remote',
     item: () => {
       return { index, tradeBoxes, setTradeBoxes, item, tradeLayer };
     },
