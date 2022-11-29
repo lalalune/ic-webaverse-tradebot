@@ -339,7 +339,7 @@ export const Trade = () => {
                   <Button
                     variant="contained"
                     onClick={onCancel}
-                    disabled={!accepted && existItems(localBoxes)}
+                    disabled={!accepted && !existItems(localBoxes)}
                     color="error"
                   >
                     Cancel
