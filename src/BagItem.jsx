@@ -58,8 +58,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item }) => {
       isDragging={isDragging}
       onClick={handleClick}
     >
-      {(isImage(item?.url) ||
-        (!isImage(item?.url) && !isMedia(item?.url) && !isModel(item?.url))) && (
+      {(isImage(item?.url)
+        // || (!isImage(item?.url) && !isMedia(item?.url) && !isModel(item?.url))
+      ) && (
           <span onClick={handleClick}>
             <img
               crossOrigin="anonymous"
