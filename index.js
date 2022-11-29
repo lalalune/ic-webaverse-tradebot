@@ -72,7 +72,7 @@ export default (e) => {
   const physicsIds = [];
   e.waitUntil(
     (async () => {
-      const u = `${baseUrl}console_fantasy.glb`;
+      const u = `${baseUrl}console.glb`;
       let o = await new Promise((accept, reject) => {
         const { gltfLoader } = useLoaders();
         gltfLoader.load(u, accept, function onprogress() { }, reject);

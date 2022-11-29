@@ -29,4 +29,5 @@ service: {
     "add_item_to_trade": (text, Item) -> (Trade);
     "remove_item_from_trade": (text, Item) -> (Trade);
     "add_item_to_escrow": (text, Item) -> (Trade);
+    "withdraw_from_escrow": (text) -> (Trade);
 }

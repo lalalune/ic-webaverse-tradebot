@@ -1,12 +1,11 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { Principal } from "@dfinity/principal"
 
-import { inventoryBoxNum, pageBoxNum } from "./utils/constants"
+import { inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
 import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
-import { useStore } from "./store"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import Frame from "./Frame"
@@ -29,56 +28,47 @@ const tradeId = url.searchParams.get("tradeId")
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
 
 export const Trade = () => {
-  const {
-    isCreator,
-    setIsCreator,
-    partnerId,
-    setPartnerId,
-    tradeData,
-    setTradeData,
-    remoteBoxes,
-    setRemoteBoxes,
-    localBoxes,
-    setLocalBoxes,
-    inventoryBoxes,
-    setInventoryBoxes,
-    plugActor,
-    setPlugActor,
-    tradeStarted,
-    setTradeStarted,
-    accepted,
-    setAccepted,
-    curPage,
-    setCurPage,
-    setLoading,
-    curTradeId,
-    setCurTradeId,
-    principal,
-    setPrincipal,
-    authenticated,
-    setAuthenticated,
-    inventoryTokens,
-    setInventoryTokens,
-    partnerTokens,
-    setPartnerTokens,
-  } = useStore()
+  const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return {
+      id: i,
+      item: null,
+    };
+  });
 
-  const localUserId = principal ? plug.principalId : ''
+  const initLocalBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
+    return {
+      id: i,
+      item: null,
+    };
+  });
+
+  const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
+    return { id: i, type: "all", item: null };
+  });
+
+  const [plugActor, setPlugActor] = useState(null);
+  const [isCreator, setIsCreator] = useState(false);
+  const [localUser, setLocalUser] = useState(null);
+  const [partnerId, setPartnerId] = useState(null);
+  const [curTradeId, setCurTradeId] = useState(null);
+  const [tradeData, setTradeData] = useState(null);
+  const [tradeStarted, setTradeStarted] = useState(false);
+  const [remoteBoxes, setRemoteBoxes] = useState(clone(initRemoteBoxes));
+  const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes));
+  const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes);
+  const [accepted, setAccepted] = useState(false);
+  const [curPage, setCurPage] = useState(1);
+  const [selItem, setSelItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [principal, setPrincipal] = useState(false);
 
   const login = async () => {
-    if (!plug) return
-    console.log('initial plug: ', plug)
-
-    // const isConnected = await plug?.isConnected()
-    // console.log('isConnected: ', isConnected)
-    // if (!isConnected) return
-
     const publicKey = await plug.requestConnect({
       whitelist, host, timeout,
       onConnectionUpdate: () => {
         console.log('sessionData: ', plug.sessionManager.sessionData)
       }
-    })
+    });
 
     if (publicKey) {
       console.log('publicKey: ', publicKey)
@@ -250,175 +240,196 @@ export const Trade = () => {
               </div>
             </Frame>
           )}
-          {authenticated && !tradeData && (
-            <Frame>
-              <div className="flex items-center justify-center h-full">
-                {!tradeStarted && (
-                  <Button variant="contained" onClick={startTrade}>
-                    Start Trade
-                  </Button>
-                )}
-                {tradeStarted && (
-                  <Button variant="disabled">Starting...</Button>
-                )}
-              </div>
-            </Frame>
-          )}
-          {authenticated && tradeData && (
-            <>
+          {
+            authenticated && !tradeData && (
+              <Frame>
+                <div className="flex items-center justify-center h-full">
+                  {!tradeStarted && (
+                    <Button variant="contained" onClick={startTrade}>
+                      Start Trade
+                    </Button>
+                  )}
+                  {tradeStarted && (
+                    <Button variant="disabled">Starting...</Button>
+                  )}
+                </div >
+              </Frame >
+            )}
+          {
+            authenticated && tradeData && (
+              <>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl">Their Trade</div>
+                      <div className="text-xl text-blue-900">
+                        {(isCreator && tradeData.guest_accept) ||
+                          (!isCreator && tradeData.host_accept)
+                          ? "TRADE ACCEPTED"
+                          : ""}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {remoteBoxes.map((box, index) => {
+                        return (
+                          <RemoteBox key={box.id}>
+                            <BagItem
+                              key={`remote_${box.id}`}
+                              item={clone(box.item)}
+                              index={index}
+                              tradeBoxes={clone(remoteBoxes)}
+                              setTradeBoxes={setRemoteBoxes}
+                              tradeLayer="remote"
+                              plugActor={plugActor}
+                              tradeData={tradeData}
+                              localUser={localUser}
+                              setSelItem={setSelItem}
+                            />
+                          </RemoteBox>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </Frame>
+                <Frame>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-2xl">Your Trade</div>
+                    <div className="flex flex-wrap gap-3">
+                      {localBoxes.map((box, index) => {
+                        return (
+                          <BagBox key={box.id}>
+                            <BagItem
+                              key={`local_${box.id}`}
+                              isForTrade={true}
+                              item={clone(box.item)}
+                              index={index}
+                              tradeBoxes={clone(localBoxes)}
+                              setTradeBoxes={setLocalBoxes}
+                              tradeLayer="local"
+                              plugActor={plugActor}
+                              tradeData={tradeData}
+                              localUser={localUser}
+                            />
+                          </BagBox>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </Frame>
+                <Frame>
+                  <div className="flex flex-wrap items-center justify-center gap-8">
+                    <Button
+                      variant="contained"
+                      onClick={onAccept}
+                      disabled={accepted || !existItems(localBoxes)}
+                      color="success"
+                    >
+                      Accept
+                    </Button>
+                    <div className="flex items-center justify-center gap-2">
+                      {/* Numerical input for amount of ICP to add to trade */}
+                      <label htmlFor="icp">ICP: </label>
+                      <input
+                        className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
+                        id="icp"
+                        type="number"
+                      />
+                    </div>
+                    <Button
+                      variant="contained"
+                      onClick={onCancel}
+                      disabled={!accepted && !existItems(localBoxes)}
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </Frame>
+              </>
+            )
+          }
+          {
+            principal && (
               <Frame>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl">Their Trade</div>
-                    <div className="text-xl text-blue-900">
-                      {(isCreator && tradeData.guest_accept) ||
-                        (!isCreator && tradeData.host_accept)
-                        ? "TRADE ACCEPTED"
-                        : ""}
+                    <div className="text-2xl">Inventory</div>
+                    <div className="flex items-center gap-2 text-xl">
+                      <div className="cursor-pointer" onClick={onPrevPage}>
+                        &#60;
+                      </div>
+                      <div className="text-blue-900">{curPage}</div>
+                      <div className="cursor-pointer" onClick={onNextPage}>
+                        &#62;
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        {inventoryBoxes
+                          .slice(
+                            (curPage - 1) * pageBoxNum,
+                            curPage * pageBoxNum
+                          )
+                          .map((box, index) => {
+                            return (
+                              <BagBox key={box.id}>
+                                <BagItem
+                                  key={`inventory_${box.id}`}
+                                  item={clone(box.item)}
+                                  index={(curPage - 1) * pageBoxNum + index}
+                                  tradeBoxes={clone(inventoryBoxes)}
+                                  setTradeBoxes={setInventoryBoxes}
+                                  tradeLayer="inventory"
+                                  plugActor={plugActor}
+                                  tradeData={tradeData}
+                                  localUser={localUser}
+                                />
+                              </BagBox>
+                            )
+                          })}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {remoteBoxes.map((box, index) => {
-                      return (
-                        <RemoteBox key={box.id}>
-                          <BagItem
-                            key={`remote_${box.id}`}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(remoteBoxes)}
-                            setTradeBoxes={setRemoteBoxes}
-                            tradeLayer="remote"
-                          />
-                        </RemoteBox>
-                      )
-                    })}
-                  </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="text-2xl">Your Trade</div>
-                  <div className="flex flex-wrap gap-3">
-                    {localBoxes.map((box, index) => {
-                      return (
-                        <BagBox key={box.id}>
-                          <BagItem
-                            key={`local_${box.id}`}
-                            isForTrade={true}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(localBoxes)}
-                            setTradeBoxes={setLocalBoxes}
-                            tradeLayer="local"
-                          />
-                        </BagBox>
-                      )
-                    })}
-                  </div>
-                </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-wrap items-center justify-center gap-8">
-                  <Button
-                    variant="contained"
-                    onClick={onAccept}
-                    disabled={accepted || !existItems(localBoxes)}
-                    color="success"
-                  >
-                    Accept
-                  </Button>
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Numerical input for amount of ICP to add to trade */}
-                    <label htmlFor="icp">ICP: </label>
-                    <input
-                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
-                      id="icp"
-                      type="number"
-                    />
-                  </div>
-                  <Button
-                    variant="contained"
-                    onClick={onCancel}
-                    disabled={!accepted && !existItems(localBoxes)}
-                    color="error"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </Frame>
-            </>
-          )}
-          {principal && (
-            <Frame>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-2xl">Inventory</div>
-                  <div className="flex items-center gap-2 text-xl">
-                    <div className="cursor-pointer" onClick={onPrevPage}>
-                      &#60;
-                    </div>
-                    <div className="text-blue-900">{curPage}</div>
-                    <div className="cursor-pointer" onClick={onNextPage}>
-                      &#62;
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {inventoryBoxes
-                    .slice(
-                      (curPage - 1) * pageBoxNum,
-                      curPage * pageBoxNum
-                    )
-                    .map((box, index) => {
-                      return (
-                        <BagBox key={box.id}>
-                          <BagItem
-                            key={`inventory_${box.id}`}
-                            item={clone(box.item)}
-                            index={(curPage - 1) * pageBoxNum + index}
-                            tradeBoxes={clone(inventoryBoxes)}
-                            setTradeBoxes={setInventoryBoxes}
-                            tradeLayer="inventory"
-                          />
-                        </BagBox>
-                      )
-                    })}
-                </div>
-              </div>
-            </Frame>
-          )}
-        </div>
+                  </div >
+                </div >
+              </Frame >
+            )
+          }
+        </div >
         <div className="absolute top-0 right-0 w-1/4 h-full overflow-auto">
           <Frame className="h-full">
             <div className="p-2">
               <b>CONNECTION STATUS</b>
               <br />
-              {authenticated && principal
-                ? "Connected with " + localUserId
-                : "Waiting for IC wallet connection..."}
+              {
+                authenticated && principal
+                  ? "Connected with " + localUserId
+                  : "Waiting for IC wallet connection..."
+              }
               <br />
               <br />
-              {tradeStarted && tradeData && !partnerId && !tradeId && (
-                <>
-                  <b> WAITING FOR TRADE PARTNER... </b>
-                  <br />
-                  Send this link to your trade partner
-                  <br />
-                  <a
-                    className="text-blue-900"
-                    href={`${url.host}/?tradeId=${tradeData.id}`}
-                  >
-                    {url.host}/?tradeId={tradeData.id}
-                  </a>
-                </>
-              )}
-              {tradeStarted && tradeData && partnerId && (
-                <>Trading with {partnerId}</>
-              )}
-            </div>
-          </Frame>
-        </div>
-      </DndProvider>
-    </div>
+              {
+                tradeStarted && tradeData && !partnerId && !tradeId && (
+                  <>
+                    <b> WAITING FOR TRADE PARTNER... </b>
+                    <br />
+                    Send this link to your trade partner
+                    <br />
+                    <a
+                      className="text-blue-900"
+                      href={`${url.host}/?tradeId=${tradeData.id}`}
+                    >
+                      {url.host}/?tradeId={tradeData.id}
+                    </a>
+                  </>
+                )
+              }
+              {
+                tradeStarted && tradeData && partnerId && (
+                  <>Trading with {partnerId}</>
+                )
+              }
+            </div >
+          </Frame >
+        </div >
+      </DndProvider >
+    </div >
   )
 }

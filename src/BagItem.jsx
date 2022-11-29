@@ -5,14 +5,12 @@ import { GLTFModel } from "react-3d-viewer";
 // import update from 'immutability-helper'
 import { Principal } from "@dfinity/principal"
 
-import { useStore } from './store.jsx'
 import { clone, isImage, isMedia, isModel } from "./utils/funcs";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
 
-export const PresentationalBagItem = ({ drag, isDragging, item }) => {
-  const { setSelItem } = useStore();
+export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
   const handleClick = (event) => {
@@ -106,9 +104,12 @@ const BagItem = ({
   tradeBoxes,
   setTradeBoxes,
   tradeLayer,
+  plugActor,
+  tradeData,
+  localUser,
+  setSelItem
 }) => {
   const ref = React.useRef(null);
-  const { plugActor, tradeData, setLoading } = useStore();
   if (!item) item = {};
   item.isForTrade = isForTrade;
   // console.log("item: ", item);
@@ -209,7 +210,7 @@ const BagItem = ({
       ref={ref}
       data-handler-id={handlerId}
     >
-      <PresentationalBagItem isDragging={isDragging} item={item} />
+      <PresentationalBagItem isDragging={isDragging} item={item} setSelItem={setSelItem} />
     </div>
   );
 };

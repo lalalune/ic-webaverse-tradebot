@@ -1,10 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 
-import { useStore } from "./store";
-
-export const Loading = () => {
-  const { loading } = useStore();
+export const Loading = ({loading}) => {
 
   return !loading ? null : (
     <div
