@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import { Principal } from "@dfinity/principal"
 
 import { inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
 import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
@@ -21,6 +20,7 @@ const { plug } = ic
 const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 const whitelist = [canisterId]
 const host = 'http://127.0.0.1:8000'
+const mainnetHost = "https://mainnet.dfinity.network"
 const timeout = 50000
 
 const url = new URL(window.location.href)
