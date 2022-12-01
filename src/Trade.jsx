@@ -237,8 +237,7 @@ export const Trade = ({ type }) => {
       <DndProvider backend={HTML5Backend}>
         <ItemDetails selItem={selItem} />
         {/* If both players accepted their trade */}
-        {accepted && existItems(localBoxes) && ((isCreator && tradeData.guest_accept) ||
-          (!isCreator && tradeData.host_accept)) &&
+        {authenticated && tradeData && accepted && existItems(localBoxes) && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
             <div className="text-xl">Do you want to confirm the current trade?</div>
             <div className="flex gap-8">
@@ -259,7 +258,7 @@ export const Trade = ({ type }) => {
             </div>
           </ModalBox>
         }
-        {false &&
+        {authenticated && tradeData && tradeData.host_items.length === tradeData.host_escrow_items && tradeData.guest_items === tradeData.guest_escrow_items &&
           <ModalBox>
             <div className="text-xl">Trade Completed!</div>
           </ModalBox>
