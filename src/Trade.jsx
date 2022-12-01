@@ -8,6 +8,7 @@ import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincip
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import Frame from "./Frame"
+import { ModalBox } from './ModalBox'
 import RemoteBox from "./RemoteBox"
 import BagBox from "./BagBox"
 import BagItem from "./BagItem"
@@ -235,9 +236,37 @@ export const Trade = ({ type }) => {
     <div className="w-full h-full">
       <DndProvider backend={HTML5Backend}>
         <ItemDetails selItem={selItem} />
+        {/* If both players accepted their trade */}
+        {accepted && existItems(localBoxes) && ((isCreator && tradeData.guest_accept) ||
+          (!isCreator && tradeData.host_accept)) &&
+          <ModalBox>
+            <div className="text-xl">Do you want to confirm the current trade?</div>
+            <div className="flex gap-8">
+              <Button
+                variant="contained"
+                onClick={() => { console.log('Confirm') }}
+                color="success"
+              >
+                Confirm
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => { console.log('Cancel') }}
+                color="error"
+              >
+                Cancel
+              </Button>
+            </div>
+          </ModalBox>
+        }
+        {false &&
+          <ModalBox>
+            <div className="text-xl">Trade Completed!</div>
+          </ModalBox>
+        }
         <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
           <Loading loading={loading} />
-          {!authenticated && (
+          {!authenticated &&
             <Frame className="h-full">
               <div className="flex items-center justify-center h-full">
                 <Button variant="contained" onClick={onConnect}>
@@ -245,8 +274,8 @@ export const Trade = ({ type }) => {
                 </Button>
               </div>
             </Frame>
-          )}
-          {authenticated && !tradeData && (
+          }
+          {authenticated && !tradeData &&
             <Frame>
               <div className="flex items-center justify-center h-full">
                 {!tradeStarted && (
@@ -259,8 +288,8 @@ export const Trade = ({ type }) => {
                 )}
               </div>
             </Frame>
-          )}
-          {authenticated && tradeData && (
+          }
+          {authenticated && tradeData &&
             <>
               <Frame>
                 <div className="flex flex-col gap-2">
@@ -353,8 +382,8 @@ export const Trade = ({ type }) => {
                 </div>
               </Frame>
             </>
-          )}
-          {principal && (
+          }
+          {principal &&
             <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
@@ -397,7 +426,7 @@ export const Trade = ({ type }) => {
                 </div>
               </div>
             </Frame>
-          )}
+          }
         </div>
         <div className="absolute top-0 right-0 w-1/4 h-full overflow-auto">
           <Frame className="h-full">
@@ -410,26 +439,22 @@ export const Trade = ({ type }) => {
               }
               <br />
               <br />
-              {
-                tradeStarted && tradeData && !partnerId && !tradeId && (
-                  <>
-                    <b> WAITING FOR TRADE PARTNER... </b>
-                    <br />
-                    Send this link to your trade partner
-                    <br />
-                    <a
-                      // className="text-blue-900"
-                      href={`${url.host}/?tradeId=${tradeData.id}`}
-                    >
-                      {url.host}/?tradeId={tradeData.id}
-                    </a>
-                  </>
-                )
+              {tradeStarted && tradeData && !partnerId && !tradeId &&
+                <>
+                  <b> WAITING FOR TRADE PARTNER... </b>
+                  <br />
+                  Send this link to your trade partner
+                  <br />
+                  <a
+                    // className="text-blue-900"
+                    href={`${url.host}/?tradeId=${tradeData.id}`}
+                  >
+                    {url.host}/?tradeId={tradeData.id}
+                  </a>
+                </>
               }
-              {
-                tradeStarted && tradeData && partnerId && (
-                  <>Trading with {partnerId}</>
-                )
+              {tradeStarted && tradeData && partnerId &&
+                <>Trading with {partnerId}</>
               }
             </div>
           </Frame>
