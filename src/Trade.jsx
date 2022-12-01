@@ -19,8 +19,8 @@ const { plug } = ic
 
 const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 const whitelist = [canisterId]
+// const host = "https://mainnet.dfinity.network"
 const host = 'http://127.0.0.1:8000'
-const mainnetHost = "https://mainnet.dfinity.network"
 const timeout = 50000
 
 const url = new URL(window.location.href)
