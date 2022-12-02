@@ -1,5 +1,5 @@
 import { inventoryBoxNum, tradeBoxNum } from "./constants";
-import { getAllUserNFTs } from "@psychedelic/dab-js";
+import { getAllUserNFTs, getNFTActor } from "@psychedelic/dab-js";
 import { Principal } from "@dfinity/principal"
 
 export const clone = (obj) => {
@@ -15,6 +15,7 @@ export const clone = (obj) => {
 };
 
 export const getRemoteBoxes = (remoteItems) => {
+  console.log('remoteItems: ', remoteItems)
   remoteItems = Object.values(remoteItems)
   const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
     return { id: i, item: remoteItems.find(item => item.slot === i) ?? null };
@@ -42,33 +43,6 @@ export const getUserTokens = async ({ agent, user }) => {
   console.log('getUserTokens agent: ', agent)
   console.log('getUserTokens user: ', user)
 
-  return {
-    '8510': {
-      token_id: '8510',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 1",
-      name: "token 1",
-      url: "assets/armor.png",
-      slot: 0,
-    },
-    '8511': {
-      token_id: '8511',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 2",
-      name: "token 2",
-      url: "assets/bastard-sword.png",
-      slot: 1,
-    },
-    '8512': {
-      token_id: '8512',
-      canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-      collection: "collection 3",
-      name: "token 3",
-      url: "models/chest.glb",
-      slot: 2,
-    },
-  };
-
   let collections = []
 
   try {
@@ -90,13 +64,14 @@ export const getUserTokens = async ({ agent, user }) => {
     // if (!collection.name.toLowerCase().includes("cipher")) {
     collection.tokens.forEach((token) => {
       const token_id = token.index.toString()
-      let newToken = { canister_id: token.canister, collection: token.collection, token_id, slot }
+      let newToken = { canister_id: token.canister, collection: token.collection, token_id, slot, standard: token.standard, index: token.index }
       const jsonMetadata = token.metadata?.json?.value.TextContent;
 
       if (jsonMetadata) {
         const parseMetadata = JSON.parse(jsonMetadata);
-        newToken.name = parseMetadata.name
-        newToken.url = collection.icon
+        console.log('parseMetadata: ', parseMetadata)
+        newToken.name = parseMetadata.name ?? token.collection
+        newToken.url = parseMetadata.image ?? collection.icon
       } else {
         newToken.name = token.collection
         newToken.url = collection.icon
@@ -187,4 +162,9 @@ export const canisterItemsToTokens = (canisterItems, userTokens) => {
   })
   console.log('canisterItemsToTokens: ', tokens)
   return tokens
+}
+
+export const sendNFT = async ({ item, to, agent }) => {
+  const NFTActor = getNFTActor({ canisterId: item.canister_id, agent, standard: item.standard })
+  await NFTActor.transfer(Principal.fromText(to), item.index)
 }

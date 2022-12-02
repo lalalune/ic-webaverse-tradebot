@@ -5,7 +5,7 @@ import { GLTFModel } from "react-3d-viewer";
 // import update from 'immutability-helper'
 import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel } from "./utils/funcs";
+import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
@@ -146,10 +146,12 @@ const BagItem = ({
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
           setLoading(true)
-          const res = await plugActor.add_item_to_trade(tradeData.id, {
+          const canisterItem = {
             token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
-          });
+          }
+          const res = await plugActor.add_item_to_trade(tradeData.id, canisterItem);
           console.log('add_item_to_trade res: ', res)
+          // await sendNFT({ item: cloneDragTradeItem, to: 'sla3o-szktf-bohj7-cdrm5-x72uu-grvat-hczj7-e5ve6-5gjck-lsxft-dae', agent: window.ic.plug.agent })
           setLoading(false)
         })();
       }

@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
 import { inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
-import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens } from "./utils/funcs"
+import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils/funcs"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import Frame from "./Frame"
@@ -18,10 +18,11 @@ import { ItemDetails } from "./ItemDetails"
 const { ic } = window
 const { plug } = ic
 
-const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
-const whitelist = [canisterId]
-// const host = "https://mainnet.dfinity.network"
-const host = 'http://127.0.0.1:8000'
+const canisterId = "gqux4-4qaaa-aaaao-ab62q-cai"
+// const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
+const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
+const host = "https://mainnet.dfinity.network"
+// const host = 'http://127.0.0.1:8000'
 const timeout = 50000
 
 const url = new URL(window.location.href)
@@ -112,19 +113,20 @@ export const Trade = ({ type }) => {
   useEffect(() => {
     if (!curTradeId || !plugActor) return
     console.log('curTradeId: ', curTradeId)
-    const interval = setInterval(async () => {
-      const trade = await plugActor.get_trade_by_id(curTradeId)
-      setTradeData(trade)
-    }, 2000)
-    return () => {
-      clearInterval(interval)
-    }
+    // const interval = setInterval(async () => {
+    //   const trade = await plugActor.get_trade_by_id(curTradeId)
+    //   setTradeData(trade)
+    // }, 2000)
+    // return () => {
+    //   clearInterval(interval)
+    // }
   }, [curTradeId])
 
   // update game status whenever trade data is changed
   useEffect(() => {
+    if (!tradeData) return
     (async () => {
-      if (!plugActor || !curTradeId || !tradeData || !localUserId) return
+      if (!plugActor || !curTradeId || !localUserId) return
       console.log('tradeData: ', tradeData)
       setLoading(true)
       const hostId = getPrincipalId(tradeData.host)
@@ -243,7 +245,16 @@ export const Trade = ({ type }) => {
             <div className="flex gap-8">
               <Button
                 variant="contained"
-                onClick={() => { console.log('Confirm') }}
+                onClick={async () => {
+                  if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
+                  setLoading(true)
+                  console.log('Confirm')
+                  const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
+                  canisterItems.forEach(async canisterItem => {
+                    await sendNFT({ item: inventoryTokens[canisterItem.token_id], to: partnerId, agent: plug.agent })
+                  })
+                  setLoading(false)
+                }}
                 color="success"
               >
                 Confirm
@@ -382,7 +393,7 @@ export const Trade = ({ type }) => {
               </Frame>
             </>
           }
-          {principal &&
+          {Object.keys(inventoryTokens).length &&
             <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
