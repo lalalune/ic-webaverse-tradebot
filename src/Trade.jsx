@@ -113,13 +113,13 @@ export const Trade = ({ type }) => {
   useEffect(() => {
     if (!curTradeId || !plugActor) return
     console.log('curTradeId: ', curTradeId)
-    // const interval = setInterval(async () => {
-    //   const trade = await plugActor.get_trade_by_id(curTradeId)
-    //   setTradeData(trade)
-    // }, 2000)
-    // return () => {
-    //   clearInterval(interval)
-    // }
+    const interval = setInterval(async () => {
+      const trade = await plugActor.get_trade_by_id(curTradeId)
+      setTradeData(trade)
+    }, 2000)
+    return () => {
+      clearInterval(interval)
+    }
   }, [curTradeId])
 
   // update game status whenever trade data is changed
@@ -384,7 +384,7 @@ export const Trade = ({ type }) => {
                   <Button
                     variant="contained"
                     onClick={onCancel}
-                    disabled={!accepted || !existItems(localBoxes) || isCreator ? tradeData.guest_accept : tradeData.host_accept}
+                    disabled={!accepted || !existItems(localBoxes) || (isCreator ? tradeData.guest_accept : tradeData.host_accept)}
                     color="error"
                   >
                     Cancel
@@ -393,7 +393,7 @@ export const Trade = ({ type }) => {
               </Frame>
             </>
           }
-          {Object.keys(inventoryTokens).length &&
+          {!!Object.keys(inventoryTokens).length &&
             <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
