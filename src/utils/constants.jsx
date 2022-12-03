@@ -8,4 +8,4 @@ export const itemTypes = {
   LAYER1: 'layer1',
 }
 
-export const debugMode = true
+export const debugMode = false
