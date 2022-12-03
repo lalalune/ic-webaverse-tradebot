@@ -39,9 +39,40 @@ export const getInventoryBoxes = (inventoryItems) => {
   return inventoryBoxes;
 };
 
+const player1TokenId = 143
+const player2TokenId = 145
+const debugMode = true
+
 export const getUserTokens = async ({ agent, user }) => {
-  console.log('getUserTokens agent: ', agent)
-  console.log('getUserTokens user: ', user)
+  if (debugMode) {
+    if (user === '6b7jr-gch2d-hjkwd-nwoxa-ilw3z-hj547-nyvll-3ohgd-epuof-7adkv-2qe') {
+      return {
+        [player1TokenId]: {
+          canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
+          standard: "DIP721",
+          index: player1TokenId,
+          token_id: player1TokenId,
+          name: "Player 1",
+          collection: "Test",
+          url: "assets/armor.png",
+          slot: 0,
+        }
+      }
+    } else {
+      return {
+        [player2TokenId]: {
+          canister_id: '6hgw2-nyaaa-aaaai-abkqq-cai',
+          standard: "DIP721",
+          index: player2TokenId,
+          token_id: player2TokenId,
+          name: "Player 2",
+          collection: "Test",
+          url: "assets/bastard-sword.png",
+          slot: 0,
+        }
+      }
+    }
+  }
 
   let collections = []
 

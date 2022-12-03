@@ -67,6 +67,8 @@ export const Trade = ({ type }) => {
   const [curPage, setCurPage] = useState(1)
   const [selItem, setSelItem] = useState(null)
   const [confirmed, setConfirmed] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -76,6 +78,7 @@ export const Trade = ({ type }) => {
       // console.log("balance: ", balance)
       const newTokens = await getUserTokens({ agent: plug.agent, user: localUserId })
       setInventoryTokens(clone(newTokens))
+      setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // // if user is guest, join the trade
       // if (tradeId) {
@@ -84,10 +87,6 @@ export const Trade = ({ type }) => {
       setLoading(false)
     })()
   }, [principal])
-
-  useEffect(() => {
-    setInventoryBoxes(getInventoryBoxes(inventoryTokens))
-  }, [inventoryTokens])
 
   useEffect(() => {
     (async () => {
@@ -158,6 +157,31 @@ export const Trade = ({ type }) => {
       const rbs = getRemoteBoxes(rts)
       console.log('remoteBoxes: ', rbs)
       setRemoteBoxes(rbs)
+
+      if (confirmed) {
+        const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
+        const cloneInventoryTokens = clone(inventoryTokens)
+
+        for (let i = 0; i < canisterItems.length; i++) {
+          const item = cloneInventoryTokens[canisterItems[i].token_id]
+          // try {
+          //   !item.confirmed && await sendNFT({ item, to: partnerId, agent: plug.agent })
+          // } catch (e) {
+          //   console.log("NFT is non-existent: ", e)
+          // }
+          item.confirmed = true
+        }
+
+        console.log('cloneInventoryTokens: ', cloneInventoryTokens)
+        setInventoryTokens(cloneInventoryTokens)
+        setConfirmed(false)
+        setTimeout(() => setShowTradeCompletedModal(true), 2000)
+      }
+
+      // if (tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
+      //   setShowTradeCompletedModal(true)
+      // }
+
       setLoading(false)
 
       setTimeout(async () => {
@@ -166,6 +190,16 @@ export const Trade = ({ type }) => {
       }, 2000)
     })()
   }, [tradeData])
+
+  // Don't need yet
+  // useEffect(() => {
+  //   const cloneInventoryBoxes = clone(inventoryBoxes)
+  //   cloneInventoryBoxes.forEach(box => {
+  //     box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
+  //   })
+  //   console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
+  //   setInventoryBoxes(cloneInventoryBoxes)
+  // }, [inventoryTokens])
 
   const startTrade = async () => {
     if (!plug.createActor) return
@@ -207,6 +241,7 @@ export const Trade = ({ type }) => {
     if (!plugActor) return
     plugActor.accept(tradeData.id)
     setAccepted(true)
+    setShowConfirmModal(true)
     console.log("Trade accepted!")
   }
 
@@ -233,7 +268,7 @@ export const Trade = ({ type }) => {
       <DndProvider backend={HTML5Backend}>
         <ItemDetails selItem={selItem} />
         {/* If both players accepted their trade */}
-        {authenticated && tradeData && accepted && existItems(localBoxes) && !confirmed && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
+        {authenticated && tradeData && accepted && existItems(localBoxes) && showConfirmModal && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
             <div className="text-xl">Do you want to confirm the current trade?</div>
             <div className="flex gap-8">
@@ -241,16 +276,8 @@ export const Trade = ({ type }) => {
                 variant="contained"
                 onClick={async () => {
                   if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
-                  setLoading(true)
-                  const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
-                  const cloneInventoryTokens = Object.values(inventoryTokens)
-                  for (let i = 0; i < canisterItems.length; i++) {
-                    !cloneInventoryTokens[i].confirmed && await sendNFT({ item: cloneInventoryTokens[canisterItems[i].token_id], to: partnerId, agent: plug.agent })
-                    cloneInventoryTokens[i].confirmed = true
-                  }
-                  setInventoryTokens(cloneInventoryTokens)
                   setConfirmed(true)
-                  setLoading(false)
+                  setShowConfirmModal(false)
                 }}
                 color="success"
               >
@@ -258,7 +285,7 @@ export const Trade = ({ type }) => {
               </Button>
               <Button
                 variant="contained"
-                onClick={() => { console.log('Cancel') }}
+                onClick={() => { setShowConfirmModal(false) }}
                 color="error"
               >
                 Cancel
@@ -266,9 +293,16 @@ export const Trade = ({ type }) => {
             </div>
           </ModalBox>
         }
-        {authenticated && tradeData && tradeData.host_items.length === tradeData.host_escrow_items && tradeData.guest_items === tradeData.guest_escrow_items &&
+        {showTradeCompletedModal &&
           <ModalBox>
             <div className="text-xl">Trade Completed!</div>
+            <Button
+              variant="contained"
+              onClick={() => { setShowTradeCompletedModal(false) }}
+              color="success"
+            >
+              Ok
+            </Button>
           </ModalBox>
         }
         <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
@@ -390,7 +424,7 @@ export const Trade = ({ type }) => {
               </Frame>
             </>
           }
-          {!!Object.keys(inventoryTokens).length &&
+          {authenticated &&
             <Frame>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
