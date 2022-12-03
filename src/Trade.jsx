@@ -243,7 +243,7 @@ export const Trade = ({ type }) => {
                   if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
                   setLoading(true)
                   const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
-                  const cloneInventoryTokens = clone(inventoryTokens)
+                  const cloneInventoryTokens = Object.values(inventoryTokens)
                   for (let i = 0; i < canisterItems.length; i++) {
                     !cloneInventoryTokens[i].confirmed && await sendNFT({ item: cloneInventoryTokens[canisterItems[i].token_id], to: partnerId, agent: plug.agent })
                     cloneInventoryTokens[i].confirmed = true
