@@ -1,6 +1,6 @@
-import { inventoryBoxNum, tradeBoxNum } from "./constants";
 import { getAllUserNFTs, getNFTActor } from "@psychedelic/dab-js";
 import { Principal } from "@dfinity/principal"
+import { inventoryBoxNum, tradeBoxNum, debugMode } from "./constants";
 
 export const clone = (obj) => {
   // const cloneObj = JSON.parse(JSON.stringify(obj));
@@ -41,7 +41,6 @@ export const getInventoryBoxes = (inventoryItems) => {
 
 const player1TokenId = 143
 const player2TokenId = 145
-const debugMode = true
 
 export const getUserTokens = async ({ agent, user }) => {
   if (debugMode) {

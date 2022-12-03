@@ -7,3 +7,5 @@ export const pageBoxNum = 18
 export const itemTypes = {
   LAYER1: 'layer1',
 }
+
+export const debugMode = true

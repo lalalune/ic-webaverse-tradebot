@@ -3,7 +3,7 @@ import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
+import { debugMode, inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
 import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils/funcs"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
@@ -176,7 +176,7 @@ export const Trade = ({ type }) => {
         console.log('cloneInventoryTokens: ', cloneInventoryTokens)
         setInventoryTokens(cloneInventoryTokens)
         setConfirmed(false)
-        setTimeout(() => setShowTradeCompletedModal(true), 2000) // To test modal
+        debugMode && setTimeout(() => setShowTradeCompletedModal(true), 2000) // To test modal
       }
 
       if (tradeData.host_accept && tradeData.guest_accept && tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
