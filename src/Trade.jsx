@@ -175,12 +175,12 @@ export const Trade = ({ type }) => {
         console.log('cloneInventoryTokens: ', cloneInventoryTokens)
         setInventoryTokens(cloneInventoryTokens)
         setConfirmed(false)
-        setTimeout(() => setShowTradeCompletedModal(true), 2000)
+        setTimeout(() => setShowTradeCompletedModal(true), 2000) // To test modal
       }
 
-      // if (tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
-      //   setShowTradeCompletedModal(true)
-      // }
+      if (tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
+        setShowTradeCompletedModal(true)
+      }
 
       setLoading(false)
 
