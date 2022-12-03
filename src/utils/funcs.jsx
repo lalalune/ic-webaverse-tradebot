@@ -159,7 +159,7 @@ export const canisterItemsToTokens = (canisterItems, userTokens) => {
   console.log('userTokens: ', userTokens)
   const tokens = {}
   canisterItems.forEach(item => {
-    tokens[item.token_id] = userTokens[item.token_id]
+    userTokens[item.token_id] && (tokens[item.token_id] = userTokens[item.token_id])
   })
   console.log('canisterItemsToTokens: ', tokens)
   return tokens

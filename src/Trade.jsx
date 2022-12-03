@@ -141,14 +141,18 @@ export const Trade = ({ type }) => {
         setPartnerId(hostId)
       }
 
-      const partnerTokenLen = Object.keys(partnerTokens)
+      const partnerTokenLen = Object.keys(partnerTokens).length
+      console.log('isCreator: ', isCreator)
+      console.log('partnerTokenLen: ', partnerTokenLen)
+      console.log('tradeData.guest_items.length: ', tradeData.guest_items.length)
+      console.log('tradeData.host_items.length: ', tradeData.host_items.length)
+      console.log('partnerId: ', partnerId)
 
-      if (((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen) {
+      if (((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen && partnerId) {
         partnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
         console.log('partnerTokens: ', partnerTokens)
       }
 
-      console.log('isCreator: ', isCreator)
       const rts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens)
       console.log('remoteTokens: ', rts)
       const rbs = getRemoteBoxes(rts)
