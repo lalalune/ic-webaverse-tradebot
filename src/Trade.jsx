@@ -24,6 +24,7 @@ const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
 const host = "https://mainnet.dfinity.network"
 // const host = 'http://127.0.0.1:8000'
 const timeout = 50000
+let partnerTokens = {}
 
 const url = new URL(window.location.href)
 const tradeId = url.searchParams.get("tradeId")
@@ -56,17 +57,16 @@ export const Trade = ({ type }) => {
   const [isCreator, setIsCreator] = useState(false)
   const [localUserId, setLocalUserId] = useState(null)
   const [partnerId, setPartnerId] = useState(null)
-  const [curTradeId, setCurTradeId] = useState(null)
   const [tradeData, setTradeData] = useState(null)
   const [tradeStarted, setTradeStarted] = useState(false)
   const [inventoryTokens, setInventoryTokens] = useState({})
-  const [partnerTokens, setPartnerTokens] = useState({})
   const [remoteBoxes, setRemoteBoxes] = useState(clone(initRemoteBoxes))
   const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes))
   const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
   const [accepted, setAccepted] = useState(false)
   const [curPage, setCurPage] = useState(1)
   const [selItem, setSelItem] = useState(null)
+  const [confirmed, setConfirmed] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -76,7 +76,6 @@ export const Trade = ({ type }) => {
       // console.log("balance: ", balance)
       const newTokens = await getUserTokens({ agent: plug.agent, user: localUserId })
       setInventoryTokens(clone(newTokens))
-      setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // // if user is guest, join the trade
       // if (tradeId) {
@@ -85,6 +84,10 @@ export const Trade = ({ type }) => {
       setLoading(false)
     })()
   }, [principal])
+
+  useEffect(() => {
+    setInventoryBoxes(getInventoryBoxes(inventoryTokens))
+  }, [inventoryTokens])
 
   useEffect(() => {
     (async () => {
@@ -103,32 +106,18 @@ export const Trade = ({ type }) => {
       }
 
       setTradeData(trade)
-      setCurTradeId(trade.id)
       setTradeStarted(true)
       setLoading(false)
     })()
   }, [plugActor])
 
-  // fetch data from IC in real time (run if trade is existed)
-  useEffect(() => {
-    if (!curTradeId || !plugActor) return
-    console.log('curTradeId: ', curTradeId)
-    const interval = setInterval(async () => {
-      const trade = await plugActor.get_trade_by_id(curTradeId)
-      setTradeData(trade)
-    }, 2000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [curTradeId])
-
-  // update game status whenever trade data is changed
+  // update game status whenever trade data is changed (real time)
   useEffect(() => {
     if (!tradeData) return
     (async () => {
-      if (!plugActor || !curTradeId || !localUserId) return
-      console.log('tradeData: ', tradeData)
+      if (!plugActor || !localUserId) return
       setLoading(true)
+      console.log('tradeData: ', tradeData)
       const hostId = getPrincipalId(tradeData.host)
       const guestId = getPrincipalId(tradeData.guest)
       console.log('hostId: ', hostId)
@@ -148,8 +137,15 @@ export const Trade = ({ type }) => {
 
       if (!isCreator && hostId && hostId !== partnerId) {
         console.log('trade partner found(hostId): ', hostId)
-        await plugActor.join_trade(curTradeId)
+        await plugActor.join_trade(tradeData.id)
         setPartnerId(hostId)
+      }
+
+      const partnerTokenLen = Object.keys(partnerTokens)
+
+      if (((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen) {
+        partnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
+        console.log('partnerTokens: ', partnerTokens)
       }
 
       console.log('isCreator: ', isCreator)
@@ -159,19 +155,13 @@ export const Trade = ({ type }) => {
       console.log('remoteBoxes: ', rbs)
       setRemoteBoxes(rbs)
       setLoading(false)
+
+      setTimeout(async () => {
+        const trade = await plugActor.get_trade_by_id(tradeData.id)
+        setTradeData(trade)
+      }, 2000)
     })()
   }, [tradeData])
-
-  useEffect(() => {
-    (async () => {
-      if (!plug.agent) return
-      setLoading(true)
-      const tempPartnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
-      console.log('tempPartnerTokens: ', tempPartnerTokens)
-      setLoading(false)
-      setPartnerTokens(tempPartnerTokens)
-    })()
-  }, [partnerId])
 
   const startTrade = async () => {
     if (!plug.createActor) return
@@ -239,7 +229,7 @@ export const Trade = ({ type }) => {
       <DndProvider backend={HTML5Backend}>
         <ItemDetails selItem={selItem} />
         {/* If both players accepted their trade */}
-        {authenticated && tradeData && accepted && existItems(localBoxes) && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
+        {authenticated && tradeData && accepted && existItems(localBoxes) && !confirmed && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
             <div className="text-xl">Do you want to confirm the current trade?</div>
             <div className="flex gap-8">
@@ -248,11 +238,14 @@ export const Trade = ({ type }) => {
                 onClick={async () => {
                   if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
                   setLoading(true)
-                  console.log('Confirm')
                   const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
-                  canisterItems.forEach(async canisterItem => {
-                    await sendNFT({ item: inventoryTokens[canisterItem.token_id], to: partnerId, agent: plug.agent })
-                  })
+                  const cloneInventoryTokens = clone(inventoryTokens)
+                  for (let i = 0; i < canisterItems.length; i++) {
+                    !cloneInventoryTokens[i].confirmed && await sendNFT({ item: cloneInventoryTokens[canisterItems[i].token_id], to: partnerId, agent: plug.agent })
+                    cloneInventoryTokens[i].confirmed = true
+                  }
+                  setInventoryTokens(cloneInventoryTokens)
+                  setConfirmed(true)
                   setLoading(false)
                 }}
                 color="success"

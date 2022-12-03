@@ -45,14 +45,14 @@ export const getUserTokens = async ({ agent, user }) => {
 
   let collections = []
 
-  try {
-    collections = await getAllUserNFTs({
-      agent,
-      user,
-    });
-  } catch (e) {
-    console.error(e)
-  }
+  // try {
+  collections = await getAllUserNFTs({
+    agent,
+    user,
+  });
+  // } catch (e) {
+  //   console.log('getAllUserNFTs error: ', e)
+  // }
 
   console.log("collections: ", collections);
 
@@ -156,6 +156,7 @@ export const getPrincipalId = pricipal => {
 
 export const canisterItemsToTokens = (canisterItems, userTokens) => {
   if (!Array.isArray(canisterItems) || !userTokens) return {}
+  console.log('userTokens: ', userTokens)
   const tokens = {}
   canisterItems.forEach(item => {
     tokens[item.token_id] = userTokens[item.token_id]
@@ -168,3 +169,9 @@ export const sendNFT = async ({ item, to, agent }) => {
   const NFTActor = getNFTActor({ canisterId: item.canister_id, agent, standard: item.standard })
   await NFTActor.transfer(Principal.fromText(to), item.index)
 }
+
+export const sleep = async (milliseconds) => {
+  await new Promise(resolve => {
+    return setTimeout(resolve, milliseconds)
+  });
+};

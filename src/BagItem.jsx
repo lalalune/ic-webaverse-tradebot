@@ -52,7 +52,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
 
   return item && (
     <StyledBagItem
-      className="flex items-center justify-center class_model"
+      className={classnames("flex items-center justify-center class_model", { 'border-2 border-red-900': item.confirmed })}
       isDragging={isDragging}
       onClick={handleClick}
     >
@@ -157,6 +157,7 @@ const BagItem = ({
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
+        if (cloneDragTradeItem.confirmed) return
         (async () => {
           setLoading(true)
           const res = await plugActor.remove_item_from_trade(tradeData.id, {
