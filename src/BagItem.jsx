@@ -108,6 +108,7 @@ const BagItem = ({
   tradeData,
   setSelItem,
   setLoading,
+  setMessage,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};
@@ -157,7 +158,10 @@ const BagItem = ({
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        if (cloneDragTradeItem.confirmed) return
+        if (cloneDragTradeItem.confirmed) {
+          setMessage('This item is confirmed.')
+          return
+        }
         (async () => {
           setLoading(true)
           const res = await plugActor.remove_item_from_trade(tradeData.id, {

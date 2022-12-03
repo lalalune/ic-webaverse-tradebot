@@ -69,6 +69,7 @@ export const Trade = ({ type }) => {
   const [confirmed, setConfirmed] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -178,7 +179,7 @@ export const Trade = ({ type }) => {
         setTimeout(() => setShowTradeCompletedModal(true), 2000) // To test modal
       }
 
-      if (tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
+      if (tradeData.host_accept && tradeData.guest_accept && tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
         setShowTradeCompletedModal(true)
       }
 
@@ -191,15 +192,21 @@ export const Trade = ({ type }) => {
     })()
   }, [tradeData])
 
-  // Don't need yet
-  // useEffect(() => {
-  //   const cloneInventoryBoxes = clone(inventoryBoxes)
-  //   cloneInventoryBoxes.forEach(box => {
-  //     box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
-  //   })
-  //   console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
-  //   setInventoryBoxes(cloneInventoryBoxes)
-  // }, [inventoryTokens])
+  useEffect(() => {
+    const cloneInventoryBoxes = clone(inventoryBoxes)
+    cloneInventoryBoxes.forEach(box => {
+      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
+    })
+    console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
+    setInventoryBoxes(cloneInventoryBoxes)
+
+    const cloneLocalBoxes = clone(localBoxes)
+    cloneLocalBoxes.forEach(box => {
+      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
+    })
+    console.log('cloneLocalBoxes: ', cloneLocalBoxes)
+    setLocalBoxes(cloneLocalBoxes)
+  }, [inventoryTokens])
 
   const startTrade = async () => {
     if (!plug.createActor) return
@@ -305,6 +312,18 @@ export const Trade = ({ type }) => {
             </Button>
           </ModalBox>
         }
+        {message &&
+          <ModalBox>
+            <div className="text-xl">{message}</div>
+            <Button
+              variant="contained"
+              onClick={() => { setMessage('') }}
+              color="success"
+            >
+              Ok
+            </Button>
+          </ModalBox>
+        }
         <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
           <Loading loading={loading} />
           {!authenticated &&
@@ -359,6 +378,7 @@ export const Trade = ({ type }) => {
                             localUserId={localUserId}
                             setSelItem={setSelItem}
                             setLoading={setLoading}
+                            setMessage={setMessage}
                           />
                         </RemoteBox>
                       )
@@ -386,6 +406,7 @@ export const Trade = ({ type }) => {
                             localUserId={localUserId}
                             setSelItem={setSelItem}
                             setLoading={setLoading}
+                            setMessage={setMessage}
                           />
                         </BagBox>
                       )
@@ -460,6 +481,7 @@ export const Trade = ({ type }) => {
                             localUserId={localUserId}
                             setSelItem={setSelItem}
                             setLoading={setLoading}
+                            setMessage={setMessage}
                           />
                         </BagBox>
                       )
