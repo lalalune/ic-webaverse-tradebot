@@ -2,8 +2,10 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
+// import update from 'immutability-helper'
+import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel } from "./utils/funcs";
+import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
 import { itemTypes } from "./utils/constants";
 
 import StyledBagItem from "./BagItem.style";
@@ -50,37 +52,37 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
 
   return item && (
     <StyledBagItem
-      className="flex items-center justify-center class_model"
-      ref={drag}
+      className={classnames("flex items-center justify-center class_model", { 'border-2 border-red-900': item.confirmed })}
       isDragging={isDragging}
       onClick={handleClick}
     >
-      {(isImage(item && item.url) || 
-        (!isImage(item && item.url) && !isMedia(item && item.url) && !isModel(item && item.url))) && (
+      {(isImage(item?.url)
+        // || (!isImage(item?.url) && !isMedia(item?.url) && !isModel(item?.url))
+      ) && (
           <span onClick={handleClick}>
-          <img
-          crossOrigin="anonymous"
-          referrerPolicy="no-referer-on-downgrade"
-          className="w-full h-full"
-          src={item.url}
-          onClick={handleClick}
-          />
+            <img
+              crossOrigin="anonymous"
+              referrerPolicy="no-referer-on-downgrade"
+              className="w-full h-full"
+              src={item.url}
+              onClick={handleClick}
+            />
           </span>
-      )}
-      {isMedia(item && item.url) && (
+        )}
+      {isMedia(item?.url) && (
         <span onClick={handleClick}>
-        <video
-          crossOrigin="anonymous"
-          referrerPolicy="no-referer-on-downgrade"
-          className="w-full h-full"
-          src={item.url}
-          autoPlay
-          loop
-          muted
-        />
+          <video
+            crossOrigin="anonymous"
+            referrerPolicy="no-referer-on-downgrade"
+            className="w-full h-full"
+            src={item.url}
+            autoPlay
+            loop
+            muted
+          />
         </span>
       )}
-      {isModel(item && item.url) && (
+      {isModel(item?.url) && (
         <GLTFModel
           ref={modelRef}
           width={96}
@@ -100,12 +102,13 @@ const BagItem = ({
   isForTrade,
   index,
   tradeBoxes,
-  updateTradeBoxes,
+  setTradeBoxes,
   tradeLayer,
   plugActor,
   tradeData,
-  localUser,
-  setSelItem
+  setSelItem,
+  setLoading,
+  setMessage,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};
@@ -115,7 +118,7 @@ const BagItem = ({
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
     canDrop(dragItem, monitor) {
-      const flag = tradeLayer !== "remote";
+      const flag = (tradeLayer !== "remote");
       return flag;
     },
     collect(monitor) {
@@ -126,8 +129,7 @@ const BagItem = ({
     drop(dragEl, monitor) {
       // console.log("drag item: ", dragEl.item);
       // console.log("hover item: ", item);
-      // if (!ref.current || item.canister_id || !plugActor || !tradeData) return; // When full item
-      if (!ref.current || item.canister_id || !tradeData) return; // When full item
+      if ((dragEl.index === index && dragEl.tradeLayer === tradeLayer) || tradeLayer === 'remote') return;
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
@@ -139,46 +141,67 @@ const BagItem = ({
       const cloneHoverTradeBoxes = clone(tradeBoxes);
 
       console.log("cloneDragTradeItem: ", cloneDragTradeItem);
-      // console.log("cloneHoverTradeItem: ", cloneHoverTradeItem);
-      // console.log("cloneDragTradeBoxes: ", cloneDragTradeBoxes);
-      // console.log("cloneHoverTradeBoxes: ", cloneHoverTradeBoxes);
-      // console.log("tradeLayer: ", tradeLayer);
-      // console.log("dragEl.tradeLayer: ", dragEl.tradeLayer);
+      console.log("cloneDragTradeItem canister: ", Principal.fromText(cloneDragTradeItem.canister_id));
 
       // Time to combine with ic
       if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
         (async () => {
-          const res = await plugActor.add_item_to_trade(localUser, tradeData.id, cloneDragTradeItem);
+          setLoading(true)
+          const canisterItem = {
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
+          }
+          const res = await plugActor.add_item_to_trade(tradeData.id, canisterItem);
           console.log('add_item_to_trade res: ', res)
+          // await sendNFT({ item: cloneDragTradeItem, to: 'sla3o-szktf-bohj7-cdrm5-x72uu-grvat-hczj7-e5ve6-5gjck-lsxft-dae', agent: window.ic.plug.agent })
+          setLoading(false)
         })();
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
+        if (cloneDragTradeItem.confirmed) {
+          setMessage('This item is confirmed.')
+          return
+        }
         (async () => {
-          const res = await plugActor.remove_item_from_trade(localUser, tradeData.id, cloneDragTradeItem.id);
+          setLoading(true)
+          const res = await plugActor.remove_item_from_trade(tradeData.id, {
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
+          });
           console.log("remove_item_from_trade res: ", res);
+          setLoading(false)
         })();
       }
 
       // Time to actually perform the action
       if (tradeLayer === dragEl.tradeLayer) {
-        cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
-        cloneDragTradeBoxes[hoverIndex].item = cloneDragTradeItem;
-        updateTradeBoxes(cloneDragTradeBoxes);
+        // setTradeBoxes((prevBox) =>
+        //   update(prevBox, {
+        //     $splice: [
+        //       [dragIndex, 1],
+        //       [hoverIndex, 0, prevBox[dragIndex]],
+        //     ],
+        //   }),
+        // )
+        cloneHoverTradeBoxes[dragIndex].item = cloneHoverTradeItem;
+        cloneHoverTradeBoxes[hoverIndex].item = cloneDragTradeItem;
+        setTradeBoxes(cloneHoverTradeBoxes);
       } else {
         cloneDragTradeBoxes[dragIndex].item = cloneHoverTradeItem;
         cloneHoverTradeBoxes[hoverIndex].item = cloneDragTradeItem;
-        dragEl.updateTradeBoxes(cloneDragTradeBoxes);
-        updateTradeBoxes(cloneHoverTradeBoxes);
+        dragEl.setTradeBoxes(cloneDragTradeBoxes);
+        setTradeBoxes(cloneHoverTradeBoxes);
       }
+
+      dragEl.index = hoverIndex
+      dragEl.tradeLayer = tradeLayer
     },
   });
 
   const [{ isDragging }, drag] = useDrag({
     type: itemTypes.LAYER1,
-    canDrag: !!item.canister_id,
+    canDrag: !!item.canister_id && tradeLayer !== 'remote',
     item: () => {
-      return { index, tradeBoxes, updateTradeBoxes, item, tradeLayer };
+      return { index, tradeBoxes, setTradeBoxes, item, tradeLayer };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -194,7 +217,7 @@ const BagItem = ({
       ref={ref}
       data-handler-id={handlerId}
     >
-      <PresentationalBagItem drag={drag} isDragging={isDragging} item={item} setSelItem={setSelItem} />
+      <PresentationalBagItem isDragging={isDragging} item={item} setSelItem={setSelItem} />
     </div>
   );
 };

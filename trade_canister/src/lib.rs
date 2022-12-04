@@ -6,8 +6,8 @@ use ic_cdk::export::{
 };
 
 mod trade;
-use trade::Trade;
 use trade::Item;
+use trade::Trade;
 
 #[cfg(test)]
 mod tests;

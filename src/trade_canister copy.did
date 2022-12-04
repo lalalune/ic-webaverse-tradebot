@@ -1,0 +1,39 @@
+type Trade = record {
+    "id": text;
+    "host_items": vec Item;
+    "guest_items": vec Item;
+    "host_escrow_items": vec Item;
+    "guest_escrow_items": vec Item;
+    "host_accept": bool;
+    "guest_accept": bool;
+    "host": principal;
+    "guest": principal;
+    "fulfilled": bool;
+};
+
+type Item = record {
+    "name": text;
+    "canister_id": principal;
+    "token_id": int;
+};
+
+service: {
+    "create_trade": () -> (Trade);
+    "get_all_trades": () -> (vec Trade) query;
+    "get_trade_by_id": (text) -> (opt Trade) query;
+    "join_trade": (text) -> (Trade);
+    "leave_trade": (text) -> (Trade);
+    "delete_trade": (text) -> (Trade);
+
+    "add_item_to_trade": (text, Item) -> (Trade);
+    "remove_item_from_trade": (text, Item) -> (Trade);
+
+    "add_item_to_escrow": (text, Item) -> (Trade);
+    "get_escrow_items": (text) -> (vec Item) query;
+    "get_escrow_items_self": (text) -> (vec Item) query;
+    "remove_item_from_escrow": (text, Item) -> (Trade);
+    "withdraw_from_escrow": (text, Item) -> (Item);
+
+    "accept": (text) -> (Trade);
+    "cancel": (text) -> (Trade);
+}

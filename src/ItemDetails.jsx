@@ -3,7 +3,7 @@ import { GLTFModel } from "react-3d-viewer";
 
 import { isImage, isMedia, isModel } from "./utils/funcs";
 
-export const ItemDetails = ({selItem}) => {
+export const ItemDetails = ({ selItem }) => {
   const modelRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -18,18 +18,19 @@ export const ItemDetails = ({selItem}) => {
     };
   }, []);
 
-  return selItem ? (
+  return selItem?.canister_id ? (
     <div className="absolute bottom-0 right-0 z-10 flex flex-col w-1/4 gap-1 p-4 bg-black-100">
       <div className="flex flex-col gap-1 font-bold text-red-900">
-        <div>{selItem?.collection}</div>
-        <div>{"#7849"}</div>
+        <div>{selItem?.name}</div>
+        <div>{`#${selItem?.token_id}`}</div>
       </div>
       <div className="flex items-center justify-center w-full p-4 bg-black">
-        {(isImage(selItem?.url) && (
-        (!isImage(selItem && selItem.url) && !isMedia(selItem && selItem.url) && !isModel(selItem && selItem.url))) &&
-          <img className="w-4/5" src={selItem.url} />
-        )}
-        {false && isMedia(selItem?.url) && (
+        {(isImage(selItem?.url)
+          // || (!isImage(selItem?.url) && !isMedia(selItem?.url) && !isModel(selItem?.url))
+        ) && (
+            <img className="w-4/5" src={selItem.url} />
+          )}
+        {isMedia(selItem?.url) && (
           <video
             className="w-4/5"
             src={selItem.url}
@@ -38,7 +39,7 @@ export const ItemDetails = ({selItem}) => {
             muted
           />
         )}
-        {false && isModel(selItem?.url) && (
+        {isModel(selItem?.url) && (
           <GLTFModel
             ref={modelRef}
             width={192}
