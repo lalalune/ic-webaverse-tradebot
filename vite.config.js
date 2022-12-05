@@ -3,7 +3,6 @@ import path from "path"
 import react from '@vitejs/plugin-react'
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
-import tailwindcss from 'tailwindcss';
 import dfxJson from "./trade_canister/dfx.json"
 import fs from "fs"
 
@@ -66,7 +65,7 @@ const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 // https://vitejs.dev/config/
 const config = defineConfig({
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg'],
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   server: {
     fs: {
       allow: ["."],
@@ -123,7 +122,7 @@ const config = defineConfig({
 if (process.env.COMPONENT) {
   config.build = {
     rollupOptions: {
-      plugins: [tailwindcss(), inject({ Buffer: ['buffer', 'Buffer'] })],
+      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
       external: ['react', 'react-dom'],
       output: {
         globals: {
