@@ -160,7 +160,7 @@ export const Trade = ({ type }) => {
       console.log('tradeData.host_items.length: ', tradeData.host_items.length)
       console.log('partnerId: ', partnerId)
 
-      if (((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen && partnerId) {
+      if (tradeData && ((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen && partnerId) {
         partnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
         console.log('partnerTokens: ', partnerTokens)
       }
@@ -272,17 +272,6 @@ export const Trade = ({ type }) => {
     console.log("Trade canceled!")
   }
 
-  const onPrevPage = () => {
-    if (curPage <= 1) return
-    setCurPage(curPage - 1)
-  }
-
-  const onNextPage = () => {
-    const pageNum = Math.ceil(inventoryBoxNum / pageBoxNum)
-    if (curPage >= pageNum) return
-    setCurPage(curPage + 1)
-  }
-
   return (
       <DndProvider backend={HTML5Backend}>
       <Header authenticated={authenticated} setMode={setMode} mode={mode} />
@@ -354,7 +343,7 @@ export const Trade = ({ type }) => {
               </div>
             </div>
           }
-          {authenticated && !tradeData &&
+          {mode === "trade" && authenticated && !tradeData &&
             <div style={{
 
             }}>
@@ -372,7 +361,7 @@ export const Trade = ({ type }) => {
               </div>
             </div>
           }
-          {authenticated && tradeData &&
+          {authenticated && mode==="trade" &&
             <>
               <div>
                 <div style={{
@@ -381,24 +370,22 @@ export const Trade = ({ type }) => {
                   <div style={{
               
                   }}>
-                    <div style={{
-              
-                    }}>Their Trade</div>
-                    <div style={{
-              
-                    }}>
-                      {(isCreator && tradeData.guest_accept) ||
-                        (!isCreator && tradeData.host_accept)
+                    <div>Their Trade</div>
+                    <div>
+                      {tradeData && ((isCreator && tradeData.guest_accept) ||
+                        (!isCreator && tradeData.host_accept))
                         ? "TRADE ACCEPTED"
                         : ""}
                     </div>
                   </div>
                   <div style={{
-              
+                    display: "flex",
+                    flexWrap: "wrap",
                   }}>
                     {remoteBoxes.map((box, index) => {
                       return (
                         <RemoteBox key={box.id}>
+                        {tradeData &&
                           <BagItem
                             key={`remote_${box.id}`}
                             item={clone(box.item)}
@@ -413,6 +400,7 @@ export const Trade = ({ type }) => {
                             setLoading={setLoading}
                             setMessage={setMessage}
                           />
+                        }
                         </RemoteBox>
                       )
                     })}
@@ -427,11 +415,13 @@ export const Trade = ({ type }) => {
               
                   }}>Your Trade</div>
                   <div style={{
-              
+                    display: "flex",
+                    flexWrap: "wrap",
                   }}>
                     {localBoxes.map((box, index) => {
                       return (
                         <BagBox key={box.id}>
+                        {tradeData &&
                           <BagItem
                             key={`local_${box.id}`}
                             isForTrade={true}
@@ -447,6 +437,7 @@ export const Trade = ({ type }) => {
                             setLoading={setLoading}
                             setMessage={setMessage}
                           />
+                        }
                         </BagBox>
                       )
                     })}
@@ -469,7 +460,7 @@ export const Trade = ({ type }) => {
               
                   }}
                     onClick={onCancel}
-                    disabled={!accepted || !existItems(localBoxes) || (isCreator ? tradeData.guest_accept : tradeData.host_accept)}
+                    disabled={!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)}
                   >
                     Cancel
                   </button>
@@ -478,37 +469,12 @@ export const Trade = ({ type }) => {
             </>
           }
           {authenticated &&
-            <div>
-              <div style={{
-              
-              }}>
-                <div style={{
-              
-                }}>
-                  <div style={{
-              
-                  }}>Inventory</div>
-                  <div style={{
-              
-                  }}>
-                    <div style={{
-              
-                    }} onClick={onPrevPage}>
-                      &#60;
-                    </div>
-                    <div style={{
-              
-                    }}>{curPage}</div>
-                    <div style={{
-              
-                    }} onClick={onNextPage}>
-                      &#62;
-                    </div>
-                  </div>
-                </div>
-                <div style={{
-              
-                }}>
+            <div className={"inventory"} style={{
+              // flexbox of items
+              display: "flex",
+              flexWrap: "wrap",
+
+            }}>
                   {inventoryBoxes
                     .slice(
                       (curPage - 1) * pageBoxNum,
@@ -517,6 +483,7 @@ export const Trade = ({ type }) => {
                     .map((box, index) => {
                       return (
                         <BagBox key={box.id}>
+                        {tradeData &&
                           <BagItem
                             key={`inventory_${box.id}`}
                             item={clone(box.item)}
@@ -531,15 +498,14 @@ export const Trade = ({ type }) => {
                             setLoading={setLoading}
                             setMessage={setMessage}
                           />
+                        }
                         </BagBox>
                       )
                     })}
-                </div>
-              </div>
             </div>
           }
         </div>
-        <Footer showPagination={authenticated} status={loading} curPage={curPage} setCurPage={setCurPage} />
+        <Footer showPagination={authenticated} loading={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>
   )
 }

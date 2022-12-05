@@ -6,8 +6,6 @@ import { Principal } from "@dfinity/principal"
 import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
 import { itemTypes } from "./utils/constants";
 
-import StyledBagItem from "./BagItem.style";
-
 export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
@@ -49,9 +47,19 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
   }, []);
 
   return item && (
-    <StyledBagItem
+    <div
       style={{
-
+        width: "6em",
+        height: "6em",
+        border: "0 !important",
+        opacity: isDragging ? 0 : 1,
+        cursor: "grab",
+        img: {
+          maxWidth: "100%"
+        },
+        video: {
+          maxWidth: "100%"
+        }
       }}
       isDragging={isDragging}
       onClick={handleClick}
@@ -97,7 +105,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
           onClick={handleClick}
         />
       )}
-    </StyledBagItem>
+    </div>
   )
 };
 

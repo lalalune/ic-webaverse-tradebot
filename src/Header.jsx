@@ -5,13 +5,14 @@
 
 import React from "react";
 import Logo from "./assets/Logo.svg";
+import Console from "./assets/Console.svg";
 import Inventory from "./assets/Inventory.svg";
 import Trade from "./assets/Trade.svg";
 
-const Header = ({ authenticated, mode="inventory", setMode }) => {
+const Header = ({ type, authenticated, mode="inventory", setMode }) => {
     return (
-        <div className="header">
-            <img src={Logo} style={{
+        <div className="header" style={{height: "5em", width: "100vw"}}>
+            <img src={type === "webaverse" ? Logo : Console} style={{
                 position: "absolute",
                 left: "50%",
                 top: "1em",

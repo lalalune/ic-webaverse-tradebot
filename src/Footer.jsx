@@ -8,7 +8,18 @@ import ICBanner from "./assets/ICBanner.svg";
 
 import React from "react";
 
-const Footer = ({ showPagination, status="Unimpl", curPage=1, setCurPage }) => {
+const Footer = ({ showPagination, loading=false, curPage=1, setCurPage }) => {
+    const onPrevPage = () => {
+        if (curPage <= 1) return
+        setCurPage(curPage - 1)
+      }
+    
+      const onNextPage = () => {
+        const pageNum = Math.ceil(inventoryBoxNum / pageBoxNum)
+        if (curPage >= pageNum) return
+        setCurPage(curPage + 1)
+      }
+
     return (
         <div className="footer" style={{
             position: "absolute",
@@ -30,7 +41,7 @@ const Footer = ({ showPagination, status="Unimpl", curPage=1, setCurPage }) => {
             right: "1em",
             bottom: "1em",
         }}>
-            <span style={{color:"yellow"}}>{status ? "LOADING" : ""}</span>
+            <span style={{color:"yellow"}}>{loading ? "LOADING" : ""}</span>
         </div>
         {showPagination &&
         <div className="pagination" style={{
@@ -41,13 +52,13 @@ const Footer = ({ showPagination, status="Unimpl", curPage=1, setCurPage }) => {
             <button
             disabled={curPage <= 1}
             style={{opacity: curPage <= 1 ? 0.5 : 1}}
-            onClick={() => setCurPage(curPage - 1)}
+            onClick={() => curPage >= 1 && onPrevPage()}
             >
             {"<"}
             </button>
             <span>{curPage}</span>
             <button
-            onClick={() => setCurPage(curPage + 1)}
+            onClick={() => onNextPage()}
             >
             {">"}
             </button>
