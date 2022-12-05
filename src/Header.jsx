@@ -11,7 +11,7 @@ import Trade from "./assets/Trade.svg";
 
 const Header = ({ type, authenticated, mode="inventory", setMode }) => {
     return (
-        <div className="header" style={{height: "5em", width: "100vw"}}>
+        <div className="header" style={{height: "5em", width: "100%"}}>
             <img src={type === "webaverse" ? Logo : Console} style={{
                 position: "absolute",
                 left: "50%",

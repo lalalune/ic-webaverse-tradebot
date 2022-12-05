@@ -3,8 +3,8 @@ import { useDrag, useDrop } from "react-dnd";
 import { GLTFModel } from "react-3d-viewer";
 import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
-import { itemTypes } from "./utils/constants";
+import { clone, isImage, isMedia, isModel, sendNFT } from "./utils";
+import { itemTypes } from "./constants";
 
 export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);

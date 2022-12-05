@@ -16,7 +16,7 @@ export const BagBoxStyle = {
 
 const BagBox = ({ children, isOver, canDrop }) => {
   return (
-    <div isOver={isOver} canDrop={canDrop} style={{
+    <div isover={isOver} canDrop={canDrop} style={{
       border: canDrop
       ? `1px solid ${isOver ? "green" : "gold"}`
       : "1px solid #0c1e20", ...BagBoxStyle}}>

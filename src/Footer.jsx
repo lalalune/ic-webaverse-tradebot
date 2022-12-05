@@ -8,14 +8,16 @@ import ICBanner from "./assets/ICBanner.svg";
 
 import React from "react";
 
-const Footer = ({ showPagination, loading=false, curPage=1, setCurPage }) => {
+import {tradePageBoxNum, pageBoxNum, inventoryBoxNum} from "./constants";
+
+const Footer = ({ showPagination, mode, loading=false, curPage=1, setCurPage }) => {
     const onPrevPage = () => {
         if (curPage <= 1) return
         setCurPage(curPage - 1)
       }
     
       const onNextPage = () => {
-        const pageNum = Math.ceil(inventoryBoxNum / pageBoxNum)
+        const pageNum = Math.ceil(inventoryBoxNum / (mode === 'trade' ? tradePageBoxNum : pageBoxNum))
         if (curPage >= pageNum) return
         setCurPage(curPage + 1)
       }
@@ -23,7 +25,7 @@ const Footer = ({ showPagination, loading=false, curPage=1, setCurPage }) => {
     return (
         <div className="footer" style={{
             position: "absolute",
-            width: "100vw",
+            width: "100%",
             margin: 0,
             bottom: "0",
         }}>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { debugMode, inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/constants"
-import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils/funcs"
+import { debugMode, inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from "./constants"
+import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import { ModalBox } from './ModalBox'
@@ -47,27 +47,29 @@ export const Trade = ({ type }) => {
   })
 
   const [loading, setLoading] = useState(false)
-  const [agent, setAgent] = useState(null)
   const [principal, setPrincipal] = useState(false)
   const [authenticated, setAuthenticated] = useState(false)
   const [plugActor, setPlugActor] = useState(null)
+  const [loginAttempted, setLoginAttempted] = useState(false)
+
   const [isCreator, setIsCreator] = useState(false)
   const [localUserId, setLocalUserId] = useState(null)
   const [partnerId, setPartnerId] = useState(null)
   const [tradeData, setTradeData] = useState(null)
   const [tradeStarted, setTradeStarted] = useState(false)
-  const [inventoryTokens, setInventoryTokens] = useState({})
   const [remoteBoxes, setRemoteBoxes] = useState(clone(initRemoteBoxes))
   const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes))
-  const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
-  const [accepted, setAccepted] = useState(false)
-  const [curPage, setCurPage] = useState(1)
-  const [selItem, setSelItem] = useState(null)
   const [confirmed, setConfirmed] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
+  const [accepted, setAccepted] = useState(false)
+
+  const [inventoryTokens, setInventoryTokens] = useState({})
+  const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
+  const [curPage, setCurPage] = useState(1)
+  const [selItem, setSelItem] = useState(null)
+
   const [message, setMessage] = useState('')
-  const [loginAttempted, setLoginAttempted] = useState(false)
   const [mode, setMode] = useState('inventory') // inventory or trade
 
   useEffect(() => {
@@ -273,6 +275,25 @@ export const Trade = ({ type }) => {
   }
 
   return (
+    <div style={{
+      position: "absolute",
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      
+      // dark grey background
+      backgroundColor: '#1A1A1A',
+      // rounded corners
+      borderRadius: '10px',
+      // padding
+      margin: '20px',
+      // margin
+      marginLeft: "auto",
+      marginRight: "auto",
+      // width
+      width: '680px',
+      height: '680px',
+    }}>
       <DndProvider backend={HTML5Backend}>
       <Header authenticated={authenticated} setMode={setMode} mode={mode} />
         {/* If both players accepted their trade */}
@@ -343,34 +364,20 @@ export const Trade = ({ type }) => {
               </div>
             </div>
           }
-          {mode === "trade" && authenticated && !tradeData &&
-            <div style={{
-
-            }}>
-              <div style={{
-              
-            }}>
-                {!tradeStarted && (
-                  <button onClick={startTrade}>
-                    Start Trade
-                  </button>
-                )}
-                {tradeStarted && (
-                  <button>Starting...</button>
-                )}
-              </div>
-            </div>
-          }
           {authenticated && mode==="trade" &&
             <>
-              <div>
                 <div style={{
               
                 }}>
                   <div style={{
               
                   }}>
-                    <div>Their Trade</div>
+                    <div style={{
+                      opacity: 0.5,
+                      // justify to the left
+                      textAlign: "right",
+                      paddingRight: "1em",
+                    }}>PARTNER OFFERINGS</div>
                     <div>
                       {tradeData && ((isCreator && tradeData.guest_accept) ||
                         (!isCreator && tradeData.host_accept))
@@ -379,6 +386,7 @@ export const Trade = ({ type }) => {
                     </div>
                   </div>
                   <div style={{
+                    marginLeft: "5px",
                     display: "flex",
                     flexWrap: "wrap",
                   }}>
@@ -406,15 +414,14 @@ export const Trade = ({ type }) => {
                     })}
                   </div>
                 </div>
-              </div>
-              <div>
-                <div style={{
-              
-                }}>
                   <div style={{
-              
-                  }}>Your Trade</div>
+                    opacity: 0.5,
+                    // justify to the left
+                    textAlign: "left",
+                    paddingLeft: "1em",
+                  }}>YOUR OFFERINGS</div>
                   <div style={{
+                    marginLeft: "5px",
                     display: "flex",
                     flexWrap: "wrap",
                   }}>
@@ -442,14 +449,36 @@ export const Trade = ({ type }) => {
                       )
                     })}
                   </div>
-                </div>
-              </div>
-              <div>
+                  {mode === "trade" && authenticated && !tradeData &&
+                  <div style={{
+      
+                  }}>
+                    <div style={{
+                    
+                  }}>
+                      {!tradeStarted && (
+                        <button onClick={startTrade}>
+                          Start Trade
+                        </button>
+                      )}
+                      {tradeStarted && (
+                        <button>Starting...</button>
+                      )}
+                    </div>
+                  </div>
+                }
+                {tradeData &&
                 <div style={{
               
                 }}>
                   <button style={{
-              
+                    // green background
+                    backgroundColor: "#2ecc71",
+                    // rounded borders
+                    borderRadius: "0.25rem",
+                    // padding
+                    padding: ".5rem 1rem",
+                    opacity: accepted ? 1 : 0.5,
                   }}
                     onClick={onAccept}
                     disabled={accepted || !existItems(localBoxes)}
@@ -457,7 +486,13 @@ export const Trade = ({ type }) => {
                     Accept
                   </button>
                   <button style={{
-              
+                    // red background
+                    backgroundColor: "#e74c3c",
+                    // rounded borders
+                    borderRadius: "0.25rem",
+                    // padding
+                    padding: ".5rem 1rem",
+                    opacity: accepted  || existItems(localBoxes) ? 1 : 0.5,
                   }}
                     onClick={onCancel}
                     disabled={!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)}
@@ -465,7 +500,7 @@ export const Trade = ({ type }) => {
                     Cancel
                   </button>
                 </div>
-              </div>
+                }
             </>
           }
           {authenticated &&
@@ -473,12 +508,12 @@ export const Trade = ({ type }) => {
               // flexbox of items
               display: "flex",
               flexWrap: "wrap",
-
+              marginLeft: "5px",
             }}>
                   {inventoryBoxes
                     .slice(
-                      (curPage - 1) * pageBoxNum,
-                      curPage * pageBoxNum
+                      (curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum),
+                      curPage * (mode === "trade" ? tradePageBoxNum : pageBoxNum)
                     )
                     .map((box, index) => {
                       return (
@@ -487,7 +522,7 @@ export const Trade = ({ type }) => {
                           <BagItem
                             key={`inventory_${box.id}`}
                             item={clone(box.item)}
-                            index={(curPage - 1) * pageBoxNum + index}
+                            index={(curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum) + index}
                             tradeBoxes={clone(inventoryBoxes)}
                             setTradeBoxes={setInventoryBoxes}
                             tradeLayer="inventory"
@@ -507,5 +542,6 @@ export const Trade = ({ type }) => {
         </div>
         <Footer showPagination={authenticated} loading={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>
+      </div>
   )
 }
