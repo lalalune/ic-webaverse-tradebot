@@ -9,7 +9,7 @@ import Console from "./assets/Console.svg";
 import Inventory from "./assets/Inventory.svg";
 import Trade from "./assets/Trade.svg";
 
-const Header = ({ type, authenticated, mode = "inventory", setMode }) => {
+const Header = ({ type, connected, mode = "inventory", setMode }) => {
   return (
     <div className="header" style={{ height: "5em", width: "100%" }}>
       <img src={type === "webaverse" ? Logo : Console} style={{
@@ -18,7 +18,7 @@ const Header = ({ type, authenticated, mode = "inventory", setMode }) => {
         top: "1em",
         transform: "translate(-50%, 0)"
       }} />
-      {authenticated &&
+      {connected &&
         <button
           style={{
             position: "absolute",
@@ -33,7 +33,7 @@ const Header = ({ type, authenticated, mode = "inventory", setMode }) => {
           <img src={Inventory} />
         </button>
       }
-      {authenticated &&
+      {connected &&
         <button
           style={{
             opacity: mode === "trade" ? 1 : 0.5,

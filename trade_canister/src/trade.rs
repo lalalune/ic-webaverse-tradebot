@@ -116,6 +116,13 @@ pub fn join_trade(caller: Principal, id: String) -> Result<Trade> {
         return Ok(trade);
     }
 
+    if trade.guest != None {
+        return Err(Error::new(
+            ErrorKind::Other,
+            "Another player has already joined.",
+        ));
+    }
+
     trade.guest = Some(caller);
 
     TRADE_STORE.with(|store| {
