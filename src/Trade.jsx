@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { Button } from "@mui/material"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
@@ -221,6 +220,11 @@ export const Trade = ({ type }) => {
     login()
   }
 
+  useEffect(() => {
+    if(!authenticated) return;
+    login()
+  }, []);
+
   const login = async () => {
     const publicKey = await plug.requestConnect({
       whitelist, host, timeout,
@@ -279,49 +283,41 @@ export const Trade = ({ type }) => {
           <ModalBox>
             <div className="text-xl">Do you want to confirm the current trade?</div>
             <div className="flex gap-8">
-              <Button
-                variant="contained"
+              <button
                 onClick={async () => {
                   if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
                   setConfirmed(true)
                   setShowConfirmModal(false)
                 }}
-                color="success"
               >
                 Confirm
-              </Button>
-              <Button
-                variant="contained"
+              </button>
+              <button
                 onClick={() => { setShowConfirmModal(false) }}
-                color="error"
               >
                 Cancel
-              </Button>
+              </button>
             </div>
           </ModalBox>
         }
         {showTradeCompletedModal &&
           <ModalBox>
             <div className="text-xl">Trade Completed!</div>
-            <Button
-              variant="contained"
+            <button
               onClick={() => { setShowTradeCompletedModal(false) }}
-              color="success"
             >
               Ok
-            </Button>
+            </button>
           </ModalBox>
         }
         {message &&
           <ModalBox>
             <div className="text-xl">{message}</div>
-            <Button
-              variant="contained"
+            <button
               onClick={() => { setMessage('') }}
-              color="success"
             >
               Ok
-            </Button>
+            </button>
           </ModalBox>
         }
         <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
@@ -329,9 +325,9 @@ export const Trade = ({ type }) => {
           {!authenticated &&
             <Frame className="h-full">
               <div className="flex items-center justify-center h-full">
-                <Button variant="contained" onClick={onConnect}>
+                <button onClick={onConnect}>
                   Connect
-                </Button>
+                </button>
               </div>
             </Frame>
           }
@@ -339,12 +335,12 @@ export const Trade = ({ type }) => {
             <Frame>
               <div className="flex items-center justify-center h-full">
                 {!tradeStarted && (
-                  <Button variant="contained" onClick={startTrade}>
+                  <button onClick={startTrade}>
                     Start Trade
-                  </Button>
+                  </button>
                 )}
                 {tradeStarted && (
-                  <Button variant="disabled">Starting...</Button>
+                  <button>Starting...</button>
                 )}
               </div>
             </Frame>
@@ -416,14 +412,12 @@ export const Trade = ({ type }) => {
               </Frame>
               <Frame>
                 <div className="flex flex-wrap items-center justify-center gap-8">
-                  <Button
-                    variant="contained"
+                  <button
                     onClick={onAccept}
                     disabled={accepted || !existItems(localBoxes)}
-                    color="success"
                   >
                     Accept
-                  </Button>
+                  </button>
                   <div className="flex items-center justify-center gap-2">
                     {/* Numerical input for amount of ICP to add to trade */}
                     <label htmlFor="icp">ICP: </label>
@@ -433,14 +427,12 @@ export const Trade = ({ type }) => {
                       type="number"
                     />
                   </div>
-                  <Button
-                    variant="contained"
+                  <button
                     onClick={onCancel}
                     disabled={!accepted || !existItems(localBoxes) || (isCreator ? tradeData.guest_accept : tradeData.host_accept)}
-                    color="error"
                   >
                     Cancel
-                  </Button>
+                  </button>
                 </div>
               </Frame>
             </>

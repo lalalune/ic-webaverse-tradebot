@@ -1,8 +1,20 @@
 {
-  "name": "trade-console",
-  "description": "trade-console",
+  "name": "NXS-001 HelperBot",
+  "description": "The NXS-001 HelperBot is the first remote AI backpack for bringing all of the items in every wallet with you anywhere in the metaverse. Supports asset loading and local trade.",
   "start_url": "index.js",
-  "components": {
-    "activate": true
-  }
+  "components": [
+    {
+      "key": "activate",
+      "value": true
+    },
+    {
+      "key": "pet",
+      "value": {
+        "idleAnimation": "idle_hover",
+        "walkAnimation": "move_forward",
+        "runAnimation": "move_forward",
+        "activateAnimation": "activate"
+      }
+    }
+  ]
 }

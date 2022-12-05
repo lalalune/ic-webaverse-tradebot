@@ -1,8 +1,6 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
-import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
-// import update from 'immutability-helper'
 import { Principal } from "@dfinity/principal"
 
 import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
@@ -52,7 +50,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
 
   return item && (
     <StyledBagItem
-      className={classnames("flex items-center justify-center class_model", { 'border-2 border-red-900': item.confirmed })}
+      className={"flex items-center justify-center class_model" + item.confirmed ? ' border-2 border-red-900' : ''}
       isDragging={isDragging}
       onClick={handleClick}
     >
@@ -213,7 +211,7 @@ const BagItem = ({
 
   return (
     <div
-      className={classnames({ opacity: opacity })}
+      className={opacity && "opacity"}
       ref={ref}
       data-handler-id={handlerId}
     >

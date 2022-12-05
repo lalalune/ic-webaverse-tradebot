@@ -1,7 +1,7 @@
 import metaversefile from "metaversefile";
-const { useApp, useWorld, useActivate, useLoaders, usePhysics, useCleanup } =
+const { useApp, useWorld, useLocalPlayer, useActivate, useLoaders, usePhysics, useCleanup } =
   metaversefile;
-const baseUrl = import.meta.url.replace(/(\/)[^\/\\]*$/, "$1");
+const baseUrl = import.meta.url; // .replace(/(\/)[^\/\\]*$/, "$1");
 
 export default (e) => {
   const app = useApp();
@@ -35,8 +35,26 @@ export default (e) => {
     })
   };
 
+  window.setCurrentTradeId = (id) => {
+    console.log("setCurrentTradeId: ", id);
+    app.setComponent('trade', {id});
+  };
+
+
   const activateCb = () => {
     activated = !activated;
+
+    const wearComponent = app.getComponent('wear');
+    const tradeComponent = app.getComponent('trade');
+
+    console.log("wearComponent: ", wearComponent);
+    console.log("tradeComponent: ", tradeComponent);
+
+    if(tradeComponent) {
+      window.tradeId = tradeComponent.id;
+    }
+
+
     const startTime = Date.now();
     let currentTime = 0;
     const timer = setInterval(() => {
@@ -60,6 +78,19 @@ export default (e) => {
         clearInterval(timer);
       }
       reactApp.updateMatrixWorld();
+
+      // if the player walks more than 5 meters away from the console, deactivate it
+      const player = useLocalPlayer();
+      const distance = player.position.distanceTo(app.position);
+      if (distance > 5) {
+        activated = false;
+        reactApp.scale.set(minScale, minScale, minScale);
+        reactApp.position.set(-0.5, minPosition, reactApp.position.z);
+        reactApp.updateMatrixWorld();
+        // stop the timer
+        clearInterval(timer);
+      }
+
     }, 1000 / 60);
   };
 
@@ -72,7 +103,7 @@ export default (e) => {
   const physicsIds = [];
   e.waitUntil(
     (async () => {
-      const u = `${baseUrl}console.glb`;
+      const u = `${baseUrl}HelperBot.glb`;
       let o = await new Promise((accept, reject) => {
         const { gltfLoader } = useLoaders();
         gltfLoader.load(u, accept, function onprogress() { }, reject);
@@ -81,6 +112,7 @@ export default (e) => {
         o.destroy();
         return;
       }
+      app.glb = o;
       o = o.scene;
       app.add(o);
 
@@ -93,7 +125,7 @@ export default (e) => {
           reactApp.destroy();
           return;
         }
-        reactApp.rotation.y = Math.PI / 2;
+        // reactApp.rotation.y = Math.PI / 2;
         reactApp.scale.set(0, 0, 0);
         app.add(reactApp);
         reactApp.updateMatrixWorld();
