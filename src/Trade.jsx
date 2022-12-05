@@ -17,9 +17,11 @@ import Footer from "./Footer"
 const { ic } = window
 const { plug } = ic
 
-const canisterId = "gqux4-4qaaa-aaaao-ab62q-cai"
+// const canisterId = "gqux4-4qaaa-aaaao-ab62q-cai"
+const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
-const host = "https://mainnet.dfinity.network"
+// const host = "https://mainnet.dfinity.network"
+const host = "http://localhost:8000"
 const timeout = 50000
 let partnerTokens = {}
 
@@ -73,6 +75,17 @@ export const Trade = ({ type }) => {
   const [mode, setMode] = useState('inventory') // inventory or trade
 
   useEffect(() => {
+    // this should only run once
+    (async () => {
+      if (type !== "webaverse" || authenticated || loginAttempted || localLoginAttempted) return;
+      console.log('calling effect')
+      setLoginAttempted(true)
+      localLoginAttempted = true;
+      login()
+    })()
+  }, []);
+
+  useEffect(() => {
     (async () => {
       if (!principal || !localUserId) return
       setLoading(true)
@@ -92,16 +105,7 @@ export const Trade = ({ type }) => {
 
   let localLoginAttempted = false
 
-  useEffect(() => {
-    // this should only run once
-    (async () => {
-      if (type !== "webaverse" || authenticated || loginAttempted || localLoginAttempted) return;
-      console.log('calling effect')
-      setLoginAttempted(true)
-      localLoginAttempted = true;
-      login()
-    })()
-  }, []);
+
 
   useEffect(() => {
     (async () => {
@@ -225,7 +229,7 @@ export const Trade = ({ type }) => {
   const startTrade = async () => {
     if (!plug.createActor) return
     setLoading(true)
-    const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory })
+    const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory, agent: plug.agent })
     setLoading(false)
     setPlugActor(tempPlugActor)
   }

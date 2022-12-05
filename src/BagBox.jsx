@@ -2,7 +2,6 @@ import React from "react";
 
 export const BagBoxStyle = {
   position: "relative",
-  position: "relative",
   width: "6em",
   display: "flex",
   height: "6em",
