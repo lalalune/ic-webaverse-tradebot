@@ -50,7 +50,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
 
   return item && (
     <StyledBagItem
-      className={"flex items-center justify-center class_model" + item.confirmed ? ' border-2 border-red-900' : ''}
+      style={{
+
+      }}
       isDragging={isDragging}
       onClick={handleClick}
     >
@@ -61,7 +63,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
             <img
               crossOrigin="anonymous"
               referrerPolicy="no-referer-on-downgrade"
-              className="w-full h-full"
+              style={{
+
+              }}
               src={item.url}
               onClick={handleClick}
             />
@@ -72,7 +76,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
           <video
             crossOrigin="anonymous"
             referrerPolicy="no-referer-on-downgrade"
-            className="w-full h-full"
+            style={{
+
+            }}
             src={item.url}
             autoPlay
             loop
@@ -211,7 +217,9 @@ const BagItem = ({
 
   return (
     <div
-      className={opacity && "opacity"}
+      style={{
+        opacity
+      }}
       ref={ref}
       data-handler-id={handlerId}
     >

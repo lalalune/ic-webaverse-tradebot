@@ -2,9 +2,9 @@ import React from "react";
 
 import StyledBagBox from "./BagBox.style";
 
-const BagBox = ({ className, children, isOver, canDrop }) => {
+const BagBox = ({ children, isOver, canDrop }) => {
   return (
-    <StyledBagBox className={className} isOver={isOver} canDrop={canDrop}>
+    <StyledBagBox isOver={isOver} canDrop={canDrop}>
       {children}
     </StyledBagBox>
   );

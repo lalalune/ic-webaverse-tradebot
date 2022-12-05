@@ -6,22 +6,20 @@ import { debugMode, inventoryBoxNum, pageBoxNum, tradeBoxNum } from "./utils/con
 import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils/funcs"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
-import Frame from "./Frame"
 import { ModalBox } from './ModalBox'
 import RemoteBox from "./RemoteBox"
 import BagBox from "./BagBox"
 import BagItem from "./BagItem"
-import { Loading } from "./Loading"
-import { ItemDetails } from "./ItemDetails"
+
+import Header from "./Header"
+import Footer from "./Footer"
 
 const { ic } = window
 const { plug } = ic
 
 const canisterId = "gqux4-4qaaa-aaaao-ab62q-cai"
-// const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
 const host = "https://mainnet.dfinity.network"
-// const host = 'http://127.0.0.1:8000'
 const timeout = 50000
 let partnerTokens = {}
 
@@ -69,6 +67,8 @@ export const Trade = ({ type }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
   const [message, setMessage] = useState('')
+  const [loginAttempted, setLoginAttempted] = useState(false)
+  const [mode, setMode] = useState('inventory') // inventory or trade
 
   useEffect(() => {
     (async () => {
@@ -87,6 +87,19 @@ export const Trade = ({ type }) => {
       setLoading(false)
     })()
   }, [principal])
+
+  let localLoginAttempted = false
+
+  useEffect(() => {
+    // this should only run once
+    (async () => {
+    if(type !== "webaverse" || authenticated || loginAttempted || localLoginAttempted) return;
+    console.log('calling effect')
+    setLoginAttempted(true)
+    localLoginAttempted = true;
+    login()
+    })()
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -217,13 +230,9 @@ export const Trade = ({ type }) => {
 
   const onConnect = async () => {
     console.log('Connecting...')
+    setLoginAttempted(true)
     login()
   }
-
-  useEffect(() => {
-    if(!authenticated) return;
-    login()
-  }, []);
 
   const login = async () => {
     const publicKey = await plug.requestConnect({
@@ -275,14 +284,13 @@ export const Trade = ({ type }) => {
   }
 
   return (
-    <div className="w-full h-full">
       <DndProvider backend={HTML5Backend}>
-        <ItemDetails selItem={selItem} />
+      <Header authenticated={authenticated} setMode={setMode} mode={mode} />
         {/* If both players accepted their trade */}
         {authenticated && tradeData && accepted && existItems(localBoxes) && showConfirmModal && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
-            <div className="text-xl">Do you want to confirm the current trade?</div>
-            <div className="flex gap-8">
+            <div style={{}}>Do you want to confirm the current trade?</div>
+            <div style={{}}>
               <button
                 onClick={async () => {
                   if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
@@ -302,7 +310,7 @@ export const Trade = ({ type }) => {
         }
         {showTradeCompletedModal &&
           <ModalBox>
-            <div className="text-xl">Trade Completed!</div>
+            <div style={{}}>Trade Completed!</div>
             <button
               onClick={() => { setShowTradeCompletedModal(false) }}
             >
@@ -312,7 +320,7 @@ export const Trade = ({ type }) => {
         }
         {message &&
           <ModalBox>
-            <div className="text-xl">{message}</div>
+            <div style={{}}>{message}</div>
             <button
               onClick={() => { setMessage('') }}
             >
@@ -320,20 +328,39 @@ export const Trade = ({ type }) => {
             </button>
           </ModalBox>
         }
-        <div className="absolute top-0 left-0 w-3/4 h-full overflow-auto">
-          <Loading loading={loading} />
+        <div>
           {!authenticated &&
-            <Frame className="h-full">
-              <div className="flex items-center justify-center h-full">
-                <button onClick={onConnect}>
+            <div style={{
+
+            }}>
+              <div style={{
+
+              }}>
+              <button onClick={onConnect} style={{
+                // center the button in the div
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                // style the button
+                padding: "1rem 2rem",
+                // rounded corners
+                borderRadius: "0.5rem",
+                // background color slate
+                backgroundColor: "#2c3e50",
+                }}>
                   Connect
                 </button>
               </div>
-            </Frame>
+            </div>
           }
           {authenticated && !tradeData &&
-            <Frame>
-              <div className="flex items-center justify-center h-full">
+            <div style={{
+
+            }}>
+              <div style={{
+              
+            }}>
                 {!tradeStarted && (
                   <button onClick={startTrade}>
                     Start Trade
@@ -343,22 +370,32 @@ export const Trade = ({ type }) => {
                   <button>Starting...</button>
                 )}
               </div>
-            </Frame>
+            </div>
           }
           {authenticated && tradeData &&
             <>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl">Their Trade</div>
-                    <div className="text-xl text-blue-900">
+              <div>
+                <div style={{
+              
+                }}>
+                  <div style={{
+              
+                  }}>
+                    <div style={{
+              
+                    }}>Their Trade</div>
+                    <div style={{
+              
+                    }}>
                       {(isCreator && tradeData.guest_accept) ||
                         (!isCreator && tradeData.host_accept)
                         ? "TRADE ACCEPTED"
                         : ""}
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-3">
+                  <div style={{
+              
+                  }}>
                     {remoteBoxes.map((box, index) => {
                       return (
                         <RemoteBox key={box.id}>
@@ -381,11 +418,17 @@ export const Trade = ({ type }) => {
                     })}
                   </div>
                 </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-col gap-2">
-                  <div className="text-2xl">Your Trade</div>
-                  <div className="flex flex-wrap gap-3">
+              </div>
+              <div>
+                <div style={{
+              
+                }}>
+                  <div style={{
+              
+                  }}>Your Trade</div>
+                  <div style={{
+              
+                  }}>
                     {localBoxes.map((box, index) => {
                       return (
                         <BagBox key={box.id}>
@@ -409,50 +452,63 @@ export const Trade = ({ type }) => {
                     })}
                   </div>
                 </div>
-              </Frame>
-              <Frame>
-                <div className="flex flex-wrap items-center justify-center gap-8">
-                  <button
+              </div>
+              <div>
+                <div style={{
+              
+                }}>
+                  <button style={{
+              
+                  }}
                     onClick={onAccept}
                     disabled={accepted || !existItems(localBoxes)}
                   >
                     Accept
                   </button>
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Numerical input for amount of ICP to add to trade */}
-                    <label htmlFor="icp">ICP: </label>
-                    <input
-                      className="w-32 p-0.5 text-xl border rounded opacity-30 bg-amber-900"
-                      id="icp"
-                      type="number"
-                    />
-                  </div>
-                  <button
+                  <button style={{
+              
+                  }}
                     onClick={onCancel}
                     disabled={!accepted || !existItems(localBoxes) || (isCreator ? tradeData.guest_accept : tradeData.host_accept)}
                   >
                     Cancel
                   </button>
                 </div>
-              </Frame>
+              </div>
             </>
           }
           {authenticated &&
-            <Frame>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-2xl">Inventory</div>
-                  <div className="flex items-center gap-2 text-xl">
-                    <div className="cursor-pointer" onClick={onPrevPage}>
+            <div>
+              <div style={{
+              
+              }}>
+                <div style={{
+              
+                }}>
+                  <div style={{
+              
+                  }}>Inventory</div>
+                  <div style={{
+              
+                  }}>
+                    <div style={{
+              
+                    }} onClick={onPrevPage}>
                       &#60;
                     </div>
-                    <div className="text-blue-900">{curPage}</div>
-                    <div className="cursor-pointer" onClick={onNextPage}>
+                    <div style={{
+              
+                    }}>{curPage}</div>
+                    <div style={{
+              
+                    }} onClick={onNextPage}>
                       &#62;
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div style={{
+              
+                }}>
                   {inventoryBoxes
                     .slice(
                       (curPage - 1) * pageBoxNum,
@@ -480,41 +536,10 @@ export const Trade = ({ type }) => {
                     })}
                 </div>
               </div>
-            </Frame>
+            </div>
           }
         </div>
-        <div className="absolute top-0 right-0 w-1/4 h-full overflow-auto">
-          <Frame className="h-full">
-            <div className="p-2">
-              <b>CONNECTION STATUS</b>
-              <br />
-              {authenticated && principal
-                ? "Connected with " + localUserId
-                : "Waiting for IC wallet connection..."
-              }
-              <br />
-              <br />
-              {tradeStarted && tradeData && !partnerId && !tradeId &&
-                <>
-                  <b> WAITING FOR TRADE PARTNER... </b>
-                  <br />
-                  Send this link to your trade partner
-                  <br />
-                  <a
-                    // className="text-blue-900"
-                    href={`${url.host}/?tradeId=${tradeData.id}`}
-                  >
-                    {url.host}/?tradeId={tradeData.id}
-                  </a>
-                </>
-              }
-              {tradeStarted && tradeData && partnerId &&
-                <>Trading with {partnerId}</>
-              }
-            </div>
-          </Frame>
-        </div>
+        <Footer showPagination={authenticated} status={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>
-    </div>
   )
 }
