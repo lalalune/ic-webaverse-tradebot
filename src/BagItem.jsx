@@ -1,14 +1,10 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
-import classnames from "classnames";
 import { GLTFModel } from "react-3d-viewer";
-// import update from 'immutability-helper'
 import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel, sendNFT } from "./utils/funcs";
-import { itemTypes } from "./utils/constants";
-
-import StyledBagItem from "./BagItem.style";
+import { clone, isImage, isMedia, isModel, sendNFT } from "./utils";
+import { itemTypes } from "./constants";
 
 export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
@@ -51,8 +47,20 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
   }, []);
 
   return item && (
-    <StyledBagItem
-      className={classnames("flex items-center justify-center class_model", { 'border-2 border-red-900': item.confirmed })}
+    <div
+      style={{
+        width: "6em",
+        height: "6em",
+        border: "0 !important",
+        opacity: isDragging ? 0 : 1,
+        cursor: "grab",
+        img: {
+          maxWidth: "100%"
+        },
+        video: {
+          maxWidth: "100%"
+        }
+      }}
       isDragging={isDragging}
       onClick={handleClick}
     >
@@ -63,7 +71,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
             <img
               crossOrigin="anonymous"
               referrerPolicy="no-referer-on-downgrade"
-              className="w-full h-full"
+              style={{
+
+              }}
               src={item.url}
               onClick={handleClick}
             />
@@ -74,7 +84,9 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
           <video
             crossOrigin="anonymous"
             referrerPolicy="no-referer-on-downgrade"
-            className="w-full h-full"
+            style={{
+
+            }}
             src={item.url}
             autoPlay
             loop
@@ -93,7 +105,7 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
           onClick={handleClick}
         />
       )}
-    </StyledBagItem>
+    </div>
   )
 };
 
@@ -213,7 +225,9 @@ const BagItem = ({
 
   return (
     <div
-      className={classnames({ opacity: opacity })}
+      style={{
+        opacity
+      }}
       ref={ref}
       data-handler-id={handlerId}
     >

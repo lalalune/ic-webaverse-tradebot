@@ -1,12 +1,12 @@
 import React from "react";
 
-import StyledBagBox from "./BagBox.style";
+import {BagBoxStyle} from "./BagBox.jsx";
 
-const RemoteBox = ({ className, children }) => {
+const RemoteBox = ({ children }) => {
   return (
-    <StyledBagBox className={className} isOver={false} canDrop={false}>
+    <div style={BagBoxStyle}>
       {children}
-    </StyledBagBox>
+    </div>
   );
 };
 export default React.memo(RemoteBox);
