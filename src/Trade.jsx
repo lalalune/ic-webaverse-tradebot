@@ -292,17 +292,14 @@ export const Trade = ({ type }) => {
         {mode === "trade" && authenticated && !tradeData &&
         <div style={{
           position: "absolute",
-          top: "80px",
+          bottom: "40px",
           left: "50%",
           transform: "translate(-50%, 0)",
         }}>
           {!tradeStarted && (
-            <button onClick={startTrade} style={{backgroundColor:"green", padding: "5px"}}>
+            <button onClick={startTrade} style={{zIndex: 1000, backgroundColor:"green", padding: "5px"}}>
               Start Trade
             </button>
-          )}
-          {tradeStarted && (
-            <button>Starting...</button>
           )}
         </div>
       }
@@ -348,24 +345,6 @@ export const Trade = ({ type }) => {
             </button>
           </ModalBox>
         }
-        {mode === "trade" && authenticated && !tradeData &&
-        <div style={{
-          width: "200px",
-          "position:": "absolute",
-          // center horizontally
-          left: "50%",
-          transform: "translate(-50%, 0)",
-        }}>
-          {!tradeStarted && (
-            <button onClick={startTrade}>
-              Start Trade
-            </button>
-          )}
-          {tradeStarted && (
-            <button>Starting...</button>
-          )}
-        </div>
-      }
         <div>
           {!authenticated &&
             <div style={{
@@ -558,6 +537,17 @@ export const Trade = ({ type }) => {
                 })}
             </div>
           }
+          {tradeStarted && (
+            <button onClick={startTrade} style={{
+              zIndex: 1000,
+              backgroundColor:"red",
+              padding: "5px",
+              float: "right",
+              marginRight: "10px"
+            }}>
+              Cancel Trade
+            </button>
+          )}
         </div>
         <Footer showPagination={authenticated} loading={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>
