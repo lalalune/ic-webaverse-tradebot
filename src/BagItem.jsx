@@ -6,7 +6,7 @@ import { Principal } from "@dfinity/principal"
 import { clone, isImage, isMedia, isModel, sendNFT } from "./utils";
 import { itemTypes } from "./constants";
 
-export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
+export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
   const handleClick = (event) => {
@@ -64,21 +64,19 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
       isDragging={isDragging}
       onClick={handleClick}
     >
-      {(isImage(item?.url)
-        // || (!isImage(item?.url) && !isMedia(item?.url) && !isModel(item?.url))
-      ) && (
-          <span onClick={handleClick}>
-            <img
-              crossOrigin="anonymous"
-              referrerPolicy="no-referer-on-downgrade"
-              style={{
+      {isImage(item?.url) && (
+        <span onClick={handleClick}>
+          <img
+            crossOrigin="anonymous"
+            referrerPolicy="no-referer-on-downgrade"
+            style={{
 
-              }}
-              src={item.url}
-              onClick={handleClick}
-            />
-          </span>
-        )}
+            }}
+            src={item.url}
+            onClick={handleClick}
+          />
+        </span>
+      )}
       {isMedia(item?.url) && (
         <span onClick={handleClick}>
           <video

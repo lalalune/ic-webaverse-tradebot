@@ -3,7 +3,7 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
 import { debugMode, inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from "./constants"
-import { canisterItemsToTokens, clone, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils"
+import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from "./utils"
 import { idlFactory } from "../trade_canister/src/declarations/trade_canister/index"
 
 import { ModalBox } from './ModalBox'
@@ -25,8 +25,9 @@ const timeout = 50000
 let partnerTokens = {}
 
 const url = new URL(window.location.href)
-const tradeId = url.searchParams.get("tradeId")
-tradeId && console.log("I'm joiner. tradeId: ", tradeId)
+let tradeId = url.searchParams.get("tradeId")
+// if (!tradeId) tradeId = localStorage.getItem('storageTradeId')
+tradeId && console.log("tradeId: ", tradeId)
 
 export const Trade = ({ type }) => {
   const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
@@ -65,9 +66,10 @@ export const Trade = ({ type }) => {
   const [mode, setMode] = useState('inventory') // inventory or trade
 
   let localLoginAttempted = false
+  let localTradeId = tradeId || tradeData?.id
 
   useEffect(() => {
-    if (type !== "webaverse" || connected || localLoginAttempted) return; // for webaverse
+    if (type !== "webaverse" || connected || localLoginAttempted || loading) return; // for webaverse
     console.log('Calling effect')
     onConnect()
     localLoginAttempted = true
@@ -75,7 +77,7 @@ export const Trade = ({ type }) => {
 
   useEffect(() => {
     (async () => {
-      if (!connected || !plug.agent || !plug.principalId) return
+      if (!connected || !plug.agent || !plug.principalId || loading) return
       setLoading(true)
       const newTokens = await getUserTokens({ agent: plug.agent, user: plug.principalId })
       setInventoryTokens(clone(newTokens))
@@ -119,9 +121,9 @@ export const Trade = ({ type }) => {
       }
 
       const rts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens)
-      console.log('remoteTokens: ', rts)
+      // console.log('remoteTokens: ', rts)
       const rbs = getRemoteBoxes(rts)
-      console.log('remoteBoxes: ', rbs)
+      // console.log('remoteBoxes: ', rbs)
       setRemoteBoxes(rbs)
 
       if (confirmed) {
@@ -157,7 +159,8 @@ export const Trade = ({ type }) => {
 
       setTimeout(async () => {
         const trade = await plugActor.get_trade_by_id(tradeData.id)
-        if (trade !== tradeData) console.log('trade: ', trade)
+        // if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
+        console.log('trade: ', trade)
         setTradeData(trade)
       }, 2000)
     })()
@@ -168,56 +171,77 @@ export const Trade = ({ type }) => {
     cloneInventoryBoxes.forEach(box => {
       box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
     })
-    console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
+    // console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
     setInventoryBoxes(cloneInventoryBoxes)
 
     const cloneLocalBoxes = clone(localBoxes)
     cloneLocalBoxes.forEach(box => {
       box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
     })
-    console.log('cloneLocalBoxes: ', cloneLocalBoxes)
+    // console.log('cloneLocalBoxes: ', cloneLocalBoxes)
     setLocalBoxes(cloneLocalBoxes)
   }, [inventoryTokens])
 
   const onConnect = async () => {
-    console.log('Connecting...')
+    if (loading) return
+    console.log('onConnect')
+    setLoading(true)
+    let publicKey
 
-    const publicKey = await plug.requestConnect({
-      whitelist, host, timeout,
-      onConnectionUpdate: () => {
-        console.log('sessionData: ', plug.sessionManager.sessionData)
-      }
-    })
+    try {
+      publicKey = await plug.requestConnect({
+        whitelist, host, timeout,
+        onConnectionUpdate: () => {
+          console.log('sessionData: ', plug.sessionManager.sessionData)
+        }
+      })
+    } catch (e) {
+      console.log('Connection failed. error: ', e)
+      setLoading(false)
+      return
+    }
 
     if (publicKey) {
       console.log('publicKey: ', publicKey)
       const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory, agent: plug.agent })
       console.log('tempPlugActor: ', tempPlugActor)
-      setPlugActor()
-      setConnected(true)
+      setPlugActor(tempPlugActor)
+    } else {
+      console.log('Connection failed')
+      setLoading(false)
+      return
     }
+
+    console.log('plug: ', plug)
+    setLoading(false)
+    setConnected(true)
   }
 
   const onStartTrade = async () => {
-    if (!plugActor || !plug.principalId) return
+    if (!plugActor || !plug.principalId || loading) return
+    console.log('onStartTrade')
     setLoading(true)
 
     let trade
     if (tradeId) trade = await plugActor.get_trade_by_id(tradeId)
-    else trade = await plugActor.create_trade()
+    else {
+      trade = await plugActor.create_trade()
+      localStorage.setItem('storageTradeId', trade.id)
+    }
 
     const hostId = getPrincipalId(trade.host)
     const guestId = getPrincipalId(trade.guest)
     if (hostId === plug.principalId) setIsCreator(true)
-    else if (guestId === plug.principalId) {
+    else if (!guestId || guestId !== plug.principalId) {
       trade = await plugActor.join_trade(trade.id)
       setIsCreator(false)
     }
     else return
 
+    setLoading(false)
+    console.log('trade: ', trade)
     setTradeData(trade)
     setTradeStarted(true)
-    setLoading(false)
   }
 
   const onAccept = () => {
@@ -229,7 +253,7 @@ export const Trade = ({ type }) => {
   }
 
   const onCancel = () => {
-    if (!plugActor) return
+    if (!plugActor || !tradeData) return
     plugActor.cancel(tradeData.id)
     setShowConfirmModal(false)
     setAccepted(false)
@@ -320,16 +344,25 @@ export const Trade = ({ type }) => {
           {connected && mode === "trade" &&
             <>
               <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                padding: '0 1em',
                 opacity: 0.5,
-                // justify to the left
-                textAlign: "right",
-                paddingRight: "1em",
-              }}>PARTNER OFFERINGS</div>
-              <div>
-                {tradeData && ((isCreator && tradeData.guest_accept) ||
-                  (!isCreator && tradeData.host_accept))
-                  ? "TRADE ACCEPTED"
-                  : ""}
+              }}>
+                <div>
+                  {localTradeId && isCreator && !partnerId &&
+                    <>
+                      Send this link for partner to join:&nbsp;
+                      <a href="#" style={{ color: 'yellow' }}>{`localhost:5173?tradeId=${localTradeId}`}</a>
+                    </>
+                  }
+                  {partnerId && 'PARTNER FOUND'}
+                </div>
+                <div>
+                  {tradeData && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) ? 'TRADE ACCEPTED' : !partnerId && 'PARTNER OFFERINGS'}
+                </div>
               </div>
               <div style={{
                 marginLeft: "5px",
@@ -395,7 +428,13 @@ export const Trade = ({ type }) => {
                 })}
               </div>
               {mode === "trade" && connected && !tradeData &&
-                <>
+                <div style={{
+                  padding: "0 1em",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}>
                   {!tradeStarted && (
                     <button onClick={onStartTrade}>
                       Start Trade
@@ -404,10 +443,16 @@ export const Trade = ({ type }) => {
                   {tradeStarted && (
                     <button>Starting...</button>
                   )}
-                </>
+                </div>
               }
               {tradeData &&
-                <>
+                <div style={{
+                  padding: "0 1em",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  width: "100%",
+                }}>
                   <button style={{
                     // green background
                     backgroundColor: "#2ecc71",
@@ -415,7 +460,7 @@ export const Trade = ({ type }) => {
                     borderRadius: "0.25rem",
                     // padding
                     padding: ".5rem 1rem",
-                    opacity: accepted ? 1 : 0.5,
+                    opacity: (accepted || !existItems(localBoxes)) ? 0.5 : 1,
                   }}
                     onClick={onAccept}
                     disabled={accepted || !existItems(localBoxes)}
@@ -429,14 +474,14 @@ export const Trade = ({ type }) => {
                     borderRadius: "0.25rem",
                     // padding
                     padding: ".5rem 1rem",
-                    opacity: accepted || existItems(localBoxes) ? 1 : 0.5,
+                    opacity: (!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)) ? 0.5 : 1,
                   }}
                     onClick={onCancel}
                     disabled={!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)}
                   >
                     Cancel
                   </button>
-                </>
+                </div>
               }
             </>
           }

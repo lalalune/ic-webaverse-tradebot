@@ -15,7 +15,7 @@ export const clone = (obj) => {
 };
 
 export const getRemoteBoxes = (remoteItems) => {
-  console.log('remoteItems: ', remoteItems)
+  // console.log('remoteItems: ', remoteItems)
   remoteItems = Object.values(remoteItems)
   const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
     return { id: i, item: remoteItems.find(item => item.slot === i) ?? null };
@@ -53,7 +53,7 @@ export const getUserTokens = async ({ agent, user }) => {
           token_id: player1TokenId,
           name: "Player 1",
           collection: "Test",
-          url: "assets/armor.png",
+          url: "src/assets/armor.png",
           slot: 0,
         }
       }
@@ -66,7 +66,7 @@ export const getUserTokens = async ({ agent, user }) => {
           token_id: player2TokenId,
           name: "Player 2",
           collection: "Test",
-          url: "assets/bastard-sword.png",
+          url: "src/assets/bastard-sword.png",
           slot: 0,
         }
       }
@@ -174,24 +174,24 @@ export const existItems = boxes => {
 }
 
 export const getPrincipalId = pricipal => {
-  console.log('getPrincipalId pricipal: ', pricipal)
+  // console.log('getPrincipalId pricipal: ', pricipal)
   if (Array.isArray(pricipal)) {
     if (!pricipal.length) return ''
     pricipal = pricipal[0]
   }
   const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : ''
-  console.log('principalId: ', principalId)
+  // console.log('principalId: ', principalId)
   return principalId
 }
 
 export const canisterItemsToTokens = (canisterItems, userTokens) => {
   if (!Array.isArray(canisterItems) || !userTokens) return {}
-  console.log('userTokens: ', userTokens)
+  // console.log('userTokens: ', userTokens)
   const tokens = {}
   canisterItems.forEach(item => {
     userTokens[item.token_id] && (tokens[item.token_id] = userTokens[item.token_id])
   })
-  console.log('canisterItemsToTokens: ', tokens)
+  // console.log('canisterItemsToTokens: ', tokens)
   return tokens
 }
 
@@ -205,3 +205,27 @@ export const sleep = async (milliseconds) => {
     return setTimeout(resolve, milliseconds)
   });
 };
+
+export const deepEqual = (object1, object2) => {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+  for (const key of keys1) {
+    const val1 = object1[key];
+    const val2 = object2[key];
+    const areObjects = isObject(val1) && isObject(val2);
+    if (
+      areObjects && !deepEqual(val1, val2) ||
+      !areObjects && val1 !== val2
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export const isObject = (object) => {
+  return object != null && typeof object === 'object';
+}
