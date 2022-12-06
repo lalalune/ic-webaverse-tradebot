@@ -24,7 +24,7 @@ const timeout = 50000
 let partnerTokens = {}
 
 const url = new URL(window.location.href)
-const tradeId = url.searchParams.get("tradeId")
+const tradeId = url.searchParams.get("tradeId") || window.tradeId
 tradeId && console.log("I'm joiner. tradeId: ", tradeId)
 
 export const Trade = ({ type }) => {
@@ -425,35 +425,6 @@ export const Trade = ({ type }) => {
                   width: "300px",
                   paddingLeft: "10px"
                 }}>
-                  {remoteBoxes.map((box, index) => {
-                    return (
-                      <RemoteBox key={box.id}>
-                        {tradeData &&
-                          <BagItem
-                            key={`remote_${box.id}`}
-                            item={clone(box.item)}
-                            index={index}
-                            tradeBoxes={clone(remoteBoxes)}
-                            setTradeBoxes={setRemoteBoxes}
-                            tradeLayer="remote"
-                            plugActor={plugActor}
-                            tradeData={tradeData}
-                            localUserId={localUserId}
-                            setSelItem={setSelItem}
-                            setLoading={setLoading}
-                            setMessage={setMessage}
-                          />
-                        }
-                      </RemoteBox>
-                    )
-                  })}
-                </span>
-                <span style={{
-                  display: "inline-block",
-                  textAlign: "right",
-                  width: "300px",
-                  paddingRight: "10px"
-                }}>
                   {localBoxes.map((box, index) => {
                     return (
                       <BagBox key={box.id}>
@@ -478,6 +449,35 @@ export const Trade = ({ type }) => {
                     )
                   })}
                 </span>
+                <span style={{
+                  display: "inline-block",
+                  textAlign: "right",
+                  width: "300px",
+                  paddingRight: "10px"
+                }}>
+                  {remoteBoxes.map((box, index) => {
+                    return (
+                      <RemoteBox key={box.id}>
+                        {tradeData &&
+                          <BagItem
+                            key={`remote_${box.id}`}
+                            item={clone(box.item)}
+                            index={index}
+                            tradeBoxes={clone(remoteBoxes)}
+                            setTradeBoxes={setRemoteBoxes}
+                            tradeLayer="remote"
+                            plugActor={plugActor}
+                            tradeData={tradeData}
+                            localUserId={localUserId}
+                            setSelItem={setSelItem}
+                            setLoading={setLoading}
+                            setMessage={setMessage}
+                          />
+                        }
+                      </RemoteBox>
+                    )
+                  })}
+                </span>
               </div>
               {tradeData && ((isCreator && tradeData.guest_accept) ||
                 (!isCreator && tradeData.host_accept))
@@ -485,7 +485,7 @@ export const Trade = ({ type }) => {
                 : ""}
             </>
           }
-          {mode === "trade" && tradeData &&
+          {mode === "trade" && tradeData && tradeData.host !== "" && tradeData.guest !== "" && tradeData.host_accept && tradeData.guest_accept && !confirmed &&
             <div style={{
               height: "30px",
               backgroundColor: "gray",
@@ -496,9 +496,9 @@ export const Trade = ({ type }) => {
                 // green background
                 backgroundColor: "#2ecc71",
                 // rounded borders
-                borderRadius: "0.25rem",
+                borderRadius: "3px",
                 // padding
-                padding: ".5rem 1rem",
+                padding: "3px 5px",
                 opacity: accepted ? 1 : 0.5,
               }}
                 onClick={onAccept}
@@ -510,9 +510,9 @@ export const Trade = ({ type }) => {
                 // red background
                 backgroundColor: "#e74c3c",
                 // rounded borders
-                borderRadius: "0.25rem",
+                borderRadius: "3px",
                 // padding
-                padding: ".5rem 1rem",
+                padding: "3px 5px",
                 opacity: accepted || existItems(localBoxes) ? 1 : 0.5,
               }}
                 onClick={onCancel}
