@@ -262,31 +262,38 @@ export const Trade = ({ type }) => {
   return (
     <div style={{
       position: "absolute",
-      left: "50%",
-      top: "50%",
-      transform: "translate(-50%, -50%)",
       // dark grey background
       backgroundColor: '#1A1A1A',
-      // rounded corners
-      borderRadius: '10px',
-      // padding
-      margin: '20px',
-      // margin
+
       marginLeft: "auto",
       marginRight: "auto",
       // width
-      width: '680px',
-      height: '680px',
+      width: '600px',
+      height: '400px',
     }}>
       <DndProvider backend={HTML5Backend}>
-        <Header connected={connected} setMode={setMode} mode={mode} />
+        <Header authenticated={authenticated} setMode={setMode} mode={mode} />
+        {mode === "trade" && authenticated && !tradeData &&
+          <div style={{
+            position: "absolute",
+            bottom: "40px",
+            left: "50%",
+            transform: "translate(-50%, 0)",
+          }}>
+            {!tradeStarted && (
+              <button onClick={startTrade} style={{ zIndex: 1000, backgroundColor: "green", padding: "5px" }}>
+                Start Trade
+              </button>
+            )}
+          </div>
+        }
         {/* If both players accepted their trade */}
         {connected && tradeData && accepted && existItems(localBoxes) && showConfirmModal && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              
+
             }}>
               <div style={{}}>Do you want to confirm the current trade?</div>
               <div style={{}}>
@@ -356,146 +363,160 @@ export const Trade = ({ type }) => {
                 padding: '0 1em',
                 opacity: 0.5,
               }}>
-                <div>
-                  {localTradeId && isCreator && !partnerId &&
-                    <>
-                      Send this link for partner to join:&nbsp;
-                      <a href="#" style={{ color: 'yellow' }}>{`localhost:5173?tradeId=${localTradeId}`}</a>
-                    </>
-                  }
-                  {partnerId && 'PARTNER FOUND'}
-                </div>
-                <div>
-                  {tradeData && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) ? 'TRADE ACCEPTED' : !partnerId && 'PARTNER OFFERINGS'}
-                </div>
-              </div>
-              <div style={{
-                marginLeft: "5px",
-                display: "flex",
-                flexWrap: "wrap",
-              }}>
-                {remoteBoxes.map((box, index) => {
-                  return (
-                    <RemoteBox key={box.id}>
-                      {tradeData &&
-                        <BagItem
-                          key={`remote_${box.id}`}
-                          item={clone(box.item)}
-                          index={index}
-                          tradeBoxes={clone(remoteBoxes)}
-                          setTradeBoxes={setRemoteBoxes}
-                          tradeLayer="remote"
-                          plugActor={plugActor}
-                          tradeData={tradeData}
-                          localUserId={plug.principalId}
-                          setSelItem={setSelItem}
-                          setLoading={setLoading}
-                          setMessage={setMessage}
-                        />
-                      }
-                    </RemoteBox>
-                  )
-                })}
-              </div>
-              <div style={{
-                opacity: 0.5,
-                // justify to the left
-                textAlign: "left",
-                paddingLeft: "1em",
-              }}>YOUR OFFERINGS</div>
-              <div style={{
-                marginLeft: "5px",
-                display: "flex",
-                flexWrap: "wrap",
-              }}>
-                {localBoxes.map((box, index) => {
-                  return (
-                    <BagBox key={box.id}>
-                      {tradeData &&
-                        <BagItem
-                          key={`local_${box.id}`}
-                          isForTrade={true}
-                          item={clone(box.item)}
-                          index={index}
-                          tradeBoxes={clone(localBoxes)}
-                          setTradeBoxes={setLocalBoxes}
-                          tradeLayer="local"
-                          plugActor={plugActor}
-                          tradeData={tradeData}
-                          localUserId={plug.principalId}
-                          setSelItem={setSelItem}
-                          setLoading={setLoading}
-                          setMessage={setMessage}
-                        />
-                      }
-                    </BagBox>
-                  )
-                })}
-              </div>
-              {mode === "trade" && connected && !tradeData &&
-                <div style={{
-                  padding: "0 1em",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
+                <button onClick={onConnect} style={{
+                  // center the button in the div
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  // style the button
+                  padding: "1rem 2rem",
+                  // rounded corners
+                  borderRadius: "0.5rem",
+                  // background color slate
+                  backgroundColor: "#2c3e50",
                 }}>
-                  {!tradeStarted && (
-                    <button onClick={onStartTrade}>
-                      Start Trade
-                    </button>
-                  )}
-                  {tradeStarted && (
-                    <button>Starting...</button>
-                  )}
-                </div>
-              }
-              {tradeData &&
-                <div style={{
-                  padding: "0 1em",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-evenly",
-                  width: "100%",
-                }}>
-                  <button style={{
-                    // green background
-                    backgroundColor: "#2ecc71",
-                    // rounded borders
-                    borderRadius: "0.25rem",
-                    // padding
-                    padding: ".5rem 1rem",
-                    opacity: (accepted || !existItems(localBoxes)) ? 0.5 : 1,
-                  }}
-                    onClick={onAccept}
-                    disabled={accepted || !existItems(localBoxes)}
-                  >
-                    Accept
-                  </button>
-                  <button style={{
-                    // red background
-                    backgroundColor: "#e74c3c",
-                    // rounded borders
-                    borderRadius: "0.25rem",
-                    // padding
-                    padding: ".5rem 1rem",
-                    opacity: (!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)) ? 0.5 : 1,
-                  }}
-                    onClick={onCancel}
-                    disabled={!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              }
+                  Connect
+                </button>
+              </div>
             </>
           }
-          {connected &&
+          {authenticated && mode === "trade" &&
+            <>
+              <div>
+                <span style={{
+                  opacity: 0.5,
+                  // justify to the left
+                  textAlign: "left",
+                  // make sure its snapped to the left
+                  display: "inline-block",
+                  width: "300px",
+                  paddingLeft: "10px"
+                }}>YOUR OFFERINGS</span>
+
+                <span style={{
+                  opacity: 0.5,
+                  // justify to the left
+                  textAlign: "right",
+                  // make sure its snapped to the right of the parent div
+                  display: "inline-block",
+                  width: "300px",
+                  paddingRight: "10px"
+                  // make sure its snapped to the right
+                }}>PARTNER OFFERINGS</span>
+              </div>
+              <div style={{
+
+              }}>
+                <span style={{
+                  display: "inline-block",
+                  textAlign: "left",
+                  width: "300px",
+                  paddingLeft: "10px"
+                }}>
+                  {localBoxes.map((box, index) => {
+                    return (
+                      <BagBox key={box.id}>
+                        {tradeData &&
+                          <BagItem
+                            key={`local_${box.id}`}
+                            isForTrade={true}
+                            item={clone(box.item)}
+                            index={index}
+                            tradeBoxes={clone(localBoxes)}
+                            setTradeBoxes={setLocalBoxes}
+                            tradeLayer="local"
+                            plugActor={plugActor}
+                            tradeData={tradeData}
+                            localUserId={localUserId}
+                            setSelItem={setSelItem}
+                            setLoading={setLoading}
+                            setMessage={setMessage}
+                          />
+                        }
+                      </BagBox>
+                    )
+                  })}
+                </span>
+                <span style={{
+                  display: "inline-block",
+                  textAlign: "right",
+                  width: "300px",
+                  paddingRight: "10px"
+                }}>
+                  {remoteBoxes.map((box, index) => {
+                    return (
+                      <RemoteBox key={box.id}>
+                        {tradeData &&
+                          <BagItem
+                            key={`remote_${box.id}`}
+                            item={clone(box.item)}
+                            index={index}
+                            tradeBoxes={clone(remoteBoxes)}
+                            setTradeBoxes={setRemoteBoxes}
+                            tradeLayer="remote"
+                            plugActor={plugActor}
+                            tradeData={tradeData}
+                            localUserId={localUserId}
+                            setSelItem={setSelItem}
+                            setLoading={setLoading}
+                            setMessage={setMessage}
+                          />
+                        }
+                      </RemoteBox>
+                    )
+                  })}
+                </span>
+              </div>
+              {tradeData && ((isCreator && tradeData.guest_accept) ||
+                (!isCreator && tradeData.host_accept))
+                ? "TRADE ACCEPTED"
+                : ""}
+            </>
+          }
+          {mode === "trade" && tradeData && tradeData.host !== "" && tradeData.guest !== "" && tradeData.host_accept && tradeData.guest_accept && !confirmed &&
             <div style={{
+              height: "30px",
+              backgroundColor: "gray",
+              marginLeft: "10px",
+              marginRight: "10px",
+            }}>
+              <button style={{
+                // green background
+                backgroundColor: "#2ecc71",
+                // rounded borders
+                borderRadius: "3px",
+                // padding
+                padding: "3px 5px",
+                opacity: accepted ? 1 : 0.5,
+              }}
+                onClick={onAccept}
+                disabled={accepted || !existItems(localBoxes)}
+              >
+                Accept
+              </button>
+              <button style={{
+                // red background
+                backgroundColor: "#e74c3c",
+                // rounded borders
+                borderRadius: "3px",
+                // padding
+                padding: "3px 5px",
+                opacity: accepted || existItems(localBoxes) ? 1 : 0.5,
+              }}
+                onClick={onCancel}
+                disabled={!accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept)}
+              >
+                Cancel
+              </button>
+            </div>
+          }
+          {authenticated &&
+            <div className={"inventory"} style={{
               // flexbox of items
               display: "flex",
               flexWrap: "wrap",
-              marginLeft: "5px",
+              padding: "10px"
             }}>
               {inventoryBoxes
                 .slice(
@@ -514,7 +535,7 @@ export const Trade = ({ type }) => {
                         tradeLayer="inventory"
                         plugActor={plugActor}
                         tradeData={tradeData}
-                        localUserId={plug.principalId}
+                        localUserId={localUserId}
                         setSelItem={setSelItem}
                         setLoading={setLoading}
                         setMessage={setMessage}
@@ -524,6 +545,34 @@ export const Trade = ({ type }) => {
                 })}
             </div>
           }
+          {tradeStarted && tradeData && partnerId && !tradeId && (
+            <>
+              <b> WAITING FOR TRADE PARTNER... </b>
+              <br />
+              Send this link to your trade partner
+              <br />
+              <a
+                className="text-blue-900"
+                href={`${url.host}/?tradeId=${tradeData.id}`}
+              >
+                {url.host}/?tradeId={tradeData.id}
+              </a>
+            </>
+          )}
+          {tradeStarted && tradeData && partnerId && (
+            <>Trading with {partnerId}</>
+          )}
+          {tradeStarted && (
+            <button onClick={cancelTrade} style={{
+              zIndex: 1000,
+              backgroundColor: "red",
+              padding: "5px",
+              float: "right",
+              marginRight: "10px"
+            }}>
+              Cancel Trade
+            </button>
+          )}
         </div>
         <Footer showPagination={connected} loading={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>

@@ -49,8 +49,8 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
   return item && (
     <div
       style={{
-        width: "6em",
-        height: "6em",
+        width: "100%",
+        height: "100%",
         border: "0 !important",
         opacity: isDragging ? 0 : 1,
         cursor: "grab",
@@ -127,7 +127,7 @@ const BagItem = ({
 
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
-    canDrop(dragItem, monitor) {
+    candrop(dragItem, monitor) {
       const flag = (tradeLayer !== "remote");
       return flag;
     },
@@ -224,7 +224,8 @@ const BagItem = ({
   return (
     <div
       style={{
-        opacity
+        opacity,
+        display: "inline",
       }}
       ref={ref}
       data-handler-id={handlerId}

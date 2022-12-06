@@ -17,9 +17,18 @@ export default (e) => {
 
   let activated = false;
 
-  app.name = "trade-console";
+  app.name = "NXS-001 HelperBot";
 
   window.openInWebaverse = (item) => {
+
+    // get a reference to the 'iframe' class element inside the iframe-container-2 class element
+    const iframe = document.querySelector('.iframe-container-2 iframe');
+    // set the width and height to 680px by 680px
+    iframe.width = '600px';
+    iframe.height = '400px';
+    // set pointer events to all
+    iframe.style.pointerEvents = 'all';
+    
     console.log("openInWebaverse: ", item);
     console.log("item url: ", item.url);
     metaversefile.createAppAsync({
@@ -40,10 +49,29 @@ export default (e) => {
     app.setComponent('trade', {id});
   };
 
+  let reactAdded = false;
 
-  const activateCb = () => {
-    activated = !activated;
+  const addReact = async () => {
+  if(reactAdded) return;
+  reactAdded = true;
+  {
+    const u = `${baseUrl}/trade.react`;
+    reactApp = await metaversefile.createAppAsync({
+      start_url: u,
+    });
+    if (!live) {
+      reactApp.destroy();
+      return;
+    }
+    // reactApp.rotation.y = Math.PI / 2;
+    reactApp.scale.set(0, 0, 0);
+    app.add(reactApp);
+    reactApp.updateMatrixWorld();
+  }
+}
 
+
+  const activateCb = async (activated) => {
     const wearComponent = app.getComponent('wear');
     const tradeComponent = app.getComponent('trade');
 
@@ -52,12 +80,15 @@ export default (e) => {
 
     if(tradeComponent) {
       window.tradeId = tradeComponent.id;
+      console.log('set window.tradeId: ', window.tradeId);
     }
 
+    addReact(app);
 
     const startTime = Date.now();
     let currentTime = 0;
     const timer = setInterval(() => {
+      if(!reactApp) return;
       currentTime = Date.now();
       const time = (currentTime - startTime) / 1000;
       const scale = lerpScale(
@@ -65,13 +96,8 @@ export default (e) => {
         activated ? maxScale : minScale,
         time / lerpTime
       );
-      const position = lerpPosition(
-        activated ? minPosition : maxPosition,
-        activated ? maxPosition : minPosition,
-        time / lerpTime
-      );
       reactApp.scale.set(scale, scale, scale);
-      reactApp.position.set(-0.5, position, reactApp.position.z);
+      reactApp.position.set(0, maxPosition, reactApp.position.z);
       if (time > lerpTime) {
         const finalScale = activated ? maxScale : minScale;
         reactApp.scale.set(finalScale, finalScale, finalScale);
@@ -82,10 +108,9 @@ export default (e) => {
       // if the player walks more than 5 meters away from the console, deactivate it
       const player = useLocalPlayer();
       const distance = player.position.distanceTo(app.position);
-      if (distance > 5) {
+      if (distance > 2) {
         activated = false;
         reactApp.scale.set(minScale, minScale, minScale);
-        reactApp.position.set(-0.5, minPosition, reactApp.position.z);
         reactApp.updateMatrixWorld();
         // stop the timer
         clearInterval(timer);
@@ -94,9 +119,17 @@ export default (e) => {
     }, 1000 / 60);
   };
 
-  useActivate(() => {
-    activateCb && activateCb();
+  app.addEventListener("activate", (e) => {
+      activateCb && activateCb(true);
   });
+
+  app.addEventListener("wearupdate", (e) => {
+    if (!e.wear) {
+      activateCb && activateCb(false);
+    }
+  });
+
+  // add an event listener for the 'wear' event
 
   let live = true;
   let reactApp = null;
@@ -115,21 +148,6 @@ export default (e) => {
       app.glb = o;
       o = o.scene;
       app.add(o);
-
-      {
-        const u = `${baseUrl}/trade.react`;
-        reactApp = await metaversefile.createAppAsync({
-          start_url: u,
-        });
-        if (!live) {
-          reactApp.destroy();
-          return;
-        }
-        // reactApp.rotation.y = Math.PI / 2;
-        reactApp.scale.set(0, 0, 0);
-        app.add(reactApp);
-        reactApp.updateMatrixWorld();
-      }
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);

@@ -1,10 +1,10 @@
-export const tradeBoxNum = 6
+export const tradeBoxNum = 5
 
-export const inventoryBoxNum = 60
+export const inventoryBoxNum = 180
 
-export const pageBoxNum = 30
+export const pageBoxNum = 60
 
-export const tradePageBoxNum = 12
+export const tradePageBoxNum = 36
 
 
 export const itemTypes = {
