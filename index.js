@@ -17,9 +17,16 @@ export default (e) => {
 
   let activated = false;
 
-  app.name = "trade-console";
+  app.name = "NXS-001 HelperBot";
 
   window.openInWebaverse = (item) => {
+
+    // get a reference to the 'iframe' class element inside the iframe-container-2 class element
+    const iframe = document.querySelector('.iframe-container-2 iframe');
+    // set the width and height to 680px by 680px
+    iframe.width = '600px';
+    iframe.height = '400px';
+    
     console.log("openInWebaverse: ", item);
     console.log("item url: ", item.url);
     metaversefile.createAppAsync({
@@ -40,10 +47,29 @@ export default (e) => {
     app.setComponent('trade', {id});
   };
 
+  let reactAdded = false;
 
-  const activateCb = () => {
-    activated = !activated;
+  const addReact = async () => {
+  if(reactAdded) return;
+  reactAdded = true;
+  {
+    const u = `${baseUrl}/trade.react`;
+    reactApp = await metaversefile.createAppAsync({
+      start_url: u,
+    });
+    if (!live) {
+      reactApp.destroy();
+      return;
+    }
+    // reactApp.rotation.y = Math.PI / 2;
+    reactApp.scale.set(0, 0, 0);
+    app.add(reactApp);
+    reactApp.updateMatrixWorld();
+  }
+}
 
+
+  const activateCb = async (activated) => {
     const wearComponent = app.getComponent('wear');
     const tradeComponent = app.getComponent('trade');
 
@@ -52,8 +78,10 @@ export default (e) => {
 
     if(tradeComponent) {
       window.tradeId = tradeComponent.id;
+      console.log('set window.tradeId: ', window.tradeId);
     }
 
+    await addReact(app);
 
     const startTime = Date.now();
     let currentTime = 0;
@@ -94,8 +122,20 @@ export default (e) => {
     }, 1000 / 60);
   };
 
-  useActivate(() => {
-    activateCb && activateCb();
+  app.addEventListener("use", (e) => {
+    console.log('use event: ', e);
+    // {
+    //   type: 'use',
+    //   use: false,
+    // );
+    // app dispatches an event with the above payload
+    // if use is true, call activateCb
+    // alsowise call deactivateCb
+    if (e.use) {
+      activateCb && activateCb(true);
+    } else {
+      activateCb && activateCb(false);
+    }
   });
 
   let live = true;
@@ -115,21 +155,6 @@ export default (e) => {
       app.glb = o;
       o = o.scene;
       app.add(o);
-
-      {
-        const u = `${baseUrl}/trade.react`;
-        reactApp = await metaversefile.createAppAsync({
-          start_url: u,
-        });
-        if (!live) {
-          reactApp.destroy();
-          return;
-        }
-        // reactApp.rotation.y = Math.PI / 2;
-        reactApp.scale.set(0, 0, 0);
-        app.add(reactApp);
-        reactApp.updateMatrixWorld();
-      }
 
       const physicsId = physics.addGeometry(o);
       physicsIds.push(physicsId);
