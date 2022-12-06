@@ -162,7 +162,6 @@ const BagItem = ({
           }
           const res = await plugActor.add_item_to_trade(tradeData.id, canisterItem);
           console.log('add_item_to_trade res: ', res)
-          // await sendNFT({ item: cloneDragTradeItem, to: 'sla3o-szktf-bohj7-cdrm5-x72uu-grvat-hczj7-e5ve6-5gjck-lsxft-dae', agent: window.ic.plug.agent })
           setLoading(false)
         })();
       }

@@ -4,33 +4,32 @@
 // shows STATUS on the right, with the status prop displayed
 // shows pagination on the left, with the mode prop displayed
 
-import ICBanner from "./assets/ICBanner.svg";
+import React from "react"
 
-import React from "react";
+import ICBanner from "./assets/ICBanner.svg"
 
-import { tradePageBoxNum, pageBoxNum, inventoryBoxNum } from "./constants";
+import { tradePageBoxNum, pageBoxNum, inventoryBoxNum } from "./constants"
 
 const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage }) => {
+	const pageNum = Math.ceil(inventoryBoxNum / (mode === 'trade' ? tradePageBoxNum : pageBoxNum))
+
 	const onPrevPage = () => {
 		if (curPage <= 1) return
 		setCurPage(curPage - 1)
 	}
 
 	const onNextPage = () => {
-		const pageNum = Math.ceil(inventoryBoxNum / (mode === 'trade' ? tradePageBoxNum : pageBoxNum))
 		if (curPage >= pageNum) return
 		setCurPage(curPage + 1)
 	}
 
 	return (
-		<div className="footer" style={{
+		<div style={{
 			position: "absolute",
 			width: "100%",
-			margin: 0,
-			bottom: "0",
+			bottom: 0,
 		}}>
-			<div className="banner" style={{
-				// center
+			<div style={{
 				position: "absolute",
 				left: "50%",
 				bottom: "1em",
@@ -38,28 +37,34 @@ const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage
 			}}>
 				<img src={ICBanner} />
 			</div>
-			<div className="status" style={{
+			<div style={{
 				position: "absolute",
-				right: "1em",
-				bottom: "1em",
+				right: ".5em",
+				bottom: ".5em",
 			}}>
-				<span style={{ color: "yellow" }}>{loading ? "LOADING..." : ""}</span>
+				<span style={{ color: "yellow" }}>{loading ? "Loading..." : ""}</span>
 			</div>
 			{showPagination &&
-				<div className="pagination" style={{
+				<div style={{
 					position: "absolute",
-					left: "1em",
-					bottom: "1em",
+					left: ".5em",
+					bottom: ".5em",
 				}}>
 					<button
 						disabled={curPage <= 1}
-						style={{ opacity: curPage <= 1 ? 0.5 : 1 }}
-						onClick={() => curPage >= 1 && onPrevPage()}
+						style={{
+							opacity: curPage <= 1 ? 0.5 : 1
+						}}
+						onClick={() => onPrevPage()}
 					>
 						{"<"}
 					</button>
 					<span>{curPage}</span>
 					<button
+						disabled={curPage >= pageNum}
+						style={{
+							opacity: curPage >= pageNum ? 0.5 : 1
+						}}
 						onClick={() => onNextPage()}
 					>
 						{">"}
@@ -67,7 +72,7 @@ const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage
 				</div>
 			}
 		</div>
-	);
+	)
 }
 
-export default Footer;
+export default Footer
