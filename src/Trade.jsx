@@ -159,8 +159,7 @@ export const Trade = ({ type }) => {
 
       setTimeout(async () => {
         const trade = await plugActor.get_trade_by_id(tradeData.id)
-        // if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
-        console.log('trade: ', trade)
+        if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
         setTradeData(trade)
       }, 2000)
     })()
