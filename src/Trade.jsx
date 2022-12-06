@@ -283,22 +283,28 @@ export const Trade = ({ type }) => {
         {/* If both players accepted their trade */}
         {connected && tradeData && accepted && existItems(localBoxes) && showConfirmModal && ((isCreator && tradeData.guest_accept) || (!isCreator && tradeData.host_accept)) &&
           <ModalBox>
-            <div style={{}}>Do you want to confirm the current trade?</div>
-            <div style={{}}>
-              <button
-                onClick={async () => {
-                  if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
-                  setConfirmed(true)
-                  setShowConfirmModal(false)
-                }}
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => { setShowConfirmModal(false) }}
-              >
-                Cancel
-              </button>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              
+            }}>
+              <div style={{}}>Do you want to confirm the current trade?</div>
+              <div style={{}}>
+                <button
+                  onClick={async () => {
+                    if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept) return
+                    setConfirmed(true)
+                    setShowConfirmModal(false)
+                  }}
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={() => { setShowConfirmModal(false) }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </ModalBox>
         }
