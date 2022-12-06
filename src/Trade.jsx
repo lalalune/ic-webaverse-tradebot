@@ -526,7 +526,6 @@ export const Trade = ({ type }) => {
                 .map((box, index) => {
                   return (
                     <BagBox key={box.id}>
-                      {tradeData &&
                         <BagItem
                           key={`inventory_${box.id}`}
                           item={clone(box.item)}
@@ -541,7 +540,6 @@ export const Trade = ({ type }) => {
                           setLoading={setLoading}
                           setMessage={setMessage}
                         />
-                      }
                     </BagBox>
                   )
                 })}

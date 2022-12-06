@@ -6,7 +6,7 @@ export const BagBoxStyle = {
   display: "inline-block",
   height: "40px",
   margin: "4px",
-  alignItems: "right",
+  alignItems: "center",
   justifyContent: "center",
   backgroundImage: "radial-gradient(#0c1e20 0%, #101010 66%)",
   borderRadius: "2px",

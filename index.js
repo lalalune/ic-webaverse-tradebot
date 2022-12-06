@@ -26,6 +26,8 @@ export default (e) => {
     // set the width and height to 680px by 680px
     iframe.width = '600px';
     iframe.height = '400px';
+    // set pointer events to all
+    iframe.style.pointerEvents = 'all';
     
     console.log("openInWebaverse: ", item);
     console.log("item url: ", item.url);
@@ -81,11 +83,12 @@ export default (e) => {
       console.log('set window.tradeId: ', window.tradeId);
     }
 
-    await addReact(app);
+    addReact(app);
 
     const startTime = Date.now();
     let currentTime = 0;
     const timer = setInterval(() => {
+      if(!reactApp) return;
       currentTime = Date.now();
       const time = (currentTime - startTime) / 1000;
       const scale = lerpScale(
@@ -93,13 +96,8 @@ export default (e) => {
         activated ? maxScale : minScale,
         time / lerpTime
       );
-      const position = lerpPosition(
-        activated ? minPosition : maxPosition,
-        activated ? maxPosition : minPosition,
-        time / lerpTime
-      );
       reactApp.scale.set(scale, scale, scale);
-      reactApp.position.set(-0.5, position, reactApp.position.z);
+      reactApp.position.set(0, maxPosition, reactApp.position.z);
       if (time > lerpTime) {
         const finalScale = activated ? maxScale : minScale;
         reactApp.scale.set(finalScale, finalScale, finalScale);
@@ -110,10 +108,9 @@ export default (e) => {
       // if the player walks more than 5 meters away from the console, deactivate it
       const player = useLocalPlayer();
       const distance = player.position.distanceTo(app.position);
-      if (distance > 5) {
+      if (distance > 2) {
         activated = false;
         reactApp.scale.set(minScale, minScale, minScale);
-        reactApp.position.set(-0.5, minPosition, reactApp.position.z);
         reactApp.updateMatrixWorld();
         // stop the timer
         clearInterval(timer);
@@ -122,21 +119,17 @@ export default (e) => {
     }, 1000 / 60);
   };
 
-  app.addEventListener("use", (e) => {
-    console.log('use event: ', e);
-    // {
-    //   type: 'use',
-    //   use: false,
-    // );
-    // app dispatches an event with the above payload
-    // if use is true, call activateCb
-    // alsowise call deactivateCb
-    if (e.use) {
+  app.addEventListener("activate", (e) => {
       activateCb && activateCb(true);
-    } else {
+  });
+
+  app.addEventListener("wearupdate", (e) => {
+    if (!e.wear) {
       activateCb && activateCb(false);
     }
   });
+
+  // add an event listener for the 'wear' event
 
   let live = true;
   let reactApp = null;

@@ -50718,7 +50718,7 @@ const BagBoxStyle = {
   display: "inline-block",
   height: "40px",
   margin: "4px",
-  alignItems: "right",
+  alignItems: "center",
   justifyContent: "center",
   backgroundImage: "radial-gradient(#0c1e20 0%, #101010 66%)",
   borderRadius: "2px",
@@ -65013,8 +65013,8 @@ const PresentationalBagItem = ({
   }, []);
   return item && /* @__PURE__ */ jsxs("div", {
     style: {
-      width: "4em",
-      height: "4em",
+      width: "100%",
+      height: "100%",
       border: "0 !important",
       opacity: isDragging ? 0 : 1,
       cursor: "grab",
@@ -65317,7 +65317,7 @@ const host = "https://mainnet.dfinity.network";
 const timeout = 5e4;
 let partnerTokens = {};
 const url = new URL(window.location.href);
-const tradeId = url.searchParams.get("tradeId");
+const tradeId = url.searchParams.get("tradeId") || window.tradeId;
 tradeId && console.log("I'm joiner. tradeId: ", tradeId);
 const Trade = ({
   type
@@ -65368,6 +65368,10 @@ const Trade = ({
       if (!principal || !localUserId)
         return;
       setLoading(true);
+      if (tradeId) {
+        console.log("Starting in-progress trade with tradeId: ", tradeId);
+        startTrade();
+      }
       const newTokens = await getUserTokens({
         agent: plug.agent,
         user: localUserId
@@ -65487,10 +65491,19 @@ const Trade = ({
     console.log("cloneLocalBoxes: ", cloneLocalBoxes);
     setLocalBoxes(cloneLocalBoxes);
   }, [inventoryTokens]);
+  const cancelTrade = async () => {
+    if (!plugActor || !tradeData)
+      return;
+    setLoading(true);
+    await plugActor.leave_trade(tradeData.id);
+    setLoading(false);
+    setTradeStarted(false);
+    setTradeData(null);
+  };
   const startTrade = async () => {
     if (!plug.createActor)
       return;
-    setLoading(true);
+    setTradeStarted(true);
     const tempPlugActor = await plug.createActor({
       canisterId,
       interfaceFactory: idlFactory
@@ -65544,12 +65557,7 @@ const Trade = ({
   return /* @__PURE__ */ jsx("div", {
     style: {
       position: "absolute",
-      left: "50%",
-      top: "50%",
-      transform: "translate(-50%, -50%)",
       backgroundColor: "#1A1A1A",
-      borderRadius: "10px",
-      margin: "20px",
       marginLeft: "auto",
       marginRight: "auto",
       width: "600px",
@@ -65561,6 +65569,22 @@ const Trade = ({
         authenticated,
         setMode,
         mode
+      }), mode === "trade" && authenticated && !tradeData && /* @__PURE__ */ jsx("div", {
+        style: {
+          position: "absolute",
+          bottom: "40px",
+          left: "50%",
+          transform: "translate(-50%, 0)"
+        },
+        children: !tradeStarted && /* @__PURE__ */ jsx("button", {
+          onClick: startTrade,
+          style: {
+            zIndex: 1e3,
+            backgroundColor: "green",
+            padding: "5px"
+          },
+          children: "Start Trade"
+        })
       }), authenticated && tradeData && accepted && existItems(localBoxes) && showConfirmModal && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) && /* @__PURE__ */ jsxs(ModalBox, {
         children: [/* @__PURE__ */ jsx("div", {
           style: {},
@@ -65629,7 +65653,7 @@ const Trade = ({
                 textAlign: "left",
                 display: "inline-block",
                 width: "300px",
-                padding: "10px"
+                paddingLeft: "10px"
               },
               children: "YOUR OFFERINGS"
             }), /* @__PURE__ */ jsx("span", {
@@ -65638,7 +65662,7 @@ const Trade = ({
                 textAlign: "right",
                 display: "inline-block",
                 width: "300px",
-                padding: "10px"
+                paddingRight: "10px"
               },
               children: "PARTNER OFFERINGS"
             })]
@@ -65649,35 +65673,7 @@ const Trade = ({
                 display: "inline-block",
                 textAlign: "left",
                 width: "300px",
-                marginRight: 0,
-                marginLeft: "auto",
-                padding: "10px"
-              },
-              children: remoteBoxes.map((box, index2) => {
-                return /* @__PURE__ */ jsx(RemoteBox$1, {
-                  children: tradeData && /* @__PURE__ */ jsx(BagItem, {
-                    item: clone(box.item),
-                    index: index2,
-                    tradeBoxes: clone(remoteBoxes),
-                    setTradeBoxes: setRemoteBoxes,
-                    tradeLayer: "remote",
-                    plugActor,
-                    tradeData,
-                    localUserId,
-                    setSelItem,
-                    setLoading,
-                    setMessage
-                  }, `remote_${box.id}`)
-                }, box.id);
-              })
-            }), /* @__PURE__ */ jsx("span", {
-              style: {
-                display: "inline-block",
-                textAlign: "right",
-                width: "300px",
-                marginRight: 0,
-                marginLeft: "auto",
-                padding: "10px"
+                paddingLeft: "10px"
               },
               children: localBoxes.map((box, index2) => {
                 return /* @__PURE__ */ jsx(BagBox$1, {
@@ -65697,38 +65693,59 @@ const Trade = ({
                   }, `local_${box.id}`)
                 }, box.id);
               })
-            })]
-          }), tradeData && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) ? "TRADE ACCEPTED" : "", mode === "trade" && authenticated && !tradeData && /* @__PURE__ */ jsxs("div", {
-            style: {},
-            children: [!tradeStarted && /* @__PURE__ */ jsx("button", {
-              onClick: startTrade,
-              children: "Start Trade"
-            }), tradeStarted && /* @__PURE__ */ jsx("button", {
-              children: "Starting..."
-            })]
-          }), tradeData && /* @__PURE__ */ jsxs("div", {
-            style: {},
-            children: [/* @__PURE__ */ jsx("button", {
+            }), /* @__PURE__ */ jsx("span", {
               style: {
-                backgroundColor: "#2ecc71",
-                borderRadius: "0.25rem",
-                padding: ".5rem 1rem",
-                opacity: accepted ? 1 : 0.5
+                display: "inline-block",
+                textAlign: "right",
+                width: "300px",
+                paddingRight: "10px"
               },
-              onClick: onAccept,
-              disabled: accepted || !existItems(localBoxes),
-              children: "Accept"
-            }), /* @__PURE__ */ jsx("button", {
-              style: {
-                backgroundColor: "#e74c3c",
-                borderRadius: "0.25rem",
-                padding: ".5rem 1rem",
-                opacity: accepted || existItems(localBoxes) ? 1 : 0.5
-              },
-              onClick: onCancel,
-              disabled: !accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept),
-              children: "Cancel"
+              children: remoteBoxes.map((box, index2) => {
+                return /* @__PURE__ */ jsx(RemoteBox$1, {
+                  children: tradeData && /* @__PURE__ */ jsx(BagItem, {
+                    item: clone(box.item),
+                    index: index2,
+                    tradeBoxes: clone(remoteBoxes),
+                    setTradeBoxes: setRemoteBoxes,
+                    tradeLayer: "remote",
+                    plugActor,
+                    tradeData,
+                    localUserId,
+                    setSelItem,
+                    setLoading,
+                    setMessage
+                  }, `remote_${box.id}`)
+                }, box.id);
+              })
             })]
+          }), tradeData && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) ? "TRADE ACCEPTED" : ""]
+        }), mode === "trade" && tradeData && tradeData.host !== "" && tradeData.guest !== "" && tradeData.host_accept && tradeData.guest_accept && !confirmed && /* @__PURE__ */ jsxs("div", {
+          style: {
+            height: "30px",
+            backgroundColor: "gray",
+            marginLeft: "10px",
+            marginRight: "10px"
+          },
+          children: [/* @__PURE__ */ jsx("button", {
+            style: {
+              backgroundColor: "#2ecc71",
+              borderRadius: "3px",
+              padding: "3px 5px",
+              opacity: accepted ? 1 : 0.5
+            },
+            onClick: onAccept,
+            disabled: accepted || !existItems(localBoxes),
+            children: "Accept"
+          }), /* @__PURE__ */ jsx("button", {
+            style: {
+              backgroundColor: "#e74c3c",
+              borderRadius: "3px",
+              padding: "3px 5px",
+              opacity: accepted || existItems(localBoxes) ? 1 : 0.5
+            },
+            onClick: onCancel,
+            disabled: !accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept),
+            children: "Cancel"
           })]
         }), authenticated && /* @__PURE__ */ jsx("div", {
           className: "inventory",
@@ -65739,7 +65756,7 @@ const Trade = ({
           },
           children: inventoryBoxes.slice((curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum), curPage * (mode === "trade" ? tradePageBoxNum : pageBoxNum)).map((box, index2) => {
             return /* @__PURE__ */ jsx(BagBox$1, {
-              children: tradeData && /* @__PURE__ */ jsx(BagItem, {
+              children: /* @__PURE__ */ jsx(BagItem, {
                 item: clone(box.item),
                 index: (curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum) + index2,
                 tradeBoxes: clone(inventoryBoxes),
@@ -65754,6 +65771,26 @@ const Trade = ({
               }, `inventory_${box.id}`)
             }, box.id);
           })
+        }), tradeStarted && tradeData && partnerId && !tradeId && /* @__PURE__ */ jsxs(Fragment, {
+          children: [/* @__PURE__ */ jsx("b", {
+            children: " WAITING FOR TRADE PARTNER... "
+          }), /* @__PURE__ */ jsx("br", {}), "Send this link to your trade partner", /* @__PURE__ */ jsx("br", {}), /* @__PURE__ */ jsxs("a", {
+            className: "text-blue-900",
+            href: `${url.host}/?tradeId=${tradeData.id}`,
+            children: [url.host, "/?tradeId=", tradeData.id]
+          })]
+        }), tradeStarted && tradeData && partnerId && /* @__PURE__ */ jsxs(Fragment, {
+          children: ["Trading with ", partnerId]
+        }), tradeStarted && /* @__PURE__ */ jsx("button", {
+          onClick: cancelTrade,
+          style: {
+            zIndex: 1e3,
+            backgroundColor: "red",
+            padding: "5px",
+            float: "right",
+            marginRight: "10px"
+          },
+          children: "Cancel Trade"
         })]
       }), /* @__PURE__ */ jsx(Footer, {
         showPagination: authenticated,
@@ -65768,8 +65805,18 @@ styleInject(css);
 const App = ({
   type
 }) => {
-  return /* @__PURE__ */ jsx(Trade, {
-    type
+  return /* @__PURE__ */ jsx("div", {
+    style: {
+      position: "absolute",
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "600px",
+      height: "400px"
+    },
+    children: /* @__PURE__ */ jsx(Trade, {
+      type
+    })
   });
 };
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx(React.StrictMode, {
