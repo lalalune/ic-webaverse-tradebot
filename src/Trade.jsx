@@ -78,14 +78,15 @@ export const Trade = ({ type }) => {
       setLoading(true)
       // const balance = await plug.requestBalance()
       // console.log("balance: ", balance)
+      // if user is guest, join the trade
+      if (tradeId) {
+        console.log("Starting in-progress trade with tradeId: ", tradeId)
+        startTrade()
+      }
       const newTokens = await getUserTokens({ agent: plug.agent, user: localUserId })
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
-      // // if user is guest, join the trade
-      // if (tradeId) {
-      //   startTrade()
-      // }
       setLoading(false)
     })()
   }, [principal])
@@ -222,9 +223,18 @@ export const Trade = ({ type }) => {
     setLocalBoxes(cloneLocalBoxes)
   }, [inventoryTokens])
 
+  const cancelTrade = async () => {
+    if (!plugActor || !tradeData) return
+    setLoading(true)
+    await plugActor.leave_trade(tradeData.id)
+    setLoading(false)
+    setTradeStarted(false)
+    setTradeData(null)
+  }
+
   const startTrade = async () => {
     if (!plug.createActor) return
-    setLoading(true)
+    setTradeStarted(true)
     const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory })
     setLoading(false)
     setPlugActor(tempPlugActor)
@@ -537,8 +547,25 @@ export const Trade = ({ type }) => {
                 })}
             </div>
           }
+          { tradeStarted && tradeData && partnerId && !tradeId && (
+            <>
+              <b> WAITING FOR TRADE PARTNER... </b>
+              <br />
+              Send this link to your trade partner
+              <br />
+              <a
+                className="text-blue-900"
+                href={`${url.host}/?tradeId=${tradeData.id}`}
+              >
+                {url.host}/?tradeId={tradeData.id}
+              </a>
+            </>
+          )}
+          {tradeStarted && tradeData && partnerId && (
+            <>Trading with {partnerId}</>
+          )}
           {tradeStarted && (
-            <button onClick={startTrade} style={{
+            <button onClick={cancelTrade} style={{
               zIndex: 1000,
               backgroundColor:"red",
               padding: "5px",
