@@ -191,10 +191,10 @@ export const Trade = ({ type }) => {
           setTradeData(trade)
         } catch (e) {
           console.log('get_trade_by_id error: ', e)
+          await onCancelTrade()
           if (tradeId && !isCreator) {
             setAlertMessage('The host left the trade')
           }
-          await onCancelTrade()
         }
       }, 1000)
 
@@ -305,7 +305,15 @@ export const Trade = ({ type }) => {
 
   const onCancelTrade = async () => {
     setLoading(true)
-    if (plugActor && tradeData) await plugActor.leave_trade(tradeData.id)
+
+    if (plugActor && tradeData) {
+      try {
+        await plugActor.leave_trade(tradeData.id)
+      } catch (e) {
+        console.log('onCancelTrade error: ', e)
+      }
+    }
+
     setTradeData(null)
     setPartnerId(null)
     localStorage.setItem('storageTradeId', '')
