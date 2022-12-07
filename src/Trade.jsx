@@ -24,7 +24,7 @@ const host = 'http://localhost:8000'
 const timeout = 50000
 let partnerTokens = {}
 let prevTrade = {}
-let stopTrade = false
+let forceStopTrade = false
 
 const url = new URL(window.location.href)
 let tradeId = url.searchParams.get('tradeId')
@@ -53,7 +53,6 @@ export const Trade = ({ type }) => {
   const [inventoryTokens, setInventoryTokens] = useState({})
   const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
   const [accepted, setAccepted] = useState(false)
-  const [confirmed, setConfirmed] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState('inventory') // inventory or trade
@@ -119,8 +118,8 @@ export const Trade = ({ type }) => {
   // Update game status whenever trade data is changed (real time)
   useEffect(() => {
     (async () => {
-      if (stopTrade) {
-        stopTrade = false
+      if (forceStopTrade) {
+        forceStopTrade = false
         setTradeData(null)
         return
       }
@@ -187,8 +186,6 @@ export const Trade = ({ type }) => {
             await onCancel()
           }
         }
-
-        setConfirmed(false)
       }
 
       if (
@@ -206,7 +203,6 @@ export const Trade = ({ type }) => {
 
       setTimeout(async () => {
         try {
-          await waitLoading()
           const trade = await plugActor.get_trade_by_id(tradeData.id)
           if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
           setTradeData(trade)
@@ -244,7 +240,8 @@ export const Trade = ({ type }) => {
   const onConnect = async () => {
     (async () => {
       await waitLoading()
-      setMessage('Connecting...')
+      setLoading(true)
+      // setMessage('Connecting...')
       let publicKey
 
       try {
@@ -256,6 +253,7 @@ export const Trade = ({ type }) => {
         })
       } catch (e) {
         setMessage('')
+        setLoading(false)
         setAlertMessage('Connection failed')
         return
       }
@@ -267,6 +265,7 @@ export const Trade = ({ type }) => {
         setPlugActor(tempPlugActor)
       } else {
         setMessage('')
+        setLoading(false)
         setAlertMessage('Connection failed')
         return
       }
@@ -274,6 +273,7 @@ export const Trade = ({ type }) => {
       console.log('plug: ', plug)
       setConnected(true)
       setMessage('')
+      setLoading(false)
     })()
   }
 
@@ -340,22 +340,20 @@ export const Trade = ({ type }) => {
       }
     }
 
+    forceStopTrade = true
     setLoading(false)
-    stopTrade = true
+    setTradeData(null)
     setPartnerId(null)
     setAccepted(false)
-    setConfirmed(false)
     setMessage('')
     setAlertMessage('')
     localStorage.setItem('storageTradeId', '')
     tradeId = 0
-    setTradeData(null)
   }
 
   const onConfirm = async () => {
     if (!plugActor || !tradeData) return
     setLoading(true)
-    setConfirmed(true)
     await plugActor.accept(tradeData.id)
     setLoading(false)
   }
@@ -363,7 +361,7 @@ export const Trade = ({ type }) => {
   const onCancel = async () => {
     if (!plugActor || !tradeData) return
     setLoading(true)
-    setConfirmed(false)
+    setAccepted(false)
     await plugActor.cancel(tradeData.id)
     setLoading(false)
   }
@@ -398,6 +396,8 @@ export const Trade = ({ type }) => {
             padding: '.5rem 2rem',
             borderRadius: '0.5rem',
             backgroundColor: '#2c3e50',
+            disable: loading,
+            opacity: loading && 0.5,
           }}>
             Connect
           </button>
@@ -534,6 +534,8 @@ export const Trade = ({ type }) => {
               backgroundColor: 'green',
               padding: '.3em 1em',
               borderRadius: '.3em',
+              disable: loading,
+              opacity: loading && 0.5,
             }} onClick={onStartTrade}>
               Start Trade
             </button>
@@ -545,6 +547,8 @@ export const Trade = ({ type }) => {
               backgroundColor: 'red',
               padding: '.3em 1em',
               borderRadius: '.3em',
+              disable: loading,
+              opacity: loading && 0.5,
             }}>
               Cancel Trade
             </button>
@@ -559,7 +563,8 @@ export const Trade = ({ type }) => {
                 backgroundColor: '#2ecc71',
                 borderRadius: '.3em',
                 padding: '.3em 1em',
-                opacity: (!existItems(localBoxes) || accepted) ? 0.5 : 1,
+                disable: !existItems(localBoxes) || accepted,
+                opacity: (!existItems(localBoxes) || accepted) && 0.5,
               }}
                 onClick={() => {
                   if (!existItems(localBoxes) || accepted) return
@@ -572,12 +577,10 @@ export const Trade = ({ type }) => {
                 backgroundColor: '#e74c3c',
                 borderRadius: '.3em',
                 padding: '.3em 1em',
-                opacity: (!existItems(localBoxes) || !accepted) ? 0.5 : 1,
+                disable: !existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
+                opacity: (!existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5,
               }}
-                onClick={() => {
-                  if (!existItems(localBoxes) || !accepted) return
-                  setAccepted(false)
-                }}
+                onClick={onCancel}
               >
                 Cancel
               </button>
@@ -645,7 +648,8 @@ export const Trade = ({ type }) => {
                   backgroundColor: '#2ecc71',
                   borderRadius: '.3em',
                   padding: '.3em 1em',
-                  opacity: confirmed ? 0.5 : 1,
+                  disable: isCreator ? tradeData.host_accept : tradeData.guest_accept,
+                  opacity: (isCreator ? tradeData.host_accept : tradeData.guest_accept) && 0.5,
                 }} onClick={onConfirm}>
                   Confirm
                 </button>
@@ -653,7 +657,9 @@ export const Trade = ({ type }) => {
                   backgroundColor: '#e74c3c',
                   borderRadius: '.3em',
                   padding: '.3em 1em',
-                }} onClick={() => setAccepted(false)}>
+                  disable: accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
+                  opacity: (accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5,
+                }} onClick={onCancel}>
                   Cancel
                 </button>
               </div>
