@@ -498,7 +498,7 @@ export const Trade = ({ type }) => {
               Start Trade
             </button>
           }
-          {tradeData && mode === 'trade' &&
+          {tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && mode === 'trade' &&
             <button onClick={onCancelTrade} style={{
               position: 'absolute',
               right: '.5em',
