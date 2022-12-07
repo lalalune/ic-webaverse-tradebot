@@ -61,7 +61,7 @@ export const Trade = ({ type }) => {
   const [message, setMessage] = useState('')
 
   let localLoginAttempted = false
-  let localTradeId = tradeData ? tradeData.id : (tradeId !== null && tradeId !== undefined) ? tradeId : localStorage.getItem('storageTradeId')
+  let localTradeId = tradeData ? tradeData.id : tradeId ? tradeId : localStorage.getItem('storageTradeId')
 
   useEffect(() => {
     (async () => {
@@ -82,7 +82,7 @@ export const Trade = ({ type }) => {
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // Disable this for partner to start the trade himself
-      if (localTradeId !== null && localTradeId !== undefined) {
+      if (localTradeId) {
         const trade = await onStartTrade() // Start trade if it's existed
 
         if (trade && Object.keys(newTokens).length) {
@@ -190,7 +190,7 @@ export const Trade = ({ type }) => {
           setTradeData(trade)
         } catch (e) {
           console.log('get_trade_by_id error: ', e)
-          if (tradeId !== null && tradeId !== undefined && !isCreator) {
+          if (tradeId && !isCreator) {
             setAlertMessage('The host left the trade')
           }
         }
@@ -265,7 +265,7 @@ export const Trade = ({ type }) => {
       } catch (e) {
         console.log('get_trade_by_id error: ', e)
 
-        if (tradeId !== null && tradeId !== undefined && !isCreator) {
+        if (tradeId && !isCreator) {
           setAlertMessage('The host left the trade')
           setLoading(false)
           return
