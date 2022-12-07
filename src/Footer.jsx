@@ -54,7 +54,6 @@ const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage
 					bottom: ".5em",
 				}}>
 					<button
-						disabled={curPage <= 1}
 						style={{
 							opacity: curPage <= 1 ? 0.5 : 1
 						}}
@@ -64,7 +63,6 @@ const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage
 					</button>
 					<span>{curPage}</span>
 					<button
-						disabled={curPage >= pageNum}
 						style={{
 							opacity: curPage >= pageNum ? 0.5 : 1
 						}}

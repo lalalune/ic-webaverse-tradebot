@@ -50,12 +50,12 @@ export const Trade = ({ type }) => {
   const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes))
   const [inventoryTokens, setInventoryTokens] = useState({})
   const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
+  const [accepted, setAccepted] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState('inventory') // inventory or trade
   const [selItem, setSelItem] = useState(null)
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
   const [curPage, setCurPage] = useState(1)
   const [alertMessage, setAlertMessage] = useState('')
@@ -127,7 +127,7 @@ export const Trade = ({ type }) => {
       const rbs = getRemoteBoxes(rtts) // Remote Boxes
       setRemoteBoxes(rbs)
 
-      if (confirmed) {
+      if (hostId && guestId && tradeData.host_items.length && tradeData.guest_items.length && tradeData.host_accept && tradeData.guest_accept) {
         const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
         const cloneInventoryTokens = clone(inventoryTokens)
 
@@ -248,9 +248,8 @@ export const Trade = ({ type }) => {
 
     if (!trade) {
       trade = await plugActor.create_trade()
-      localStorage.setItem('storageTradeId', trade.id)
     }
-
+    localStorage.setItem('storageTradeId', trade.id)
     const hostId = getPrincipalId(trade.host)
     const guestId = getPrincipalId(trade.guest)
     let ltts // Local Trade Tokens
@@ -295,9 +294,10 @@ export const Trade = ({ type }) => {
     setLoading(false)
   }
 
-  const onAccept = async () => {
+  const onConfirm = async () => {
     if (!plugActor || !tradeData) return
     setLoading(true)
+    setConfirmed(true)
     await plugActor.accept(tradeData.id)
     setLoading(false)
   }
@@ -305,6 +305,7 @@ export const Trade = ({ type }) => {
   const onCancel = async () => {
     if (!plugActor || !tradeData) return
     setLoading(true)
+    setConfirmed(false)
     await plugActor.cancel(tradeData.id)
     setLoading(false)
   }
@@ -470,7 +471,7 @@ export const Trade = ({ type }) => {
               Start Trade
             </button>
           }
-          {tradeData && mode === 'trade' && connected &&
+          {tradeData && mode === 'trade' &&
             <button onClick={onCancelTrade} style={{
               position: 'absolute',
               right: '.5em',
@@ -481,7 +482,7 @@ export const Trade = ({ type }) => {
               Cancel Trade
             </button>
           }
-          {!confirmed && tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && mode === 'trade' && connected &&
+          {tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && mode === 'trade' &&
             <div style={{
               display: 'flex',
               gap: '1em',
@@ -491,10 +492,12 @@ export const Trade = ({ type }) => {
                 backgroundColor: '#2ecc71',
                 borderRadius: '.3em',
                 padding: '.3em 1em',
-                opacity: (!existItems(localBoxes) || !tradeData || (tradeData && (isCreator ? tradeData.host_accept : tradeData.guest_accept))) ? 0.5 : 1,
+                opacity: (!existItems(localBoxes) || accepted) ? 0.5 : 1,
               }}
-                onClick={onAccept}
-                disabled={!existItems(localBoxes) || !tradeData || (tradeData && (isCreator ? tradeData.host_accept : tradeData.guest_accept))}
+                onClick={() => {
+                  if (!existItems(localBoxes) || accepted) return
+                  setAccepted(true)
+                }}
               >
                 Accept
               </button>
@@ -502,10 +505,12 @@ export const Trade = ({ type }) => {
                 backgroundColor: '#e74c3c',
                 borderRadius: '.3em',
                 padding: '.3em 1em',
-                opacity: (!existItems(localBoxes) || !tradeData || (tradeData && (isCreator ? !tradeData.host_accept : !tradeData.guest_accept))) ? 0.5 : 1,
+                opacity: (!existItems(localBoxes) || !accepted) ? 0.5 : 1,
               }}
-                onClick={onCancel}
-                disabled={!existItems(localBoxes) || !tradeData || (tradeData && (isCreator ? !tradeData.host_accept : !tradeData.guest_accept))}
+                onClick={() => {
+                  if (!existItems(localBoxes) || !accepted) return
+                  setAccepted(false)
+                }}
               >
                 Cancel
               </button>
@@ -551,7 +556,7 @@ export const Trade = ({ type }) => {
             </div>
           </ModalBox>
         )}
-        {showConfirmModal && tradeData && tradeData.guest_accept && tradeData.host_accept && connected &&
+        {accepted && tradeData && (!tradeData.host_accept || !tradeData.guest_accept) &&
           <ModalBox>
             <div style={{
               display: 'flex',
@@ -573,19 +578,16 @@ export const Trade = ({ type }) => {
                   backgroundColor: '#2ecc71',
                   borderRadius: '.3em',
                   padding: '.3em 1em',
-                  opacity: (!tradeData.host_items.length || !tradeData.guest_items.length || !tradeData.host_accept || !tradeData.guest_accept) ? 0.5 : 1,
-                }} onClick={async () => {
-                  if (!tradeData.host_items.length || !tradeData.guest_items.length || !tradeData.host_accept || !tradeData.guest_accept) return
-                  setConfirmed(true)
-                  setShowConfirmModal(false)
-                }}>
+                  opacity: confirmed ? 0.5 : 1,
+                }} onClick={onConfirm}>
                   Confirm
                 </button>
                 <button style={{
                   backgroundColor: '#e74c3c',
                   borderRadius: '.3em',
                   padding: '.3em 1em',
-                }} onClick={() => { setShowConfirmModal(false) }}>
+                  opacity: !confirmed ? 0.5 : 1,
+                }} onClick={onCancel}>
                   Cancel
                 </button>
               </div>
