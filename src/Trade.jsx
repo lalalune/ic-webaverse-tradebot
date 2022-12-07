@@ -62,6 +62,7 @@ export const Trade = ({ type }) => {
 
   let localLoginAttempted = false
   let localTradeId = tradeData ? tradeData.id : tradeId ? tradeId : localStorage.getItem('storageTradeId')
+  // localTradeId && console.log('localTradeId: ', localTradeId)
 
   useEffect(() => {
     (async () => {
@@ -166,6 +167,7 @@ export const Trade = ({ type }) => {
             await plugActor.add_item_to_escrow(tradeData.id, canisterAddableItem)
           } catch (e) {
             console.log('NFT is non-existent: ', e)
+            await onCancel()
           }
         }
 
@@ -178,7 +180,6 @@ export const Trade = ({ type }) => {
         tradeData.host_escrow_items.length === tradeData.host_items.length &&
         tradeData.guest_items.length &&
         tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
-        localStorage.setItem('storageTradeId', '')
         await onCancelTrade()
         setAlertMessage('Trade completed!')
       }
@@ -193,6 +194,7 @@ export const Trade = ({ type }) => {
           if (tradeId && !isCreator) {
             setAlertMessage('The host left the trade')
           }
+          await onCancelTrade()
         }
       }, 1000)
 
@@ -264,12 +266,11 @@ export const Trade = ({ type }) => {
         trade = await plugActor.get_trade_by_id(localTradeId)
       } catch (e) {
         console.log('get_trade_by_id error: ', e)
-
         if (tradeId && !isCreator) {
           setAlertMessage('The host left the trade')
-          setLoading(false)
-          return
         }
+        await onCancelTrade()
+        return
       }
     }
 
@@ -303,12 +304,12 @@ export const Trade = ({ type }) => {
   }
 
   const onCancelTrade = async () => {
-    if (!plugActor || !tradeData) return
     setLoading(true)
-    await plugActor.leave_trade(tradeData.id)
+    if (plugActor && tradeData) await plugActor.leave_trade(tradeData.id)
     setTradeData(null)
     setPartnerId(null)
     localStorage.setItem('storageTradeId', '')
+    tradeId = 0
     setLoading(false)
   }
 
