@@ -62,7 +62,7 @@ export const Trade = ({ type }) => {
   const [message, setMessage] = useState('')
 
   let localLoginAttempted = false
-  let localTradeId = tradeData ? tradeData.id : tradeId ?? localStorage.getItem('storageTradeId')
+  let localTradeId = tradeData ? tradeData.id : (tradeId !== null && tradeId !== undefined) ? tradeId : localStorage.getItem('storageTradeId')
 
   // useEffect(() => console.log('loading: ', loading), [loading])
 
@@ -84,9 +84,10 @@ export const Trade = ({ type }) => {
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
-      // if (tradeId) {
+      // Disable this for partner to start the trade himself
+      // if (tradeId !== null && tradeId !== undefined) {
       //   console.log('tradeId: ', tradeId)
-      //   await onStartTrade() // For partner
+      //   await onStartTrade() // Start trade if URL is partner's one after connection
       // }
 
       setLoading(false)
@@ -155,6 +156,8 @@ export const Trade = ({ type }) => {
         setShowTradeCompletedModal(true)
       }
 
+      console.log('test')
+
       setTimeout(async () => {
         try {
           const trade = await plugActor.get_trade_by_id(tradeData.id)
@@ -162,7 +165,7 @@ export const Trade = ({ type }) => {
           setTradeData(trade)
         } catch (e) {
           console.log('get_trade_by_id error: ', e)
-          if (tradeId && !isCreator) {
+          if (tradeId !== null && tradeId !== undefined && !isCreator) {
             setAlertMessage('The host left the trade')
           }
         }
@@ -191,7 +194,6 @@ export const Trade = ({ type }) => {
   const onConnect = async () => {
     (async () => {
       await waitLoading()
-      setLoading(true)
       setMessage('Connecting...')
       let publicKey
 
@@ -222,7 +224,6 @@ export const Trade = ({ type }) => {
       console.log('plug: ', plug)
       setConnected(true)
       setMessage('')
-      setLoading(false)
     })()
   }
 
@@ -239,7 +240,7 @@ export const Trade = ({ type }) => {
       } catch (e) {
         console.log('get_trade_by_id error: ', e)
 
-        if (tradeId && !isCreator) {
+        if (tradeId !== null && tradeId !== undefined && !isCreator) {
           setAlertMessage('The host left the trade')
           setLoading(false)
           return
@@ -520,6 +521,7 @@ export const Trade = ({ type }) => {
             <div style={{
               position: 'absolute',
               left: '.5em',
+              bottom: '2em',
             }}>
               Trading with&nbsp;
               <span style={{
