@@ -42,7 +42,10 @@ const Footer = ({ showPagination, mode, loading = false, curPage = 1, setCurPage
 				right: ".5em",
 				bottom: ".5em",
 			}}>
-				<span style={{ color: "yellow" }}>{loading ? "Loading..." : ""}</span>
+				<span style={{
+					color: "yellow",
+					zIndex: 1,
+				}}>{loading ? "Loading..." : ""}</span>
 			</div>
 			{showPagination &&
 				<div style={{

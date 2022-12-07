@@ -15,7 +15,6 @@ export const clone = (obj) => {
 };
 
 export const getRemoteBoxes = (remoteItems) => {
-  // console.log('remoteItems: ', remoteItems)
   remoteItems = Object.values(remoteItems)
   const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
     return { id: i, item: remoteItems.find(item => item.slot === i) ?? null };
@@ -119,7 +118,6 @@ export const getUserTokens = async ({ agent, user }) => {
 
 export const getExtension = (url) => {
   const extension = url.split(".").pop().toLowerCase();
-  // console.log("extension: ", extension);
   return extension;
 };
 
@@ -169,29 +167,24 @@ export const isModel = (url) => {
 export const existItems = boxes => {
   if (!boxes || !boxes.length) return false
   const flag = !!(boxes.filter(box => box?.item?.canister_id).length)
-  // console.log('existItems: ', flag)
   return flag
 }
 
-export const getPrincipalId = pricipal => {
-  // console.log('getPrincipalId pricipal: ', pricipal)
-  if (Array.isArray(pricipal)) {
-    if (!pricipal.length) return ''
-    pricipal = pricipal[0]
+export const getPrincipalId = principal => {
+  if (Array.isArray(principal)) {
+    if (!principal.length) return ''
+    principal = principal[0]
   }
-  const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : ''
-  // console.log('principalId: ', principalId)
+  const principalId = principal._arr ? Principal.fromUint8Array(principal._arr).toText() : ''
   return principalId
 }
 
 export const canisterItemsToTokens = (canisterItems, userTokens) => {
   if (!Array.isArray(canisterItems) || !userTokens) return {}
-  // console.log('userTokens: ', userTokens)
   const tokens = {}
   canisterItems.forEach(item => {
     userTokens[item.token_id] && (tokens[item.token_id] = userTokens[item.token_id])
   })
-  // console.log('canisterItemsToTokens: ', tokens)
   return tokens
 }
 

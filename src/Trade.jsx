@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { debugMode, inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from './constants'
-import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
+import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
 import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index'
 
 import { ModalBox } from './ModalBox'
@@ -64,29 +64,33 @@ export const Trade = ({ type }) => {
   let localLoginAttempted = false
   let localTradeId = tradeData ? tradeData.id : tradeId ?? localStorage.getItem('storageTradeId')
 
+  // useEffect(() => console.log('loading: ', loading), [loading])
+
   useEffect(() => {
-    waitLoading(() => {
+    (async () => {
+      await waitLoading()
       if (type !== 'webaverse' || connected || localLoginAttempted) return // for webaverse
       localLoginAttempted = true
       onConnect()
-    })
+    })()
   }, [])
 
   useEffect(() => {
-    waitLoading(async () => {
+    (async () => {
+      await waitLoading()
       if (!connected || !plug.agent || !plug.principalId) return
       setLoading(true)
       const newTokens = await getUserTokens({ agent: plug.agent, user: plug.principalId })
       setInventoryTokens(clone(newTokens))
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
-      if (tradeId) {
-        console.log('tradeId: ', tradeId)
-        await onStartTrade() // For partner
-      }
+      // if (tradeId) {
+      //   console.log('tradeId: ', tradeId)
+      //   await onStartTrade() // For partner
+      // }
 
       setLoading(false)
-    })
+    })()
   }, [connected])
 
   // Update game status whenever trade data is changed (real time)
@@ -151,8 +155,6 @@ export const Trade = ({ type }) => {
         setShowTradeCompletedModal(true)
       }
 
-      setLoading(false)
-
       setTimeout(async () => {
         try {
           const trade = await plugActor.get_trade_by_id(tradeData.id)
@@ -165,6 +167,8 @@ export const Trade = ({ type }) => {
           }
         }
       }, 2000)
+
+      setLoading(false)
     })()
   }, [tradeData])
 
@@ -185,7 +189,8 @@ export const Trade = ({ type }) => {
   }, [inventoryTokens])
 
   const onConnect = async () => {
-    waitLoading(async () => {
+    (async () => {
+      await waitLoading()
       setMessage('Connecting...')
       let publicKey
 
@@ -216,7 +221,7 @@ export const Trade = ({ type }) => {
       console.log('plug: ', plug)
       setConnected(true)
       setMessage('')
-    })
+    })()
   }
 
   const onStartTrade = async () => {
@@ -247,15 +252,18 @@ export const Trade = ({ type }) => {
 
     const hostId = getPrincipalId(trade.host)
     const guestId = getPrincipalId(trade.guest)
+    let ltts // Local Trade Tokens
 
     if (hostId === plug.principalId) {
       setIsCreator(true)
+      ltts = canisterItemsToTokens(trade.host_items, inventoryTokens)
     } else {
       if (!guestId || guestId !== plug.principalId) {
         trade = await plugActor.join_trade(trade.id)
       }
       if (getPrincipalId(trade.guest) === plug.principalId) {
         setIsCreator(false)
+        ltts = canisterItemsToTokens(trade.guest_items, inventoryTokens)
       } else {
         // This will never occur if rust is correct, but added for exception
         setMessage('Trading is incorrect')
@@ -264,18 +272,26 @@ export const Trade = ({ type }) => {
       }
     }
 
-    setLoading(false)
+    if (ltts) {
+      const its = Object.values(inventoryTokens).filter(token => !ltts[token.token_id]) // Inventory Tokens
+      const ibs = getInventoryBoxes(its) // Inventory Boxes
+      setInventoryBoxes(ibs)
+      const lbs = getLocalBoxes(ltts) // Local Boxes
+      setLocalBoxes(lbs)
+    }
+
     console.log('trade: ', trade)
     setTradeData(trade)
+    setLoading(false)
   }
 
   const onCancelTrade = async () => {
     if (!plugActor || !tradeData) return
     setLoading(true)
     await plugActor.leave_trade(tradeData.id)
-    setLoading(false)
     setTradeData(null)
     setPartnerId(null)
+    setLoading(false)
   }
 
   const onAccept = async () => {
@@ -292,12 +308,8 @@ export const Trade = ({ type }) => {
     setLoading(false)
   }
 
-  const waitLoading = (func) => {
-    if (loading) {
-      setTimeout(waitLoading, 100)
-    } else {
-      func()
-    }
+  const waitLoading = async () => {
+    await new Promise(resolve => !loading && resolve())
   }
 
   return (
