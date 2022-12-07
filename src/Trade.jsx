@@ -23,6 +23,8 @@ const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
 const host = 'http://localhost:8000'
 const timeout = 50000
 let partnerTokens = {}
+let prevTrade = {}
+let stopTrade = false
 
 const url = new URL(window.location.href)
 let tradeId = url.searchParams.get('tradeId')
@@ -61,8 +63,9 @@ export const Trade = ({ type }) => {
   const [message, setMessage] = useState('')
 
   let localLoginAttempted = false
-  let localTradeId = tradeData ? tradeData.id : tradeId ? tradeId : localStorage.getItem('storageTradeId')
+  let localTradeId = tradeData ? tradeData.id : (tradeId ? tradeId : localStorage.getItem('storageTradeId'))
   // localTradeId && console.log('localTradeId: ', localTradeId)
+  console.log('local, global, storage: ', tradeData?.id ?? undefined, tradeId, localStorage.getItem('storageTradeId'))
 
   useEffect(() => {
     (async () => {
@@ -116,12 +119,26 @@ export const Trade = ({ type }) => {
   // Update game status whenever trade data is changed (real time)
   useEffect(() => {
     (async () => {
+      if (stopTrade) {
+        stopTrade = false
+        setTradeData(null)
+        return
+      }
       if (!tradeData || !plugActor || !plug.principalId) return
       setLoading(true)
       const hostId = getPrincipalId(tradeData.host)
       const guestId = getPrincipalId(tradeData.guest)
-      if (!isCreator && guestId !== plug.principalId) {
-        return console.error('Trade already initialized to another wallet. guestId: ', guestId)
+      const prevGuestId = getPrincipalId(prevTrade.guest)
+      // console.log('prevTrade: ', prevTrade)
+
+      if (isCreator && prevGuestId && !guestId) {
+        setPartnerId(null)
+        setAlertMessage('The guest left the trade')
+      }
+
+      if (!isCreator && guestId && guestId !== plug.principalId) {
+        setAlertMessage('Trade already initialized to another wallet')
+        return
       }
 
       if (isCreator && guestId && guestId !== partnerId) {
@@ -184,21 +201,27 @@ export const Trade = ({ type }) => {
         setAlertMessage('Trade completed!')
       }
 
+      prevTrade = clone(tradeData)
+      setLoading(false)
+
       setTimeout(async () => {
         try {
+          await waitLoading()
           const trade = await plugActor.get_trade_by_id(tradeData.id)
           if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
           setTradeData(trade)
         } catch (e) {
           console.log('get_trade_by_id error: ', e)
           await onCancelTrade()
-          if (tradeId && !isCreator) {
-            setAlertMessage('The host left the trade')
+
+          if (!alertMessage) {
+            if (isCreator) {
+            } else {
+              setAlertMessage('The host left the trade')
+            }
           }
         }
       }, 1000)
-
-      setLoading(false)
     })()
   }, [tradeData])
 
@@ -266,10 +289,13 @@ export const Trade = ({ type }) => {
         trade = await plugActor.get_trade_by_id(localTradeId)
       } catch (e) {
         console.log('get_trade_by_id error: ', e)
-        if (tradeId && !isCreator) {
-          setAlertMessage('The host left the trade')
-        }
         await onCancelTrade()
+        if (!alertMessage) {
+          if (isCreator) {
+          } else {
+            setAlertMessage('The host left the trade')
+          }
+        }
         return
       }
     }
@@ -314,11 +340,16 @@ export const Trade = ({ type }) => {
       }
     }
 
-    setTradeData(null)
+    setLoading(false)
+    stopTrade = true
     setPartnerId(null)
+    setAccepted(false)
+    setConfirmed(false)
+    setMessage('')
+    setAlertMessage('')
     localStorage.setItem('storageTradeId', '')
     tradeId = 0
-    setLoading(false)
+    setTradeData(null)
   }
 
   const onConfirm = async () => {
@@ -495,7 +526,7 @@ export const Trade = ({ type }) => {
           width: '100%',
           marginTop: '.5em',
         }}>
-          {!tradeData && mode === 'trade' && connected &&
+          {!tradeData && !prevTrade.id && mode === 'trade' && connected &&
             <button style={{
               position: 'absolute',
               left: '50%',
@@ -622,8 +653,7 @@ export const Trade = ({ type }) => {
                   backgroundColor: '#e74c3c',
                   borderRadius: '.3em',
                   padding: '.3em 1em',
-                  opacity: !confirmed ? 0.5 : 1,
-                }} onClick={onCancel}>
+                }} onClick={() => setAccepted(false)}>
                   Cancel
                 </button>
               </div>

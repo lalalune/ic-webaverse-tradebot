@@ -171,6 +171,7 @@ export const existItems = boxes => {
 }
 
 export const getPrincipalId = principal => {
+  if (!principal) return ''
   if (Array.isArray(principal)) {
     if (!principal.length) return ''
     principal = principal[0]

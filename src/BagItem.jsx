@@ -110,7 +110,7 @@ const BagItem = ({
   setSelItem,
   setLoading,
   setMessage,
-  isConfirmed,
+  isConfirmedItem,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};
@@ -159,7 +159,7 @@ const BagItem = ({
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        if (isConfirmed(cloneDragTradeItem.token_id)) {
+        if (isConfirmedItem(cloneDragTradeItem.token_id)) {
           setMessage('This item is confirmed.')
           return
         }
