@@ -179,6 +179,7 @@ export const Trade = ({ type }) => {
         tradeData.guest_items.length &&
         tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
         localStorage.setItem('storageTradeId', '')
+        await onCancelTrade()
         setAlertMessage('Trade completed!')
       }
 
@@ -546,7 +547,7 @@ export const Trade = ({ type }) => {
         <div style={{
           width: '100%',
         }}>
-          {partnerId && (
+          {partnerId && mode === 'trade' && (
             <div style={{
               position: 'absolute',
               left: '.5em',
