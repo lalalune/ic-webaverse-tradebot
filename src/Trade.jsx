@@ -144,7 +144,7 @@ export const Trade = ({ type }) => {
         console.log('cloneInventoryTokens: ', cloneInventoryTokens)
         setInventoryTokens(cloneInventoryTokens)
         setConfirmed(false)
-        debugMode && setTimeout(() => setShowTradeCompletedModal(true), 2000) // To test modal
+        debugMode && setTimeout(() => setShowTradeCompletedModal(true), 1000) // To test modal
       }
 
       if (
@@ -155,8 +155,6 @@ export const Trade = ({ type }) => {
         tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
         setShowTradeCompletedModal(true)
       }
-
-      console.log('test')
 
       setTimeout(async () => {
         try {
@@ -169,7 +167,7 @@ export const Trade = ({ type }) => {
             setAlertMessage('The host left the trade')
           }
         }
-      }, 2000)
+      }, 1000)
 
       setLoading(false)
     })()
