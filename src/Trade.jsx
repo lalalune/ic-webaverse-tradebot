@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { debugMode, inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from './constants'
+import { inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from './constants'
 import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
 import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index'
 
@@ -170,7 +170,6 @@ export const Trade = ({ type }) => {
         }
 
         setConfirmed(false)
-        debugMode && setTimeout(() => setAlertMessage('Trade completed!'), 1000) // To test modal
       }
 
       if (
