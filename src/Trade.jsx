@@ -191,6 +191,7 @@ export const Trade = ({ type }) => {
   const onConnect = async () => {
     (async () => {
       await waitLoading()
+      setLoading(true)
       setMessage('Connecting...')
       let publicKey
 
@@ -221,6 +222,7 @@ export const Trade = ({ type }) => {
       console.log('plug: ', plug)
       setConnected(true)
       setMessage('')
+      setLoading(false)
     })()
   }
 
