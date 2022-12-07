@@ -128,6 +128,7 @@ export const Trade = ({ type }) => {
       setRemoteBoxes(rbs)
 
       if (hostId && guestId && tradeData.host_items.length && tradeData.guest_items.length && tradeData.host_accept && tradeData.guest_accept) {
+        console.log('Sending NFTs...')
         const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
         const cloneInventoryTokens = clone(inventoryTokens)
 
