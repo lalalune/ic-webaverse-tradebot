@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { GLTFModel } from "react-3d-viewer";
 import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel, sendNFT } from "./utils";
+import { clone, isImage, isMedia, isModel } from "./utils";
 import { itemTypes } from "./constants";
 
 export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
@@ -12,13 +12,9 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
-        console.log('handling click')
         if (window && window.openInWebaverse) {
-          console.log('webaverse click!')
           window.openInWebaverse(item);
-          setSelItem(item);
         } else {
-          console.log('single click for item select')
           setSelItem(item);
         }
         break;
@@ -59,9 +55,8 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
         },
         video: {
           maxWidth: "100%"
-        }
+        },
       }}
-      isDragging={isDragging}
       onClick={handleClick}
     >
       {isImage(item?.url) && (
@@ -69,9 +64,7 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
           <img
             crossOrigin="anonymous"
             referrerPolicy="no-referer-on-downgrade"
-            style={{
-
-            }}
+            style={{}}
             src={item.url}
             onClick={handleClick}
           />
@@ -82,9 +75,7 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
           <video
             crossOrigin="anonymous"
             referrerPolicy="no-referer-on-downgrade"
-            style={{
-
-            }}
+            style={{}}
             src={item.url}
             autoPlay
             loop
@@ -119,6 +110,7 @@ const BagItem = ({
   setSelItem,
   setLoading,
   setMessage,
+  isConfirmed,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};
@@ -167,7 +159,7 @@ const BagItem = ({
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        if (cloneDragTradeItem.confirmed) {
+        if (isConfirmed(cloneDragTradeItem.token_id)) {
           setMessage('This item is confirmed.')
           return
         }

@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { debugMode, inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from './constants'
-import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
+import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
 import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index'
 
 import { ModalBox } from './ModalBox'
@@ -56,15 +56,12 @@ export const Trade = ({ type }) => {
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState('inventory') // inventory or trade
   const [selItem, setSelItem] = useState(null)
-  const [showTradeCompletedModal, setShowTradeCompletedModal] = useState(false)
   const [curPage, setCurPage] = useState(1)
   const [alertMessage, setAlertMessage] = useState('')
   const [message, setMessage] = useState('')
 
   let localLoginAttempted = false
   let localTradeId = tradeData ? tradeData.id : (tradeId !== null && tradeId !== undefined) ? tradeId : localStorage.getItem('storageTradeId')
-
-  // useEffect(() => console.log('loading: ', loading), [loading])
 
   useEffect(() => {
     (async () => {
@@ -85,10 +82,31 @@ export const Trade = ({ type }) => {
       setInventoryBoxes(getInventoryBoxes(newTokens))
 
       // Disable this for partner to start the trade himself
-      // if (tradeId !== null && tradeId !== undefined) {
-      //   console.log('tradeId: ', tradeId)
-      //   await onStartTrade() // Start trade if URL is partner's one after connection
-      // }
+      if (localTradeId !== null && localTradeId !== undefined) {
+        const trade = await onStartTrade() // Start trade if it's existed
+
+        if (trade && Object.keys(newTokens).length) {
+          const hostId = getPrincipalId(trade.host)
+          const guestId = getPrincipalId(trade.guest)
+          let ltts // Local Trade Tokens
+
+          if (hostId === plug.principalId) {
+            ltts = canisterItemsToTokens(trade.host_items, newTokens)
+          } else {
+            if (guestId === plug.principalId) {
+              ltts = canisterItemsToTokens(trade.guest_items, newTokens)
+            }
+          }
+
+          if (ltts) {
+            const its = Object.values(newTokens).filter(token => !ltts[token.token_id]) // Inventory Tokens
+            const ibs = getInventoryBoxes(its) // Inventory Boxes
+            setInventoryBoxes(ibs)
+            const lbs = getLocalBoxes(ltts) // Local Boxes
+            setLocalBoxes(lbs)
+          }
+        }
+      }
 
       setLoading(false)
     })()
@@ -127,25 +145,32 @@ export const Trade = ({ type }) => {
       const rbs = getRemoteBoxes(rtts) // Remote Boxes
       setRemoteBoxes(rbs)
 
-      if (hostId && guestId && tradeData.host_items.length && tradeData.guest_items.length && tradeData.host_accept && tradeData.guest_accept) {
+      if (
+        hostId && guestId &&
+        tradeData.host_items.length && tradeData.host_items.length !== tradeData.host_escrow_items.length &&
+        tradeData.guest_items.length && tradeData.guest_items.length !== tradeData.guest_escrow_items.length &&
+        tradeData.host_accept && tradeData.guest_accept
+      ) {
         console.log('Sending NFTs...')
         const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
-        const cloneInventoryTokens = clone(inventoryTokens)
+        const canisterEscrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items
+        const canisterAddableItems = getMismatchedItems(canisterItems, canisterEscrowItems)
+        console.log('canisterAddableItems: ', canisterAddableItems)
 
-        for (let i = 0; i < canisterItems.length; i++) {
-          const item = cloneInventoryTokens[canisterItems[i].token_id]
-          // try {
-          //   !item.confirmed && await sendNFT({ item, to: partnerId, agent: plug.agent })
-          // } catch (e) {
-          //   console.log('NFT is non-existent: ', e)
-          // }
-          item.confirmed = true
+        for (let i = 0; i < canisterAddableItems.length; i++) {
+          const canisterAddableItem = canisterAddableItems[i]
+          const item = inventoryTokens[canisterAddableItem.token_id]
+
+          try {
+            // await sendNFT({ item, to: partnerId, agent: plug.agent })
+            await plugActor.add_item_to_escrow(tradeData.id, canisterAddableItem)
+          } catch (e) {
+            console.log('NFT is non-existent: ', e)
+          }
         }
 
-        console.log('cloneInventoryTokens: ', cloneInventoryTokens)
-        setInventoryTokens(cloneInventoryTokens)
         setConfirmed(false)
-        debugMode && setTimeout(() => setShowTradeCompletedModal(true), 1000) // To test modal
+        debugMode && setTimeout(() => setAlertMessage('Trade completed!'), 1000) // To test modal
       }
 
       if (
@@ -154,7 +179,8 @@ export const Trade = ({ type }) => {
         tradeData.host_escrow_items.length === tradeData.host_items.length &&
         tradeData.guest_items.length &&
         tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
-        setShowTradeCompletedModal(true)
+        localStorage.setItem('storageTradeId', '')
+        setAlertMessage('Trade completed!')
       }
 
       setTimeout(async () => {
@@ -253,18 +279,15 @@ export const Trade = ({ type }) => {
     localStorage.setItem('storageTradeId', trade.id)
     const hostId = getPrincipalId(trade.host)
     const guestId = getPrincipalId(trade.guest)
-    let ltts // Local Trade Tokens
 
     if (hostId === plug.principalId) {
       setIsCreator(true)
-      ltts = canisterItemsToTokens(trade.host_items, inventoryTokens)
     } else {
       if (!guestId || guestId !== plug.principalId) {
         trade = await plugActor.join_trade(trade.id)
       }
       if (getPrincipalId(trade.guest) === plug.principalId) {
         setIsCreator(false)
-        ltts = canisterItemsToTokens(trade.guest_items, inventoryTokens)
       } else {
         // This will never occur if rust is correct, but added for exception
         setMessage('Trading is incorrect')
@@ -273,17 +296,10 @@ export const Trade = ({ type }) => {
       }
     }
 
-    if (ltts) {
-      const its = Object.values(inventoryTokens).filter(token => !ltts[token.token_id]) // Inventory Tokens
-      const ibs = getInventoryBoxes(its) // Inventory Boxes
-      setInventoryBoxes(ibs)
-      const lbs = getLocalBoxes(ltts) // Local Boxes
-      setLocalBoxes(lbs)
-    }
-
     console.log('trade: ', trade)
     setTradeData(trade)
     setLoading(false)
+    return trade
   }
 
   const onCancelTrade = async () => {
@@ -292,6 +308,7 @@ export const Trade = ({ type }) => {
     await plugActor.leave_trade(tradeData.id)
     setTradeData(null)
     setPartnerId(null)
+    localStorage.setItem('storageTradeId', '')
     setLoading(false)
   }
 
@@ -313,6 +330,12 @@ export const Trade = ({ type }) => {
 
   const waitLoading = async () => {
     await new Promise(resolve => !loading && resolve())
+  }
+
+  const isConfirmedItem = tokenId => {
+    if (!tradeData) return false
+    const escrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items
+    return !!escrowItems.find(escrowItem => escrowItem.token_id === tokenId)
   }
 
   return (
@@ -367,6 +390,7 @@ export const Trade = ({ type }) => {
                       setSelItem={setSelItem}
                       setLoading={setLoading}
                       setAlertMessage={setAlertMessage}
+                      isConfirmedItem={isConfirmedItem}
                     />
                   </BagBox>
                 )
@@ -418,6 +442,7 @@ export const Trade = ({ type }) => {
                           setSelItem={setSelItem}
                           setLoading={setLoading}
                           setAlertMessage={setAlertMessage}
+                          isConfirmedItem={isConfirmedItem}
                         />
                       }
                     </BagBox>
@@ -447,6 +472,7 @@ export const Trade = ({ type }) => {
                           setSelItem={setSelItem}
                           setLoading={setLoading}
                           setAlertMessage={setAlertMessage}
+                          isConfirmedItem={isConfirmedItem}
                         />
                       }
                     </RemoteBox>
@@ -592,28 +618,6 @@ export const Trade = ({ type }) => {
                   Cancel
                 </button>
               </div>
-            </div>
-          </ModalBox>
-        }
-        {showTradeCompletedModal &&
-          <ModalBox>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '50px',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              width: '100%',
-              height: '100%',
-            }}>
-              <div>Trade Completed!</div>
-              <button style={{
-                backgroundColor: '#2ecc71',
-                borderRadius: '.3em',
-                padding: '.3em 1em',
-              }} onClick={() => { setShowTradeCompletedModal(false) }}>
-                Ok
-              </button>
             </div>
           </ModalBox>
         }

@@ -49,7 +49,7 @@ pub fn get_all_trades() -> Vec<Trade> {
 }
 
 pub fn create_trade(caller: Principal) -> Trade {
-    let id = TRADE_STORE.with(|store| store.borrow().len());
+    let id = TRADE_STORE.with(|store| store.borrow().len() + 1);
 
     let trade = Trade {
         id: id.to_string(),
