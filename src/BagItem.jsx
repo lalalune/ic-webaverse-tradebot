@@ -3,22 +3,18 @@ import { useDrag, useDrop } from "react-dnd";
 import { GLTFModel } from "react-3d-viewer";
 import { Principal } from "@dfinity/principal"
 
-import { clone, isImage, isMedia, isModel, sendNFT } from "./utils";
+import { clone, isImage, isMedia, isModel } from "./utils";
 import { itemTypes } from "./constants";
 
-export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) => {
+export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
-        console.log('handling click')
         if (window && window.openInWebaverse) {
-          console.log('webaverse click!')
           window.openInWebaverse(item);
-          setSelItem(item);
         } else {
-          console.log('single click for item select')
           setSelItem(item);
         }
         break;
@@ -59,34 +55,27 @@ export const PresentationalBagItem = ({ drag, isDragging, item, setSelItem }) =>
         },
         video: {
           maxWidth: "100%"
-        }
+        },
       }}
-      isDragging={isDragging}
       onClick={handleClick}
     >
-      {(isImage(item?.url)
-        // || (!isImage(item?.url) && !isMedia(item?.url) && !isModel(item?.url))
-      ) && (
-          <span onClick={handleClick}>
-            <img
-              crossOrigin="anonymous"
-              referrerPolicy="no-referer-on-downgrade"
-              style={{
-
-              }}
-              src={item.url}
-              onClick={handleClick}
-            />
-          </span>
-        )}
+      {isImage(item?.url) && (
+        <span onClick={handleClick}>
+          <img
+            crossOrigin="anonymous"
+            referrerPolicy="no-referer-on-downgrade"
+            style={{}}
+            src={item.url}
+            onClick={handleClick}
+          />
+        </span>
+      )}
       {isMedia(item?.url) && (
         <span onClick={handleClick}>
           <video
             crossOrigin="anonymous"
             referrerPolicy="no-referer-on-downgrade"
-            style={{
-
-            }}
+            style={{}}
             src={item.url}
             autoPlay
             loop
@@ -121,6 +110,7 @@ const BagItem = ({
   setSelItem,
   setLoading,
   setMessage,
+  isConfirmedItem,
 }) => {
   const ref = React.useRef(null);
   if (!item) item = {};
@@ -164,13 +154,12 @@ const BagItem = ({
           }
           const res = await plugActor.add_item_to_trade(tradeData.id, canisterItem);
           console.log('add_item_to_trade res: ', res)
-          // await sendNFT({ item: cloneDragTradeItem, to: 'sla3o-szktf-bohj7-cdrm5-x72uu-grvat-hczj7-e5ve6-5gjck-lsxft-dae', agent: window.ic.plug.agent })
           setLoading(false)
         })();
       }
 
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        if (cloneDragTradeItem.confirmed) {
+        if (isConfirmedItem(cloneDragTradeItem.token_id)) {
           setMessage('This item is confirmed.')
           return
         }

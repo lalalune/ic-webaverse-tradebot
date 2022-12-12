@@ -6,31 +6,30 @@ use ic_cdk::export::{
 };
 
 mod trade;
+use crate::trade::TradeStore;
 use trade::Item;
 use trade::Trade;
 
 #[cfg(test)]
 mod tests;
 
-// #[pre_upgrade]
-// fn pre_upgrade() {
-//     let trades = trade::pre_upgrade();
+#[pre_upgrade]
+fn pre_upgrade() {
+    let trades = trade::pre_upgrade();
+    let result = ic_cdk::storage::stable_save((trades,));
+    match result {
+        Ok(_) => (),
+        Err(e) => ic_cdk::trap(&format!("Failed to save trades: {}", e)),
+    }
+}
 
-//     let result = ic_cdk::storage::stable_save((trades,));
-//     match result {
-//         Ok(_) => (),
-//         Err(e) => ic_cdk::trap(&format!("Failed to save trades: {}", e)),
-//     }
-// }
-
-// #[post_upgrade]
-// fn post_upgrade() {
-//     let trade_store = ic_cdk::storage::stable_restore::<(TradeStore,)>()
-//         .unwrap()
-//         .0;
-
-//     trade::post_upgrade(trade_store);
-// }
+#[post_upgrade]
+fn post_upgrade() {
+    let trade_store = ic_cdk::storage::stable_restore::<(TradeStore,)>()
+        .unwrap()
+        .0;
+    trade::post_upgrade(trade_store);
+}
 
 #[update(name = "create_trade")]
 fn create_trade() -> Trade {
