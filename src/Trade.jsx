@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum } from './constants'
+import { inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum, debugMode } from './constants'
 import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
 import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index'
 
@@ -16,11 +16,9 @@ import Footer from './Footer'
 const { ic } = window
 const { plug } = ic
 
-// const canisterId = 'gqux4-4qaaa-aaaao-ab62q-cai'
-const canisterId = 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+const canisterId = debugMode ? 'rrkah-fqaaa-aaaaa-aaaaq-cai' : 'pjl2v-yiaaa-aaaao-aeksq-cai'
 const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
-// const host = 'https://mainnet.dfinity.network'
-const host = 'http://localhost:8000'
+const host = debugMode ? 'http://localhost:8000' : 'https://mainnet.dfinity.network'
 const timeout = 50000
 let partnerTokens = {}
 let prevTrade = {}
@@ -64,7 +62,7 @@ export const Trade = ({ type }) => {
   let localLoginAttempted = false
   let localTradeId = tradeData ? tradeData.id : (tradeId ? tradeId : localStorage.getItem('storageTradeId'))
   // localTradeId && console.log('localTradeId: ', localTradeId)
-  console.log('local, global, storage: ', tradeData?.id ?? undefined, tradeId, localStorage.getItem('storageTradeId'))
+  // console.log('local, global, storage: ', tradeData?.id ?? undefined, tradeId, localStorage.getItem('storageTradeId'))
 
   useEffect(() => {
     (async () => {

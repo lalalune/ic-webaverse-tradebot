@@ -36246,7 +36246,7 @@ const PresentationalBagItem = ({
   ic
 } = window, {
   plug
-} = ic, canisterId = "gqux4-4qaaa-aaaao-ab62q-cai", whitelist = [canisterId, "6hgw2-nyaaa-aaaai-abkqq-cai"], host = "https://mainnet.dfinity.network", timeout = 5e4;
+} = ic, canisterId = "gqux1-4qaaa-aaaao-ab62q-cai", whitelist = [canisterId, "6hgw2-nyaaa-aaaai-abkqq-cai"], host = "https://mainnet.dfinity.network", timeout = 5e4;
 let partnerTokens = {};
 const url = new URL(window.location.href), tradeId = url.searchParams.get("tradeId") || window.tradeId;
 tradeId && console.log("I'm joiner. tradeId: ", tradeId);

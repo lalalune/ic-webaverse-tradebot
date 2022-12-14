@@ -65311,7 +65311,7 @@ const {
 const {
   plug
 } = ic;
-const canisterId = "gqux4-4qaaa-aaaao-ab62q-cai";
+const canisterId = "gqux1-4qaaa-aaaao-ab62q-cai";
 const whitelist = [canisterId, "6hgw2-nyaaa-aaaai-abkqq-cai"];
 const host = "https://mainnet.dfinity.network";
 const timeout = 5e4;

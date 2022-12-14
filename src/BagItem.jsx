@@ -86,8 +86,8 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
       {isModel(item?.url) && (
         <GLTFModel
           ref={modelRef}
-          width={96}
-          height={96}
+          width={38}
+          height={38}
           src={item.url}
           enabled={false}
           position={{ x: -0.15, y: -0.3, z: -0.3 }}
