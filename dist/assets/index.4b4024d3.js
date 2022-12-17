@@ -22911,7 +22911,7 @@ var m = reactDom.exports;
     }
   };
 }
-const css = '/*\n! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com\n*/\n\n/*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box;\n  /* 1 */\n  border-width: 0;\n  /* 2 */\n  border-style: solid;\n  /* 2 */\n  border-color: #e5e7eb;\n  /* 2 */\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user\'s configured `sans` font-family by default.\n5. Use the user\'s configured `sans` font-feature-settings by default.\n*/\n\nhtml {\n  line-height: 1.5;\n  /* 1 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */\n  -moz-tab-size: 4;\n  /* 3 */\n  -o-tab-size: 4;\n     tab-size: 4;\n  /* 3 */\n  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";\n  /* 4 */\n  font-feature-settings: normal;\n  /* 5 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0;\n  /* 1 */\n  line-height: inherit;\n  /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  border-top-width: 1px;\n  /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user\'s configured `mono` font family by default.\n2. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0;\n  /* 1 */\n  border-color: inherit;\n  /* 2 */\n  border-collapse: collapse;\n  /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  font-weight: inherit;\n  /* 1 */\n  line-height: inherit;\n  /* 1 */\n  color: inherit;\n  /* 1 */\n  margin: 0;\n  /* 2 */\n  padding: 0;\n  /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\n[type=\'button\'],\n[type=\'reset\'],\n[type=\'submit\'] {\n  -webkit-appearance: button;\n  /* 1 */\n  background-color: transparent;\n  /* 2 */\n  background-image: none;\n  /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type=\'search\'] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user\'s configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role="button"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don\'t get the pointer cursor.\n*/\n\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block;\n  /* 1 */\n  vertical-align: middle;\n  /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n\n[hidden] {\n  display: none;\n}\n\n.container {\n  width: 100%;\n}\n\n@media (min-width: 640px) {\n  .container {\n    max-width: 640px;\n  }\n}\n\n@media (min-width: 768px) {\n  .container {\n    max-width: 768px;\n  }\n}\n\n@media (min-width: 1024px) {\n  .container {\n    max-width: 1024px;\n  }\n}\n\n@media (min-width: 1280px) {\n  .container {\n    max-width: 1280px;\n  }\n}\n\n@media (min-width: 1536px) {\n  .container {\n    max-width: 1536px;\n  }\n}\n\n.fixed {\n  position: fixed;\n}\n\n.absolute {\n  position: absolute;\n}\n\n.relative {\n  position: relative;\n}\n\n.top-0 {\n  top: 0px;\n}\n\n.bottom-0 {\n  bottom: 0px;\n}\n\n.left-0 {\n  left: 0px;\n}\n\n.right-0 {\n  right: 0px;\n}\n\n.z-10 {\n  z-index: 10;\n}\n\n.z-20 {\n  z-index: 20;\n}\n\n.flex {\n  display: flex;\n}\n\n.hidden {\n  display: none;\n}\n\n.h-full {\n  height: 100%;\n}\n\n.h-32 {\n  height: 8rem;\n}\n\n.h-1\\/3 {\n  height: 33.333333%;\n}\n\n.w-full {\n  width: 100%;\n}\n\n.w-1\\/4 {\n  width: 25%;\n}\n\n.w-4\\/5 {\n  width: 80%;\n}\n\n.w-32 {\n  width: 8rem;\n}\n\n.w-1\\/3 {\n  width: 33.333333%;\n}\n\n.w-3\\/4 {\n  width: 75%;\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n.animate-spin {\n  animation: spin 1s linear infinite;\n}\n\n.cursor-pointer {\n  cursor: pointer;\n}\n\n.flex-col {\n  flex-direction: column;\n}\n\n.flex-wrap {\n  flex-wrap: wrap;\n}\n\n.items-center {\n  align-items: center;\n}\n\n.justify-center {\n  justify-content: center;\n}\n\n.justify-between {\n  justify-content: space-between;\n}\n\n.justify-evenly {\n  justify-content: space-evenly;\n}\n\n.gap-1 {\n  gap: 0.25rem;\n}\n\n.gap-2 {\n  gap: 0.5rem;\n}\n\n.gap-8 {\n  gap: 2rem;\n}\n\n.gap-3 {\n  gap: 0.75rem;\n}\n\n.overflow-auto {\n  overflow: auto;\n}\n\n.rounded {\n  border-radius: 0.25rem;\n}\n\n.rounded-full {\n  border-radius: 9999px;\n}\n\n.border {\n  border-width: 1px;\n}\n\n.border-2 {\n  border-width: 2px;\n}\n\n.border-8 {\n  border-width: 8px;\n}\n\n.p-3 {\n  padding: 0.75rem;\n}\n\n.p-4 {\n  padding: 1rem;\n}\n\n.p-0\\.5 {\n  padding: 0.125rem;\n}\n\n.p-0 {\n  padding: 0px;\n}\n\n.p-2 {\n  padding: 0.5rem;\n}\n\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\n\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\n\n.font-bold {\n  font-weight: 700;\n}\n\n*::-webkit-scrollbar {\n  width: 8px;\n}\n\n*::-webkit-scrollbar-track {\n  box-shadow: inset 0 0 4px #fefefe;\n  border-radius: 4px;\n}\n\n*::-webkit-scrollbar-thumb {\n  background-color: #5d402d;\n  outline: 1px solid #5d402d;\n  border-radius: 4px;\n}\n\n:root {\n  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;\n  color: rgba(255, 255, 255, 0.87);\n  background-color: #242424;\n  color-scheme: light dark;\n  font-synthesis: none;\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-text-size-adjust: 100%;\n}\n\n#root {\n  color: rgba(255, 255, 255, 0.87);\n  width: 100vw;\n  height: 100vh;\n  margin: 0;\n  border: 0;\n}\n\n\n* {\n  box-sizing: border-box;\n}\nbody {\n  margin: 0;\n  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",\n    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  height: 100%;\n  width: 100%;\n  background-color: black;\n}\n\nbody:before {\n  content: \'\';\n  background-repeat: repeat;\n  position: fixed;\n  top:0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n\n}\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",\n    monospace;\n}\nul {\n  list-style-type: none;\n  margin:0;\n  padding:0;\n}\n';
+const css = '/*\n! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com\n*/\n\n/*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box;\n  /* 1 */\n  border-width: 0;\n  /* 2 */\n  border-style: solid;\n  /* 2 */\n  border-color: #e5e7eb;\n  /* 2 */\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user\'s configured `sans` font-family by default.\n5. Use the user\'s configured `sans` font-feature-settings by default.\n*/\n\nhtml {\n  line-height: 1.5;\n  /* 1 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */\n  -moz-tab-size: 4;\n  /* 3 */\n  -o-tab-size: 4;\n  tab-size: 4;\n  /* 3 */\n  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";\n  /* 4 */\n  font-feature-settings: normal;\n  /* 5 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0;\n  /* 1 */\n  line-height: inherit;\n  /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  border-top-width: 1px;\n  /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n  text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user\'s configured `mono` font family by default.\n2. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0;\n  /* 1 */\n  border-color: inherit;\n  /* 2 */\n  border-collapse: collapse;\n  /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  font-weight: inherit;\n  /* 1 */\n  line-height: inherit;\n  /* 1 */\n  color: inherit;\n  /* 1 */\n  margin: 0;\n  /* 2 */\n  padding: 0;\n  /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\n[type=\'button\'],\n[type=\'reset\'],\n[type=\'submit\'] {\n  -webkit-appearance: button;\n  /* 1 */\n  background-color: transparent;\n  /* 2 */\n  background-image: none;\n  /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type=\'search\'] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user\'s configured gray 400 color.\n*/\n\ninput::-moz-placeholder,\ntextarea::-moz-placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1;\n  /* 1 */\n  color: #9ca3af;\n  /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role="button"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don\'t get the pointer cursor.\n*/\n\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block;\n  /* 1 */\n  vertical-align: middle;\n  /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n\n[hidden] {\n  display: none;\n}\n\n.container {\n  width: 100%;\n}\n\n@media (min-width: 640px) {\n  .container {\n    max-width: 640px;\n  }\n}\n\n@media (min-width: 768px) {\n  .container {\n    max-width: 768px;\n  }\n}\n\n@media (min-width: 1024px) {\n  .container {\n    max-width: 1024px;\n  }\n}\n\n@media (min-width: 1280px) {\n  .container {\n    max-width: 1280px;\n  }\n}\n\n@media (min-width: 1536px) {\n  .container {\n    max-width: 1536px;\n  }\n}\n\n.fixed {\n  position: fixed;\n}\n\n.absolute {\n  position: absolute;\n}\n\n.relative {\n  position: relative;\n}\n\n.top-0 {\n  top: 0px;\n}\n\n.bottom-0 {\n  bottom: 0px;\n}\n\n.left-0 {\n  left: 0px;\n}\n\n.right-0 {\n  right: 0px;\n}\n\n.z-10 {\n  z-index: 10;\n}\n\n.z-20 {\n  z-index: 20;\n}\n\n.flex {\n  display: flex;\n}\n\n.hidden {\n  display: none;\n}\n\n.h-full {\n  height: 100%;\n}\n\n.h-32 {\n  height: 8rem;\n}\n\n.h-1\\/3 {\n  height: 33.333333%;\n}\n\n.w-full {\n  width: 100%;\n}\n\n.w-1\\/4 {\n  width: 25%;\n}\n\n.w-4\\/5 {\n  width: 80%;\n}\n\n.w-32 {\n  width: 8rem;\n}\n\n.w-1\\/3 {\n  width: 33.333333%;\n}\n\n.w-3\\/4 {\n  width: 75%;\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n.animate-spin {\n  animation: spin 1s linear infinite;\n}\n\n.cursor-pointer {\n  cursor: pointer;\n}\n\n.flex-col {\n  flex-direction: column;\n}\n\n.flex-wrap {\n  flex-wrap: wrap;\n}\n\n.items-center {\n  align-items: center;\n}\n\n.justify-center {\n  justify-content: center;\n}\n\n.justify-between {\n  justify-content: space-between;\n}\n\n.justify-evenly {\n  justify-content: space-evenly;\n}\n\n.gap-1 {\n  gap: 0.25rem;\n}\n\n.gap-2 {\n  gap: 0.5rem;\n}\n\n.gap-8 {\n  gap: 2rem;\n}\n\n.gap-3 {\n  gap: 0.75rem;\n}\n\n.overflow-auto {\n  overflow: auto;\n}\n\n.rounded {\n  border-radius: 0.25rem;\n}\n\n.rounded-full {\n  border-radius: 9999px;\n}\n\n.border {\n  border-width: 1px;\n}\n\n.border-2 {\n  border-width: 2px;\n}\n\n.border-8 {\n  border-width: 8px;\n}\n\n.p-3 {\n  padding: 0.75rem;\n}\n\n.p-4 {\n  padding: 1rem;\n}\n\n.p-0\\.5 {\n  padding: 0.125rem;\n}\n\n.p-0 {\n  padding: 0px;\n}\n\n.p-2 {\n  padding: 0.5rem;\n}\n\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\n\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\n\n.font-bold {\n  font-weight: 700;\n}\n\n*::-webkit-scrollbar {\n  width: 8px;\n}\n\n*::-webkit-scrollbar-track {\n  box-shadow: inset 0 0 4px #fefefe;\n  border-radius: 4px;\n}\n\n*::-webkit-scrollbar-thumb {\n  background-color: #5d402d;\n  outline: 1px solid #5d402d;\n  border-radius: 4px;\n}\n\n:root {\n  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;\n  color: rgba(255, 255, 255, 0.87);\n  background-color: #242424;\n  color-scheme: light dark;\n  font-synthesis: none;\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-text-size-adjust: 100%;\n}\n\n#root {\n  color: rgba(255, 255, 255, 0.87);\n  width: 100vw;\n  height: 100vh;\n  margin: 0;\n  border: 0;\n}\n\n\n* {\n  box-sizing: border-box;\n}\n\nbody {\n  margin: 0;\n  font-family: "Roboto", BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu",\n    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  height: 100%;\n  width: 100%;\n  background-color: black;\n}\n\nbody:before {\n  content: \'\';\n  background-repeat: repeat;\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",\n    monospace;\n}\n\nul {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n}';
 function styleInject(css2, ref) {
   if (ref === void 0)
     ref = {};
@@ -24065,7 +24065,7 @@ function without$1(items, item) {
     (i2) => i2 !== item
   );
 }
-function isObject$1(input) {
+function isObject$2(input) {
   return typeof input === "object";
 }
 function xor(itemsA, itemsB) {
@@ -24164,7 +24164,7 @@ function verifyGetSourceClientOffsetIsFunction(getSourceClientOffset2) {
   invariant(typeof getSourceClientOffset2 === "function", "When clientOffset is provided, getSourceClientOffset must be a function.");
 }
 function verifyItemIsObject(item) {
-  invariant(isObject$1(item), "Item must be an object.");
+  invariant(isObject$2(item), "Item must be an object.");
 }
 function getDraggableSource(sourceIds, monitor) {
   let sourceId = null;
@@ -24236,7 +24236,7 @@ function determineDropResult(targetId, index2, registry2, monitor) {
   return dropResult;
 }
 function verifyDropResultType(dropResult) {
-  invariant(typeof dropResult === "undefined" || isObject$1(dropResult), "Drop result must either be an object or undefined.");
+  invariant(typeof dropResult === "undefined" || isObject$2(dropResult), "Drop result must either be an object or undefined.");
 }
 function getDroppableTargets(monitor) {
   const targetIds = monitor.getTargetIds().filter(monitor.canDropOnTarget, monitor);
@@ -26992,7 +26992,7 @@ function isString(val) {
 function isNumber(val) {
   return typeof val === "number";
 }
-function isObject(val) {
+function isObject$1(val) {
   return val !== null && typeof val === "object";
 }
 function isPlainObject(val) {
@@ -27015,7 +27015,7 @@ function isFunction(val) {
   return toString.call(val) === "[object Function]";
 }
 function isStream(val) {
-  return isObject(val) && isFunction(val.pipe);
+  return isObject$1(val) && isFunction(val.pipe);
 }
 function isURLSearchParams(val) {
   return typeof URLSearchParams !== "undefined" && val instanceof URLSearchParams;
@@ -27090,7 +27090,7 @@ var utils$c = {
   isArrayBufferView,
   isString,
   isNumber,
-  isObject,
+  isObject: isObject$1,
   isPlainObject,
   isUndefined,
   isDate,
@@ -33272,7 +33272,7 @@ var bignumber = { exports: {} };
           m2 = new BigNumber2(m2);
         nIsBig = n.e > 14;
         if (!x.c || !x.c[0] || x.c[0] == 1 && !x.e && x.c.length == 1 || !n.c || !n.c[0]) {
-          y = new BigNumber2(Math.pow(+valueOf(x), nIsBig ? 2 - isOdd(n) : +valueOf(n)));
+          y = new BigNumber2(Math.pow(+valueOf(x), nIsBig ? n.s * (2 - isOdd(n)) : +valueOf(n)));
           return m2 ? y.mod(m2) : y;
         }
         nIsNeg = n.s < 0;
@@ -50009,7 +50009,6 @@ const clone = (obj) => {
   return cloneObj;
 };
 const getRemoteBoxes = (remoteItems) => {
-  console.log("remoteItems: ", remoteItems);
   remoteItems = Object.values(remoteItems);
   const remoteBoxes = [...Array(tradeBoxNum).keys()].map((i2) => {
     var _a;
@@ -50019,6 +50018,17 @@ const getRemoteBoxes = (remoteItems) => {
     };
   });
   return remoteBoxes;
+};
+const getLocalBoxes = (localItems) => {
+  localItems = Object.values(localItems);
+  const localBoxes = [...Array(tradeBoxNum).keys()].map((i2) => {
+    var _a;
+    return {
+      id: i2,
+      item: (_a = localItems.find((item) => item.slot === i2)) != null ? _a : null
+    };
+  });
+  return localBoxes;
 };
 const getInventoryBoxes = (inventoryItems) => {
   inventoryItems = Object.values(inventoryItems);
@@ -50109,27 +50119,53 @@ const existItems = (boxes) => {
   }).length;
   return flag;
 };
-const getPrincipalId = (pricipal) => {
-  console.log("getPrincipalId pricipal: ", pricipal);
-  if (Array.isArray(pricipal)) {
-    if (!pricipal.length)
+const getPrincipalId = (principal) => {
+  if (!principal)
+    return "";
+  if (Array.isArray(principal)) {
+    if (!principal.length)
       return "";
-    pricipal = pricipal[0];
+    principal = principal[0];
   }
-  const principalId = pricipal._arr ? Principal.fromUint8Array(pricipal._arr).toText() : "";
-  console.log("principalId: ", principalId);
+  const principalId = principal._arr ? Principal.fromUint8Array(principal._arr).toText() : "";
   return principalId;
 };
 const canisterItemsToTokens = (canisterItems, userTokens) => {
   if (!Array.isArray(canisterItems) || !userTokens)
     return {};
-  console.log("userTokens: ", userTokens);
   const tokens = {};
   canisterItems.forEach((item) => {
     userTokens[item.token_id] && (tokens[item.token_id] = userTokens[item.token_id]);
   });
-  console.log("canisterItemsToTokens: ", tokens);
   return tokens;
+};
+const deepEqual = (object1, object2) => {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+  for (const key of keys1) {
+    const val1 = object1[key];
+    const val2 = object2[key];
+    const areObjects = isObject(val1) && isObject(val2);
+    if (areObjects && !deepEqual(val1, val2) || !areObjects && val1 !== val2) {
+      return false;
+    }
+  }
+  return true;
+};
+const isObject = (object) => {
+  return object != null && typeof object === "object";
+};
+const getMismatchedItems = (focusItems, compareItems) => {
+  const mismatchedItems = [];
+  focusItems.forEach((focusItem) => {
+    if (!compareItems.find((compareItem) => compareItem.name === focusItem.name && compareItem.canister_id === focusItem.canister_id && compareItem.token_id === focusItem.token_id)) {
+      mismatchedItems.push(focusItem);
+    }
+  });
+  return mismatchedItems;
 };
 var ReplicaRejectCode;
 (function(ReplicaRejectCode2) {
@@ -50705,11 +50741,19 @@ const ModalBox = ({
   children
 }) => {
   return /* @__PURE__ */ jsx("div", {
-    style: {},
-    children: /* @__PURE__ */ jsx("div", {
-      style: {},
-      children
-    })
+    style: {
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      zIndex: 2,
+      width: "50%",
+      height: "50%",
+      backgroundColor: "black",
+      border: ".2em solid rgb(12, 30, 32)",
+      borderRadius: ".6em"
+    },
+    children
   });
 };
 const BagBoxStyle = {
@@ -64970,7 +65014,6 @@ var react3dViewer = { exports: {} };
   });
 })(react3dViewer);
 const PresentationalBagItem = ({
-  drag,
   isDragging,
   item,
   setSelItem
@@ -64979,13 +65022,9 @@ const PresentationalBagItem = ({
   const handleClick = (event) => {
     switch (event.detail) {
       case 1:
-        console.log("handling click");
         if (window && window.openInWebaverse) {
-          console.log("webaverse click!");
           window.openInWebaverse(item);
-          setSelItem(item);
         } else {
-          console.log("single click for item select");
           setSelItem(item);
         }
         break;
@@ -65025,7 +65064,6 @@ const PresentationalBagItem = ({
         maxWidth: "100%"
       }
     },
-    isDragging,
     onClick: handleClick,
     children: [isImage(item == null ? void 0 : item.url) && /* @__PURE__ */ jsx("span", {
       onClick: handleClick,
@@ -65049,8 +65087,8 @@ const PresentationalBagItem = ({
       })
     }), isModel(item == null ? void 0 : item.url) && /* @__PURE__ */ jsx(react3dViewer.exports.GLTFModel, {
       ref: modelRef,
-      width: 96,
-      height: 96,
+      width: 38,
+      height: 38,
       src: item.url,
       enabled: false,
       position: {
@@ -65073,7 +65111,8 @@ const BagItem = ({
   tradeData,
   setSelItem,
   setLoading,
-  setMessage
+  setMessage,
+  isConfirmedItem
 }) => {
   const ref = React.useRef(null);
   if (!item)
@@ -65119,7 +65158,7 @@ const BagItem = ({
         })();
       }
       if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
-        if (cloneDragTradeItem.confirmed) {
+        if (isConfirmedItem(cloneDragTradeItem.token_id)) {
           setMessage("This item is confirmed.");
           return;
         }
@@ -65188,15 +65227,14 @@ const Inventory = "/assets/Inventory.efc54ebb.svg";
 const Trade$1 = "/assets/Trade.391681fa.svg";
 const Header = ({
   type,
-  authenticated,
+  connected,
   mode = "inventory",
   setMode
 }) => {
   return /* @__PURE__ */ jsxs("div", {
-    className: "header",
     style: {
-      height: "5em",
-      width: "100%"
+      width: "100%",
+      height: "4em"
     },
     children: [/* @__PURE__ */ jsx("img", {
       src: type === "webaverse" ? Logo : Console,
@@ -65206,21 +65244,21 @@ const Header = ({
         top: "1em",
         transform: "translate(-50%, 0)"
       }
-    }), authenticated && /* @__PURE__ */ jsx("button", {
+    }), connected && /* @__PURE__ */ jsx("button", {
       style: {
         position: "absolute",
-        top: "1em",
+        opacity: mode === "inventory" ? 1 : 0.5,
         left: "1em",
-        opacity: mode === "inventory" ? 1 : 0.5
+        top: "1em"
       },
       onClick: () => setMode("inventory"),
       children: /* @__PURE__ */ jsx("img", {
         src: Inventory
       })
-    }), authenticated && /* @__PURE__ */ jsx("button", {
+    }), connected && /* @__PURE__ */ jsx("button", {
       style: {
-        opacity: mode === "trade" ? 1 : 0.5,
         position: "absolute",
+        opacity: mode === "trade" ? 1 : 0.5,
         right: "1em",
         top: "1em"
       },
@@ -65239,27 +65277,24 @@ const Footer = ({
   curPage = 1,
   setCurPage
 }) => {
+  const pageNum = Math.ceil(inventoryBoxNum / (mode === "trade" ? tradePageBoxNum : pageBoxNum));
   const onPrevPage = () => {
     if (curPage <= 1)
       return;
     setCurPage(curPage - 1);
   };
   const onNextPage = () => {
-    const pageNum = Math.ceil(inventoryBoxNum / (mode === "trade" ? tradePageBoxNum : pageBoxNum));
     if (curPage >= pageNum)
       return;
     setCurPage(curPage + 1);
   };
   return /* @__PURE__ */ jsxs("div", {
-    className: "footer",
     style: {
       position: "absolute",
       width: "100%",
-      margin: 0,
-      bottom: "0"
+      bottom: 0
     },
     children: [/* @__PURE__ */ jsx("div", {
-      className: "banner",
       style: {
         position: "absolute",
         left: "50%",
@@ -65270,35 +65305,36 @@ const Footer = ({
         src: ICBanner
       })
     }), /* @__PURE__ */ jsx("div", {
-      className: "status",
       style: {
         position: "absolute",
-        right: "1em",
-        bottom: "1em"
+        right: ".5em",
+        bottom: ".5em"
       },
       children: /* @__PURE__ */ jsx("span", {
         style: {
-          color: "yellow"
+          color: "yellow",
+          zIndex: 1
         },
-        children: loading ? "LOADING" : ""
+        children: loading ? "Loading..." : ""
       })
     }), showPagination && /* @__PURE__ */ jsxs("div", {
-      className: "pagination",
       style: {
         position: "absolute",
-        left: "1em",
-        bottom: "1em"
+        left: ".5em",
+        bottom: ".5em"
       },
       children: [/* @__PURE__ */ jsx("button", {
-        disabled: curPage <= 1,
         style: {
           opacity: curPage <= 1 ? 0.5 : 1
         },
-        onClick: () => curPage >= 1 && onPrevPage(),
+        onClick: () => onPrevPage(),
         children: "<"
       }), /* @__PURE__ */ jsx("span", {
         children: curPage
       }), /* @__PURE__ */ jsx("button", {
+        style: {
+          opacity: curPage >= pageNum ? 0.5 : 1
+        },
         onClick: () => onNextPage(),
         children: ">"
       })]
@@ -65311,14 +65347,15 @@ const {
 const {
   plug
 } = ic;
-const canisterId = "gqux1-4qaaa-aaaao-ab62q-cai";
+const canisterId = "pjl2v-yiaaa-aaaao-aeksq-cai";
 const whitelist = [canisterId, "6hgw2-nyaaa-aaaai-abkqq-cai"];
 const host = "https://mainnet.dfinity.network";
 const timeout = 5e4;
 let partnerTokens = {};
+let prevTrade = {};
+let forceStopTrade = false;
 const url = new URL(window.location.href);
-const tradeId = url.searchParams.get("tradeId") || window.tradeId;
-tradeId && console.log("I'm joiner. tradeId: ", tradeId);
+let tradeId = url.searchParams.get("tradeId");
 const Trade = ({
   type
 }) => {
@@ -65337,95 +65374,93 @@ const Trade = ({
   const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i2) => {
     return {
       id: i2,
-      type: "all",
       item: null
     };
   });
-  const [loading, setLoading] = react.exports.useState(false);
-  const [principal, setPrincipal] = react.exports.useState(false);
-  const [authenticated, setAuthenticated] = react.exports.useState(false);
   const [plugActor, setPlugActor] = react.exports.useState(null);
-  const [loginAttempted, setLoginAttempted] = react.exports.useState(false);
-  const [isCreator, setIsCreator] = react.exports.useState(false);
-  const [localUserId, setLocalUserId] = react.exports.useState(null);
-  const [partnerId, setPartnerId] = react.exports.useState(null);
+  const [connected, setConnected] = react.exports.useState(false);
   const [tradeData, setTradeData] = react.exports.useState(null);
-  const [tradeStarted, setTradeStarted] = react.exports.useState(false);
+  const [isCreator, setIsCreator] = react.exports.useState(false);
+  const [partnerId, setPartnerId] = react.exports.useState(null);
   const [remoteBoxes, setRemoteBoxes] = react.exports.useState(clone(initRemoteBoxes));
   const [localBoxes, setLocalBoxes] = react.exports.useState(clone(initLocalBoxes));
-  const [confirmed, setConfirmed] = react.exports.useState(false);
-  const [showConfirmModal, setShowConfirmModal] = react.exports.useState(false);
-  const [showTradeCompletedModal, setShowTradeCompletedModal] = react.exports.useState(false);
-  const [accepted, setAccepted] = react.exports.useState(false);
   const [inventoryTokens, setInventoryTokens] = react.exports.useState({});
   const [inventoryBoxes, setInventoryBoxes] = react.exports.useState(initInventoryBoxes);
-  const [curPage, setCurPage] = react.exports.useState(1);
-  const [selItem, setSelItem] = react.exports.useState(null);
-  const [message, setMessage] = react.exports.useState("");
+  const [accepted, setAccepted] = react.exports.useState(false);
+  const [loading, setLoading] = react.exports.useState(false);
   const [mode, setMode] = react.exports.useState("inventory");
-  react.exports.useEffect(() => {
-    (async () => {
-      if (!principal || !localUserId)
-        return;
-      setLoading(true);
-      if (tradeId) {
-        console.log("Starting in-progress trade with tradeId: ", tradeId);
-        startTrade();
-      }
-      const newTokens = await getUserTokens({
-        agent: plug.agent,
-        user: localUserId
-      });
-      setInventoryTokens(clone(newTokens));
-      setInventoryBoxes(getInventoryBoxes(newTokens));
-      setLoading(false);
-    })();
-  }, [principal]);
+  const [selItem, setSelItem] = react.exports.useState(null);
+  const [curPage, setCurPage] = react.exports.useState(1);
+  const [alertMessage, setAlertMessage] = react.exports.useState("");
+  const [message, setMessage] = react.exports.useState("");
   let localLoginAttempted = false;
+  let localTradeId = tradeData ? tradeData.id : tradeId ? tradeId : localStorage.getItem("storageTradeId");
   react.exports.useEffect(() => {
     (async () => {
-      if (type !== "webaverse" || authenticated || loginAttempted || localLoginAttempted)
+      await waitLoading();
+      if (type !== "webaverse" || connected || localLoginAttempted)
         return;
-      console.log("calling effect");
-      setLoginAttempted(true);
       localLoginAttempted = true;
-      login();
+      onConnect();
     })();
   }, []);
   react.exports.useEffect(() => {
     (async () => {
-      if (!plugActor)
+      await waitLoading();
+      if (!connected || !plug.agent || !plug.principalId)
         return;
       setLoading(true);
-      console.log("plugActor: ", plugActor);
-      let trade;
-      if (tradeId) {
-        console.log("***** TRADE DETECTED *****");
-        trade = await plugActor.get_trade_by_id(tradeId);
-        setIsCreator(false);
-      } else {
-        trade = await plugActor.create_trade();
-        setIsCreator(true);
+      const newTokens = await getUserTokens({
+        agent: plug.agent,
+        user: plug.principalId
+      });
+      setInventoryTokens(clone(newTokens));
+      setInventoryBoxes(getInventoryBoxes(newTokens));
+      if (localTradeId) {
+        const trade = await onStartTrade();
+        if (trade && Object.keys(newTokens).length) {
+          const hostId = getPrincipalId(trade.host);
+          const guestId = getPrincipalId(trade.guest);
+          let ltts;
+          if (hostId === plug.principalId) {
+            ltts = canisterItemsToTokens(trade.host_items, newTokens);
+          } else {
+            if (guestId === plug.principalId) {
+              ltts = canisterItemsToTokens(trade.guest_items, newTokens);
+            }
+          }
+          if (ltts) {
+            const its = Object.values(newTokens).filter((token2) => !ltts[token2.token_id]);
+            const ibs = getInventoryBoxes(its);
+            setInventoryBoxes(ibs);
+            const lbs = getLocalBoxes(ltts);
+            setLocalBoxes(lbs);
+          }
+        }
       }
-      setTradeData(trade);
-      setTradeStarted(true);
       setLoading(false);
     })();
-  }, [plugActor]);
+  }, [connected]);
   react.exports.useEffect(() => {
-    if (!tradeData)
-      return;
     (async () => {
-      if (!plugActor || !localUserId)
+      if (forceStopTrade) {
+        forceStopTrade = false;
+        setTradeData(null);
+        return;
+      }
+      if (!tradeData || !plugActor || !plug.principalId)
         return;
       setLoading(true);
-      console.log("tradeData: ", tradeData);
       const hostId = getPrincipalId(tradeData.host);
       const guestId = getPrincipalId(tradeData.guest);
-      console.log("hostId: ", hostId);
-      console.log("guestId: ", guestId);
-      if (!isCreator && guestId && guestId !== localUserId) {
-        return console.error("Trade already initialized to another wallet: ", guestId);
+      const prevGuestId = getPrincipalId(prevTrade.guest);
+      if (isCreator && prevGuestId && !guestId) {
+        setPartnerId(null);
+        setAlertMessage("The guest left the trade");
+      }
+      if (!isCreator && guestId && guestId !== plug.principalId) {
+        setAlertMessage("Trade already initialized to another wallet");
+        return;
       }
       if (isCreator && guestId && guestId !== partnerId) {
         console.log("trade partner found(guestId): ", guestId);
@@ -65433,15 +65468,9 @@ const Trade = ({
       }
       if (!isCreator && hostId && hostId !== partnerId) {
         console.log("trade partner found(hostId): ", hostId);
-        await plugActor.join_trade(tradeData.id);
         setPartnerId(hostId);
       }
       const partnerTokenLen = Object.keys(partnerTokens).length;
-      console.log("isCreator: ", isCreator);
-      console.log("partnerTokenLen: ", partnerTokenLen);
-      console.log("tradeData.guest_items.length: ", tradeData.guest_items.length);
-      console.log("tradeData.host_items.length: ", tradeData.host_items.length);
-      console.log("partnerId: ", partnerId);
       if (tradeData && (isCreator && tradeData.guest_items.length || !isCreator && tradeData.host_items.length) && !partnerTokenLen && partnerId) {
         partnerTokens = await getUserTokens({
           agent: plug.agent,
@@ -65449,30 +65478,50 @@ const Trade = ({
         });
         console.log("partnerTokens: ", partnerTokens);
       }
-      const rts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens);
-      console.log("remoteTokens: ", rts);
-      const rbs = getRemoteBoxes(rts);
-      console.log("remoteBoxes: ", rbs);
+      const rtts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens);
+      const rbs = getRemoteBoxes(rtts);
       setRemoteBoxes(rbs);
-      if (confirmed) {
+      if (hostId && guestId && tradeData.host_items.length && tradeData.host_items.length !== tradeData.host_escrow_items.length && tradeData.guest_items.length && tradeData.guest_items.length !== tradeData.guest_escrow_items.length && tradeData.host_accept && tradeData.guest_accept) {
+        console.log("Sending NFTs...");
         const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items;
-        const cloneInventoryTokens = clone(inventoryTokens);
-        for (let i2 = 0; i2 < canisterItems.length; i2++) {
-          const item = cloneInventoryTokens[canisterItems[i2].token_id];
-          item.confirmed = true;
+        const canisterEscrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items;
+        const canisterAddableItems = getMismatchedItems(canisterItems, canisterEscrowItems);
+        console.log("canisterAddableItems: ", canisterAddableItems);
+        for (let i2 = 0; i2 < canisterAddableItems.length; i2++) {
+          const canisterAddableItem = canisterAddableItems[i2];
+          inventoryTokens[canisterAddableItem.token_id];
+          try {
+            await plugActor.add_item_to_escrow(tradeData.id, canisterAddableItem);
+          } catch (e) {
+            console.log("NFT is non-existent: ", e);
+            await onCancel();
+          }
         }
-        console.log("cloneInventoryTokens: ", cloneInventoryTokens);
-        setInventoryTokens(cloneInventoryTokens);
-        setConfirmed(false);
       }
-      if (tradeData.host_accept && tradeData.guest_accept && tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
-        setShowTradeCompletedModal(true);
+      if (tradeData.host_accept && tradeData.guest_accept && tradeData.host_items.length && tradeData.host_escrow_items.length === tradeData.host_items.length && tradeData.guest_items.length && tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
+        await onCancelTrade();
+        setAlertMessage("Trade completed!");
       }
+      prevTrade = clone(tradeData);
       setLoading(false);
       setTimeout(async () => {
-        const trade = await plugActor.get_trade_by_id(tradeData.id);
-        setTradeData(trade);
-      }, 2e3);
+        try {
+          const trade = await plugActor.get_trade_by_id(tradeData.id);
+          if (!deepEqual(trade, tradeData))
+            console.log("trade: ", trade);
+          setTradeData(trade);
+        } catch (e) {
+          console.log("get_trade_by_id error: ", e);
+          await onCancelTrade();
+          if (!alertMessage) {
+            if (isCreator)
+              ;
+            else {
+              setAlertMessage("The host left the trade");
+            }
+          }
+        }
+      }, 1e3);
     })();
   }, [tradeData]);
   react.exports.useEffect(() => {
@@ -65481,78 +65530,144 @@ const Trade = ({
       var _a;
       ((_a = box.item) == null ? void 0 : _a.token_id) && (box.item = inventoryTokens[box.item.token_id]);
     });
-    console.log("cloneInventoryBoxes: ", cloneInventoryBoxes);
     setInventoryBoxes(cloneInventoryBoxes);
     const cloneLocalBoxes = clone(localBoxes);
     cloneLocalBoxes.forEach((box) => {
       var _a;
       ((_a = box.item) == null ? void 0 : _a.token_id) && (box.item = inventoryTokens[box.item.token_id]);
     });
-    console.log("cloneLocalBoxes: ", cloneLocalBoxes);
     setLocalBoxes(cloneLocalBoxes);
   }, [inventoryTokens]);
-  const cancelTrade = async () => {
+  const onConnect = async () => {
+    (async () => {
+      await waitLoading();
+      setLoading(true);
+      let publicKey;
+      try {
+        publicKey = await plug.requestConnect({
+          whitelist,
+          host,
+          timeout,
+          onConnectionUpdate: () => {
+            console.log("sessionData: ", plug.sessionManager.sessionData);
+          }
+        });
+      } catch (e) {
+        setMessage("");
+        setLoading(false);
+        setAlertMessage("Connection failed");
+        return;
+      }
+      if (publicKey) {
+        console.log("publicKey: ", publicKey);
+        const tempPlugActor = await plug.createActor({
+          canisterId,
+          interfaceFactory: idlFactory,
+          agent: plug.agent
+        });
+        console.log("tempPlugActor: ", tempPlugActor);
+        setPlugActor(tempPlugActor);
+      } else {
+        setMessage("");
+        setLoading(false);
+        setAlertMessage("Connection failed");
+        return;
+      }
+      console.log("plug: ", plug);
+      setConnected(true);
+      setMessage("");
+      setLoading(false);
+    })();
+  };
+  const onStartTrade = async () => {
+    if (!plugActor || !plug.principalId)
+      return;
+    setLoading(true);
+    let trade;
+    if (localTradeId) {
+      console.log("localTradeId: ", localTradeId);
+      try {
+        trade = await plugActor.get_trade_by_id(localTradeId);
+      } catch (e) {
+        console.log("get_trade_by_id error: ", e);
+        await onCancelTrade();
+        if (!alertMessage) {
+          if (isCreator)
+            ;
+          else {
+            setAlertMessage("The host left the trade");
+          }
+        }
+        return;
+      }
+    }
+    if (!trade) {
+      trade = await plugActor.create_trade();
+    }
+    localStorage.setItem("storageTradeId", trade.id);
+    const hostId = getPrincipalId(trade.host);
+    const guestId = getPrincipalId(trade.guest);
+    if (hostId === plug.principalId) {
+      setIsCreator(true);
+    } else {
+      if (!guestId || guestId !== plug.principalId) {
+        trade = await plugActor.join_trade(trade.id);
+      }
+      if (getPrincipalId(trade.guest) === plug.principalId) {
+        setIsCreator(false);
+      } else {
+        setMessage("Trading is incorrect");
+        setLoading(false);
+        return;
+      }
+    }
+    console.log("trade: ", trade);
+    setTradeData(trade);
+    setLoading(false);
+    return trade;
+  };
+  const onCancelTrade = async () => {
+    setLoading(true);
+    if (plugActor && tradeData) {
+      try {
+        await plugActor.leave_trade(tradeData.id);
+      } catch (e) {
+        console.log("onCancelTrade error: ", e);
+      }
+    }
+    forceStopTrade = true;
+    setLoading(false);
+    setTradeData(null);
+    setPartnerId(null);
+    setAccepted(false);
+    setMessage("");
+    setAlertMessage("");
+    localStorage.setItem("storageTradeId", "");
+    tradeId = 0;
+  };
+  const onConfirm = async () => {
     if (!plugActor || !tradeData)
       return;
     setLoading(true);
-    await plugActor.leave_trade(tradeData.id);
+    await plugActor.accept(tradeData.id);
     setLoading(false);
-    setTradeStarted(false);
-    setTradeData(null);
   };
-  const startTrade = async () => {
-    if (!plug.createActor)
+  const onCancel = async () => {
+    if (!plugActor || !tradeData)
       return;
-    setTradeStarted(true);
-    const tempPlugActor = await plug.createActor({
-      canisterId,
-      interfaceFactory: idlFactory
-    });
-    setLoading(false);
-    setPlugActor(tempPlugActor);
-  };
-  const onConnect = async () => {
-    console.log("Connecting...");
-    setLoginAttempted(true);
-    login();
-  };
-  const login = async () => {
-    const publicKey = await plug.requestConnect({
-      whitelist,
-      host,
-      timeout,
-      onConnectionUpdate: () => {
-        console.log("sessionData: ", plug.sessionManager.sessionData);
-      }
-    });
-    if (publicKey) {
-      console.log("publicKey: ", publicKey);
-      await onConnected();
-    }
-  };
-  const onConnected = async () => {
-    console.log("plug: ", plug);
-    if (!plug.agent || !plug.principalId)
-      return;
-    const principal2 = await plug.agent.getPrincipal();
-    setPrincipal(principal2);
-    setAuthenticated(true);
-    setLocalUserId(plug.principalId);
-  };
-  const onAccept = () => {
-    if (!plugActor)
-      return;
-    plugActor.accept(tradeData.id);
-    setAccepted(true);
-    setShowConfirmModal(true);
-    console.log("Trade accepted!");
-  };
-  const onCancel = () => {
-    if (!plugActor)
-      return;
-    plugActor.cancel(tradeData.id);
+    setLoading(true);
     setAccepted(false);
-    console.log("Trade canceled!");
+    await plugActor.cancel(tradeData.id);
+    setLoading(false);
+  };
+  const waitLoading = async () => {
+    await new Promise((resolve) => !loading && resolve());
+  };
+  const isConfirmedItem = (tokenId) => {
+    if (!tradeData)
+      return false;
+    const escrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items;
+    return !!escrowItems.find((escrowItem) => escrowItem.token_id === tokenId);
   };
   return /* @__PURE__ */ jsx("div", {
     style: {
@@ -65566,234 +65681,308 @@ const Trade = ({
     children: /* @__PURE__ */ jsxs(DndProvider, {
       backend: HTML5Backend,
       children: [/* @__PURE__ */ jsx(Header, {
-        authenticated,
+        connected,
         setMode,
         mode
-      }), mode === "trade" && authenticated && !tradeData && /* @__PURE__ */ jsx("div", {
+      }), !connected && /* @__PURE__ */ jsx("button", {
+        onClick: onConnect,
         style: {
           position: "absolute",
-          bottom: "40px",
+          top: "50%",
           left: "50%",
-          transform: "translate(-50%, 0)"
+          transform: "translate(-50%, -50%)",
+          padding: ".5rem 2rem",
+          borderRadius: "0.5rem",
+          backgroundColor: "#2c3e50",
+          disable: loading,
+          opacity: loading && 0.5
         },
-        children: !tradeStarted && /* @__PURE__ */ jsx("button", {
-          onClick: startTrade,
-          style: {
-            zIndex: 1e3,
-            backgroundColor: "green",
-            padding: "5px"
-          },
-          children: "Start Trade"
+        children: "Connect"
+      }), connected && plug.principalId && /* @__PURE__ */ jsx("div", {
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          padding: ".5em"
+        },
+        children: inventoryBoxes.slice((curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum), curPage * (mode === "trade" ? tradePageBoxNum : pageBoxNum)).map((box, index2) => {
+          return /* @__PURE__ */ jsx(BagBox$1, {
+            children: /* @__PURE__ */ jsx(BagItem, {
+              item: clone(box.item),
+              index: (curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum) + index2,
+              tradeBoxes: clone(inventoryBoxes),
+              setTradeBoxes: setInventoryBoxes,
+              tradeLayer: "inventory",
+              plugActor,
+              tradeData,
+              localUserId: plug.principalId,
+              setSelItem,
+              setLoading,
+              setAlertMessage,
+              isConfirmedItem
+            }, `inventory_${box.id}`)
+          }, box.id);
         })
-      }), authenticated && tradeData && accepted && existItems(localBoxes) && showConfirmModal && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) && /* @__PURE__ */ jsxs(ModalBox, {
-        children: [/* @__PURE__ */ jsx("div", {
-          style: {},
-          children: "Do you want to confirm the current trade?"
+      }), mode === "trade" && connected && plug.principalId && /* @__PURE__ */ jsxs(Fragment, {
+        children: [/* @__PURE__ */ jsxs("div", {
+          children: [/* @__PURE__ */ jsx("span", {
+            style: {
+              width: "50%",
+              display: "inline-block",
+              textAlign: "left",
+              paddingLeft: ".5em",
+              opacity: 0.5
+            },
+            children: "YOUR OFFERINGS"
+          }), /* @__PURE__ */ jsx("span", {
+            style: {
+              width: "50%",
+              display: "inline-block",
+              textAlign: "right",
+              paddingRight: ".5em",
+              opacity: 0.5
+            },
+            children: tradeData && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) ? "TRADE ACCEPTED" : "PARTNER OFFERINGS"
+          })]
         }), /* @__PURE__ */ jsxs("div", {
-          style: {},
-          children: [/* @__PURE__ */ jsx("button", {
-            onClick: async () => {
-              if (!tradeData.host_items.length || !tradeData.guest_items || !tradeData.host_accept || !tradeData.guest_accept)
-                return;
-              setConfirmed(true);
-              setShowConfirmModal(false);
+          children: [/* @__PURE__ */ jsx("span", {
+            style: {
+              width: "50%",
+              display: "inline-block",
+              textAlign: "left",
+              paddingLeft: ".5em"
             },
-            children: "Confirm"
-          }), /* @__PURE__ */ jsx("button", {
-            onClick: () => {
-              setShowConfirmModal(false);
+            children: localBoxes.map((box, index2) => {
+              return /* @__PURE__ */ jsx(BagBox$1, {
+                children: tradeData && /* @__PURE__ */ jsx(BagItem, {
+                  isForTrade: true,
+                  item: clone(box.item),
+                  index: index2,
+                  tradeBoxes: clone(localBoxes),
+                  setTradeBoxes: setLocalBoxes,
+                  tradeLayer: "local",
+                  plugActor,
+                  tradeData,
+                  localUserId: plug.principalId,
+                  setSelItem,
+                  setLoading,
+                  setAlertMessage,
+                  isConfirmedItem
+                }, `local_${box.id}`)
+              }, box.id);
+            })
+          }), /* @__PURE__ */ jsx("span", {
+            style: {
+              width: "50%",
+              display: "inline-block",
+              textAlign: "right",
+              paddingRight: ".5em"
             },
-            children: "Cancel"
+            children: remoteBoxes.map((box, index2) => {
+              return /* @__PURE__ */ jsx(RemoteBox$1, {
+                children: tradeData && /* @__PURE__ */ jsx(BagItem, {
+                  item: clone(box.item),
+                  index: index2,
+                  tradeBoxes: clone(remoteBoxes),
+                  setTradeBoxes: setRemoteBoxes,
+                  tradeLayer: "remote",
+                  plugActor,
+                  tradeData,
+                  localUserId: plug.principalId,
+                  setSelItem,
+                  setLoading,
+                  setAlertMessage,
+                  isConfirmedItem
+                }, `remote_${box.id}`)
+              }, box.id);
+            })
           })]
         })]
-      }), showTradeCompletedModal && /* @__PURE__ */ jsxs(ModalBox, {
-        children: [/* @__PURE__ */ jsx("div", {
-          style: {},
-          children: "Trade Completed!"
-        }), /* @__PURE__ */ jsx("button", {
-          onClick: () => {
-            setShowTradeCompletedModal(false);
-          },
-          children: "Ok"
-        })]
-      }), message && /* @__PURE__ */ jsxs(ModalBox, {
-        children: [/* @__PURE__ */ jsx("div", {
-          style: {},
-          children: message
-        }), /* @__PURE__ */ jsx("button", {
-          onClick: () => {
-            setMessage("");
-          },
-          children: "Ok"
-        })]
       }), /* @__PURE__ */ jsxs("div", {
-        children: [!authenticated && /* @__PURE__ */ jsx("div", {
-          style: {},
-          children: /* @__PURE__ */ jsx("div", {
-            style: {},
-            children: /* @__PURE__ */ jsx("button", {
-              onClick: onConnect,
-              style: {
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                padding: "1rem 2rem",
-                borderRadius: "0.5rem",
-                backgroundColor: "#2c3e50"
-              },
-              children: "Connect"
-            })
-          })
-        }), authenticated && mode === "trade" && /* @__PURE__ */ jsxs(Fragment, {
-          children: [/* @__PURE__ */ jsxs("div", {
-            children: [/* @__PURE__ */ jsx("span", {
-              style: {
-                opacity: 0.5,
-                textAlign: "left",
-                display: "inline-block",
-                width: "300px",
-                paddingLeft: "10px"
-              },
-              children: "YOUR OFFERINGS"
-            }), /* @__PURE__ */ jsx("span", {
-              style: {
-                opacity: 0.5,
-                textAlign: "right",
-                display: "inline-block",
-                width: "300px",
-                paddingRight: "10px"
-              },
-              children: "PARTNER OFFERINGS"
-            })]
-          }), /* @__PURE__ */ jsxs("div", {
-            style: {},
-            children: [/* @__PURE__ */ jsx("span", {
-              style: {
-                display: "inline-block",
-                textAlign: "left",
-                width: "300px",
-                paddingLeft: "10px"
-              },
-              children: localBoxes.map((box, index2) => {
-                return /* @__PURE__ */ jsx(BagBox$1, {
-                  children: tradeData && /* @__PURE__ */ jsx(BagItem, {
-                    isForTrade: true,
-                    item: clone(box.item),
-                    index: index2,
-                    tradeBoxes: clone(localBoxes),
-                    setTradeBoxes: setLocalBoxes,
-                    tradeLayer: "local",
-                    plugActor,
-                    tradeData,
-                    localUserId,
-                    setSelItem,
-                    setLoading,
-                    setMessage
-                  }, `local_${box.id}`)
-                }, box.id);
-              })
-            }), /* @__PURE__ */ jsx("span", {
-              style: {
-                display: "inline-block",
-                textAlign: "right",
-                width: "300px",
-                paddingRight: "10px"
-              },
-              children: remoteBoxes.map((box, index2) => {
-                return /* @__PURE__ */ jsx(RemoteBox$1, {
-                  children: tradeData && /* @__PURE__ */ jsx(BagItem, {
-                    item: clone(box.item),
-                    index: index2,
-                    tradeBoxes: clone(remoteBoxes),
-                    setTradeBoxes: setRemoteBoxes,
-                    tradeLayer: "remote",
-                    plugActor,
-                    tradeData,
-                    localUserId,
-                    setSelItem,
-                    setLoading,
-                    setMessage
-                  }, `remote_${box.id}`)
-                }, box.id);
-              })
-            })]
-          }), tradeData && (isCreator && tradeData.guest_accept || !isCreator && tradeData.host_accept) ? "TRADE ACCEPTED" : ""]
-        }), mode === "trade" && tradeData && tradeData.host !== "" && tradeData.guest !== "" && tradeData.host_accept && tradeData.guest_accept && !confirmed && /* @__PURE__ */ jsxs("div", {
+        style: {
+          width: "100%",
+          marginTop: ".5em"
+        },
+        children: [!tradeData && !prevTrade.id && mode === "trade" && connected && /* @__PURE__ */ jsx("button", {
           style: {
-            height: "30px",
-            backgroundColor: "gray",
-            marginLeft: "10px",
-            marginRight: "10px"
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%, 0)",
+            backgroundColor: "green",
+            padding: ".3em 1em",
+            borderRadius: ".3em",
+            disable: loading,
+            opacity: loading && 0.5
+          },
+          onClick: onStartTrade,
+          children: "Start Trade"
+        }), tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && mode === "trade" && /* @__PURE__ */ jsx("button", {
+          onClick: onCancelTrade,
+          style: {
+            position: "absolute",
+            right: ".5em",
+            backgroundColor: "red",
+            padding: ".3em 1em",
+            borderRadius: ".3em",
+            disable: loading,
+            opacity: loading && 0.5
+          },
+          children: "Cancel Trade"
+        }), tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && mode === "trade" && /* @__PURE__ */ jsxs("div", {
+          style: {
+            display: "flex",
+            gap: "1em",
+            paddingLeft: ".5em"
           },
           children: [/* @__PURE__ */ jsx("button", {
             style: {
               backgroundColor: "#2ecc71",
-              borderRadius: "3px",
-              padding: "3px 5px",
-              opacity: accepted ? 1 : 0.5
+              borderRadius: ".3em",
+              padding: ".3em 1em",
+              disable: !existItems(localBoxes) || accepted,
+              opacity: (!existItems(localBoxes) || accepted) && 0.5
             },
-            onClick: onAccept,
-            disabled: accepted || !existItems(localBoxes),
+            onClick: () => {
+              if (!existItems(localBoxes) || accepted)
+                return;
+              setAccepted(true);
+            },
             children: "Accept"
           }), /* @__PURE__ */ jsx("button", {
             style: {
               backgroundColor: "#e74c3c",
-              borderRadius: "3px",
-              padding: "3px 5px",
-              opacity: accepted || existItems(localBoxes) ? 1 : 0.5
+              borderRadius: ".3em",
+              padding: ".3em 1em",
+              disable: !existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
+              opacity: (!existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5
             },
             onClick: onCancel,
-            disabled: !accepted || !existItems(localBoxes) || (isCreator && tradeData ? tradeData.guest_accept : tradeData.host_accept),
             children: "Cancel"
           })]
-        }), authenticated && /* @__PURE__ */ jsx("div", {
-          className: "inventory",
+        })]
+      }), /* @__PURE__ */ jsx("div", {
+        style: {
+          width: "100%"
+        },
+        children: partnerId && mode === "trade" && /* @__PURE__ */ jsxs("div", {
+          style: {
+            position: "absolute",
+            left: ".5em",
+            bottom: "2em"
+          },
+          children: ["Trading with\xA0", /* @__PURE__ */ jsx("span", {
+            style: {
+              color: "yellow"
+            },
+            children: partnerId
+          })]
+        })
+      }), isCreator && tradeData && tradeData.id && !tradeData.guest.length && /* @__PURE__ */ jsx(ModalBox, {
+        children: /* @__PURE__ */ jsxs("div", {
           style: {
             display: "flex",
-            flexWrap: "wrap",
-            padding: "10px"
+            alignItems: "center",
+            padding: "50px 10px",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%"
           },
-          children: inventoryBoxes.slice((curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum), curPage * (mode === "trade" ? tradePageBoxNum : pageBoxNum)).map((box, index2) => {
-            return /* @__PURE__ */ jsx(BagBox$1, {
-              children: /* @__PURE__ */ jsx(BagItem, {
-                item: clone(box.item),
-                index: (curPage - 1) * (mode === "trade" ? tradePageBoxNum : pageBoxNum) + index2,
-                tradeBoxes: clone(inventoryBoxes),
-                setTradeBoxes: setInventoryBoxes,
-                tradeLayer: "inventory",
-                plugActor,
-                tradeData,
-                localUserId,
-                setSelItem,
-                setLoading,
-                setMessage
-              }, `inventory_${box.id}`)
-            }, box.id);
-          })
-        }), tradeStarted && tradeData && partnerId && !tradeId && /* @__PURE__ */ jsxs(Fragment, {
           children: [/* @__PURE__ */ jsx("b", {
-            children: " WAITING FOR TRADE PARTNER... "
-          }), /* @__PURE__ */ jsx("br", {}), "Send this link to your trade partner", /* @__PURE__ */ jsx("br", {}), /* @__PURE__ */ jsxs("a", {
-            className: "text-blue-900",
-            href: `${url.host}/?tradeId=${tradeData.id}`,
+            children: " WAITING FOR TRADE PARTNER..."
+          }), "Send this link to your trade partner", /* @__PURE__ */ jsxs("a", {
+            style: {
+              color: "yellow"
+            },
+            href: "#",
             children: [url.host, "/?tradeId=", tradeData.id]
           })]
-        }), tradeStarted && tradeData && partnerId && /* @__PURE__ */ jsxs(Fragment, {
-          children: ["Trading with ", partnerId]
-        }), tradeStarted && /* @__PURE__ */ jsx("button", {
-          onClick: cancelTrade,
+        })
+      }), accepted && tradeData && (!tradeData.host_accept || !tradeData.guest_accept) && /* @__PURE__ */ jsx(ModalBox, {
+        children: /* @__PURE__ */ jsxs("div", {
           style: {
-            zIndex: 1e3,
-            backgroundColor: "red",
-            padding: "5px",
-            float: "right",
-            marginRight: "10px"
+            display: "flex",
+            alignItems: "center",
+            padding: "50px",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%"
           },
-          children: "Cancel Trade"
-        })]
+          children: [/* @__PURE__ */ jsx("div", {
+            children: "Do you want to confirm the current trade?"
+          }), /* @__PURE__ */ jsxs("div", {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              width: "100%"
+            },
+            children: [/* @__PURE__ */ jsx("button", {
+              style: {
+                backgroundColor: "#2ecc71",
+                borderRadius: ".3em",
+                padding: ".3em 1em",
+                disable: isCreator ? tradeData.host_accept : tradeData.guest_accept,
+                opacity: (isCreator ? tradeData.host_accept : tradeData.guest_accept) && 0.5
+              },
+              onClick: onConfirm,
+              children: "Confirm"
+            }), /* @__PURE__ */ jsx("button", {
+              style: {
+                backgroundColor: "#e74c3c",
+                borderRadius: ".3em",
+                padding: ".3em 1em",
+                disable: accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
+                opacity: (accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5
+              },
+              onClick: onCancel,
+              children: "Cancel"
+            })]
+          })]
+        })
+      }), alertMessage && /* @__PURE__ */ jsx(ModalBox, {
+        children: /* @__PURE__ */ jsxs("div", {
+          style: {
+            display: "flex",
+            alignItems: "center",
+            padding: "50px",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%"
+          },
+          children: [/* @__PURE__ */ jsx("div", {
+            children: alertMessage
+          }), /* @__PURE__ */ jsx("button", {
+            style: {
+              backgroundColor: "#2ecc71",
+              borderRadius: ".3em",
+              padding: ".3em 1em"
+            },
+            onClick: () => {
+              setAlertMessage("");
+            },
+            children: "Ok"
+          })]
+        })
+      }), message && /* @__PURE__ */ jsx(ModalBox, {
+        children: /* @__PURE__ */ jsx("div", {
+          style: {
+            display: "flex",
+            alignItems: "center",
+            padding: "50px",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%"
+          },
+          children: /* @__PURE__ */ jsx("div", {
+            children: message
+          })
+        })
       }), /* @__PURE__ */ jsx(Footer, {
-        showPagination: authenticated,
+        showPagination: connected,
         loading,
         curPage,
         setCurPage
