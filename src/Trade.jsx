@@ -80,8 +80,8 @@ export const Trade = ({type}) => {
       if (!connected || !plug.agent || !plug.principalId) return;
       setLoading(true);
       const newTokens = await getUserTokens({agent: plug.agent, user: plug.principalId});
-      setInventoryTokens(clone(newTokens));
       setInventoryBoxes(getInventoryBoxes(newTokens));
+      setInventoryTokens(clone(newTokens));
 
       // Disable this for partner to start the trade himself
       if (localTradeId) {
@@ -221,18 +221,20 @@ export const Trade = ({type}) => {
   }, [tradeData]);
 
   useEffect(() => {
+    console.log('inventoryTokens: ', inventoryTokens)
+
     const cloneInventoryBoxes = clone(inventoryBoxes);
     cloneInventoryBoxes.forEach(box => {
       box.item?.token_id && (box.item = inventoryTokens[box.item.token_id]);
     });
-    // console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
+    console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
     setInventoryBoxes(cloneInventoryBoxes);
 
     const cloneLocalBoxes = clone(localBoxes);
     cloneLocalBoxes.forEach(box => {
       box.item?.token_id && (box.item = inventoryTokens[box.item.token_id]);
     });
-    // console.log('cloneLocalBoxes: ', cloneLocalBoxes)
+    console.log('cloneLocalBoxes: ', cloneLocalBoxes)
     setLocalBoxes(cloneLocalBoxes);
   }, [inventoryTokens]);
 
@@ -272,9 +274,9 @@ export const Trade = ({type}) => {
       }
 
       console.log('plug: ', plug);
-      setConnected(true);
-      setMessage('');
       setLoading(false);
+      setMessage('');
+      setConnected(true);
     })();
   };
 
