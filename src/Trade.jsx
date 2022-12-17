@@ -1,164 +1,165 @@
-import React, { useEffect, useState } from 'react'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import React, {useEffect, useState} from 'react';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 
-import { inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum, debugMode } from './constants'
-import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils'
-import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index'
+import {inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum, debugMode} from './constants';
+import {canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT} from './utils';
+import {idlFactory} from '../trade_canister/src/declarations/trade_canister/index';
 
-import { ModalBox } from './ModalBox'
-import RemoteBox from './RemoteBox'
-import BagBox from './BagBox'
-import BagItem from './BagItem'
-import Header from './Header'
-import Footer from './Footer'
+import {ModalBox} from './ModalBox';
+import RemoteBox from './RemoteBox';
+import BagBox from './BagBox';
+import BagItem from './BagItem';
+import Header from './Header';
+import Footer from './Footer';
 
-const { ic } = window
-const { plug } = ic
+const {ic} = window;
+const {plug} = ic;
 
-const canisterId = debugMode ? 'rrkah-fqaaa-aaaaa-aaaaq-cai' : 'pjl2v-yiaaa-aaaao-aeksq-cai'
-const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai']
-const host = debugMode ? 'http://localhost:8000' : 'https://mainnet.dfinity.network'
-const timeout = 50000
-let partnerTokens = {}
-let prevTrade = {}
-let forceStopTrade = false
+const canisterId = debugMode ? 'rrkah-fqaaa-aaaaa-aaaaq-cai' : 'pjl2v-yiaaa-aaaao-aeksq-cai';
+const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai'];
+const host = debugMode ? 'http://localhost:8000' : 'https://mainnet.dfinity.network';
+const timeout = 50000;
+let partnerTokens = {};
+let prevTrade = {};
+let forceStopTrade = false;
 
-const url = new URL(window.location.href)
-let tradeId = url.searchParams.get('tradeId')
+const url = new URL(window.location.href);
+let tradeId = url.searchParams.get('tradeId');
 
-export const Trade = ({ type }) => {
-  const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
-    return { id: i, item: null }
-  })
+export const Trade = ({type}) => {
+  const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map(i => {
+    return {id: i, item: null};
+  });
 
-  const initLocalBoxes = [...Array(tradeBoxNum).keys()].map((i) => {
-    return { id: i, item: null }
-  })
+  const initLocalBoxes = [...Array(tradeBoxNum).keys()].map(i => {
+    return {id: i, item: null};
+  });
 
-  const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map((i) => {
-    return { id: i, item: null }
-  })
+  const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map(i => {
+    return {id: i, item: null};
+  });
 
-  const [plugActor, setPlugActor] = useState(null)
-  const [connected, setConnected] = useState(false)
-  const [tradeData, setTradeData] = useState(null)
-  const [isCreator, setIsCreator] = useState(false)
-  const [partnerId, setPartnerId] = useState(null)
+  const [plugActor, setPlugActor] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [tradeData, setTradeData] = useState(null);
+  const [isCreator, setIsCreator] = useState(false);
+  const [partnerId, setPartnerId] = useState(null);
 
-  const [remoteBoxes, setRemoteBoxes] = useState(clone(initRemoteBoxes))
-  const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes))
-  const [inventoryTokens, setInventoryTokens] = useState({})
-  const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes)
-  const [accepted, setAccepted] = useState(false)
+  const [remoteBoxes, setRemoteBoxes] = useState(clone(initRemoteBoxes));
+  const [localBoxes, setLocalBoxes] = useState(clone(initLocalBoxes));
+  const [inventoryTokens, setInventoryTokens] = useState({});
+  const [inventoryBoxes, setInventoryBoxes] = useState(initInventoryBoxes);
+  const [accepted, setAccepted] = useState(false);
 
-  const [loading, setLoading] = useState(false)
-  const [mode, setMode] = useState('inventory') // inventory or trade
-  const [selItem, setSelItem] = useState(null)
-  const [curPage, setCurPage] = useState(1)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState('inventory'); // inventory or trade
+  const [selItem, setSelItem] = useState(null);
+  const [curPage, setCurPage] = useState(1);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [message, setMessage] = useState('');
 
-  let localLoginAttempted = false
-  let localTradeId = tradeData ? tradeData.id : (tradeId ? tradeId : localStorage.getItem('storageTradeId'))
+  let localLoginAttempted = false;
+  const localTradeId = tradeData ? tradeData.id : (tradeId || localStorage.getItem('storageTradeId'));
   // localTradeId && console.log('localTradeId: ', localTradeId)
   // console.log('local, global, storage: ', tradeData?.id ?? undefined, tradeId, localStorage.getItem('storageTradeId'))
 
   useEffect(() => {
     (async () => {
-      await waitLoading()
-      if (type !== 'webaverse' || connected || localLoginAttempted) return // for webaverse
-      localLoginAttempted = true
-      onConnect()
-    })()
-  }, [])
+      await waitLoading();
+      if (type !== 'webaverse' || connected || localLoginAttempted) return; // for webaverse
+      localLoginAttempted = true;
+      onConnect();
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
-      await waitLoading()
-      if (!connected || !plug.agent || !plug.principalId) return
-      setLoading(true)
-      const newTokens = await getUserTokens({ agent: plug.agent, user: plug.principalId })
-      setInventoryTokens(clone(newTokens))
-      setInventoryBoxes(getInventoryBoxes(newTokens))
+      await waitLoading();
+      console.log('connected: ', connected, plug);
+      if (!connected || !plug.agent || !plug.principalId) return;
+      setLoading(true);
+      const newTokens = await getUserTokens({agent: plug.agent, user: plug.principalId});
+      setInventoryTokens(clone(newTokens));
+      setInventoryBoxes(getInventoryBoxes(newTokens));
 
       // Disable this for partner to start the trade himself
       if (localTradeId) {
-        const trade = await onStartTrade() // Start trade if it's existed
+        const trade = await onStartTrade(); // Start trade if it's existed
 
         if (trade && Object.keys(newTokens).length) {
-          const hostId = getPrincipalId(trade.host)
-          const guestId = getPrincipalId(trade.guest)
-          let ltts // Local Trade Tokens
+          const hostId = getPrincipalId(trade.host);
+          const guestId = getPrincipalId(trade.guest);
+          let ltts; // Local Trade Tokens
 
           if (hostId === plug.principalId) {
-            ltts = canisterItemsToTokens(trade.host_items, newTokens)
+            ltts = canisterItemsToTokens(trade.host_items, newTokens);
           } else {
             if (guestId === plug.principalId) {
-              ltts = canisterItemsToTokens(trade.guest_items, newTokens)
+              ltts = canisterItemsToTokens(trade.guest_items, newTokens);
             }
           }
 
           if (ltts) {
-            const its = Object.values(newTokens).filter(token => !ltts[token.token_id]) // Inventory Tokens
-            const ibs = getInventoryBoxes(its) // Inventory Boxes
-            setInventoryBoxes(ibs)
-            const lbs = getLocalBoxes(ltts) // Local Boxes
-            setLocalBoxes(lbs)
+            const its = Object.values(newTokens).filter(token => !ltts[token.token_id]); // Inventory Tokens
+            const ibs = getInventoryBoxes(its); // Inventory Boxes
+            setInventoryBoxes(ibs);
+            const lbs = getLocalBoxes(ltts); // Local Boxes
+            setLocalBoxes(lbs);
           }
         }
       }
 
-      setLoading(false)
-    })()
-  }, [connected])
+      setLoading(false);
+    })();
+  }, [connected]);
 
   // Update game status whenever trade data is changed (real time)
   useEffect(() => {
     (async () => {
       if (forceStopTrade) {
-        forceStopTrade = false
-        setTradeData(null)
-        return
+        forceStopTrade = false;
+        setTradeData(null);
+        return;
       }
-      if (!tradeData || !plugActor || !plug.principalId) return
-      setLoading(true)
-      const hostId = getPrincipalId(tradeData.host)
-      const guestId = getPrincipalId(tradeData.guest)
-      const prevGuestId = getPrincipalId(prevTrade.guest)
+      if (!tradeData || !plugActor || !plug.principalId) return;
+      setLoading(true);
+      const hostId = getPrincipalId(tradeData.host);
+      const guestId = getPrincipalId(tradeData.guest);
+      const prevGuestId = getPrincipalId(prevTrade.guest);
       // console.log('prevTrade: ', prevTrade)
 
       if (isCreator && prevGuestId && !guestId) {
-        setPartnerId(null)
-        setAlertMessage('The guest left the trade')
+        setPartnerId(null);
+        setAlertMessage('The guest left the trade');
       }
 
       if (!isCreator && guestId && guestId !== plug.principalId) {
-        setAlertMessage('Trade already initialized to another wallet')
-        return
+        setAlertMessage('Trade already initialized to another wallet');
+        return;
       }
 
       if (isCreator && guestId && guestId !== partnerId) {
-        console.log('trade partner found(guestId): ', guestId)
-        setPartnerId(guestId)
+        console.log('trade partner found(guestId): ', guestId);
+        setPartnerId(guestId);
       }
 
       if (!isCreator && hostId && hostId !== partnerId) {
-        console.log('trade partner found(hostId): ', hostId)
-        setPartnerId(hostId)
+        console.log('trade partner found(hostId): ', hostId);
+        setPartnerId(hostId);
       }
 
-      const partnerTokenLen = Object.keys(partnerTokens).length
+      const partnerTokenLen = Object.keys(partnerTokens).length;
 
       // Get partner NFT tokens once
       if (tradeData && ((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen && partnerId) {
-        partnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId })
-        console.log('partnerTokens: ', partnerTokens)
+        partnerTokens = await getUserTokens({agent: plug.agent, user: partnerId});
+        console.log('partnerTokens: ', partnerTokens);
       }
 
-      const rtts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens) // Remote Trade Tokens
-      const rbs = getRemoteBoxes(rtts) // Remote Boxes
-      setRemoteBoxes(rbs)
+      const rtts = isCreator ? canisterItemsToTokens(tradeData.guest_items, partnerTokens) : canisterItemsToTokens(tradeData.host_items, partnerTokens); // Remote Trade Tokens
+      const rbs = getRemoteBoxes(rtts); // Remote Boxes
+      setRemoteBoxes(rbs);
 
       if (
         hostId && guestId &&
@@ -166,22 +167,22 @@ export const Trade = ({ type }) => {
         tradeData.guest_items.length && tradeData.guest_items.length !== tradeData.guest_escrow_items.length &&
         tradeData.host_accept && tradeData.guest_accept
       ) {
-        console.log('Sending NFTs...')
-        const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items
-        const canisterEscrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items
-        const canisterAddableItems = getMismatchedItems(canisterItems, canisterEscrowItems)
-        console.log('canisterAddableItems: ', canisterAddableItems)
+        console.log('Sending NFTs...');
+        const canisterItems = isCreator ? tradeData.host_items : tradeData.guest_items;
+        const canisterEscrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items;
+        const canisterAddableItems = getMismatchedItems(canisterItems, canisterEscrowItems);
+        console.log('canisterAddableItems: ', canisterAddableItems);
 
         for (let i = 0; i < canisterAddableItems.length; i++) {
-          const canisterAddableItem = canisterAddableItems[i]
-          const item = inventoryTokens[canisterAddableItem.token_id]
+          const canisterAddableItem = canisterAddableItems[i];
+          const item = inventoryTokens[canisterAddableItem.token_id];
 
           try {
             // await sendNFT({ item, to: partnerId, agent: plug.agent })
-            await plugActor.add_item_to_escrow(tradeData.id, canisterAddableItem)
+            await plugActor.add_item_to_escrow(tradeData.id, canisterAddableItem);
           } catch (e) {
-            console.log('NFT is non-existent: ', e)
-            await onCancel()
+            console.log('NFT is non-existent: ', e);
+            await onCancel();
           }
         }
       }
@@ -192,187 +193,189 @@ export const Trade = ({ type }) => {
         tradeData.host_escrow_items.length === tradeData.host_items.length &&
         tradeData.guest_items.length &&
         tradeData.guest_escrow_items.length === tradeData.guest_items.length) {
-        await onCancelTrade()
-        setAlertMessage('Trade completed!')
+        await onCancelTrade();
+        setAlertMessage('Trade completed!');
       }
 
-      prevTrade = clone(tradeData)
-      setLoading(false)
+      prevTrade = clone(tradeData);
+      setLoading(false);
 
       setTimeout(async () => {
         try {
-          const trade = await plugActor.get_trade_by_id(tradeData.id)
-          if (!deepEqual(trade, tradeData)) console.log('trade: ', trade)
-          setTradeData(trade)
+          const trade = await plugActor.get_trade_by_id(tradeData.id);
+          if (!deepEqual(trade, tradeData)) console.log('trade: ', trade);
+          setTradeData(trade);
         } catch (e) {
-          console.log('get_trade_by_id error: ', e)
-          await onCancelTrade()
+          console.log('get_trade_by_id error: ', e);
+          await onCancelTrade();
 
           if (!alertMessage) {
             if (isCreator) {
             } else {
-              setAlertMessage('The host left the trade')
+              setAlertMessage('The host left the trade');
             }
           }
         }
-      }, 1000)
-    })()
-  }, [tradeData])
+      }, 1000);
+    })();
+  }, [tradeData]);
 
   useEffect(() => {
-    const cloneInventoryBoxes = clone(inventoryBoxes)
+    const cloneInventoryBoxes = clone(inventoryBoxes);
     cloneInventoryBoxes.forEach(box => {
-      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
-    })
+      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id]);
+    });
     // console.log('cloneInventoryBoxes: ', cloneInventoryBoxes)
-    setInventoryBoxes(cloneInventoryBoxes)
+    setInventoryBoxes(cloneInventoryBoxes);
 
-    const cloneLocalBoxes = clone(localBoxes)
+    const cloneLocalBoxes = clone(localBoxes);
     cloneLocalBoxes.forEach(box => {
-      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id])
-    })
+      box.item?.token_id && (box.item = inventoryTokens[box.item.token_id]);
+    });
     // console.log('cloneLocalBoxes: ', cloneLocalBoxes)
-    setLocalBoxes(cloneLocalBoxes)
-  }, [inventoryTokens])
+    setLocalBoxes(cloneLocalBoxes);
+  }, [inventoryTokens]);
 
   const onConnect = async () => {
     (async () => {
-      await waitLoading()
-      setLoading(true)
+      await waitLoading();
+      setLoading(true);
       // setMessage('Connecting...')
-      let publicKey
+      let publicKey;
 
       try {
         publicKey = await plug.requestConnect({
-          whitelist, host, timeout,
+          whitelist,
+          host,
+          timeout,
           onConnectionUpdate: () => {
-            console.log('sessionData: ', plug.sessionManager.sessionData)
-          }
-        })
+            console.log('sessionData: ', plug.sessionManager.sessionData);
+          },
+        });
       } catch (e) {
-        setMessage('')
-        setLoading(false)
-        setAlertMessage('Connection failed')
-        return
+        setMessage('');
+        setLoading(false);
+        setAlertMessage('Connection failed');
+        return;
       }
 
       if (publicKey) {
-        console.log('publicKey: ', publicKey)
-        const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory, agent: plug.agent })
-        console.log('tempPlugActor: ', tempPlugActor)
-        setPlugActor(tempPlugActor)
+        console.log('publicKey: ', publicKey);
+        const tempPlugActor = await plug.createActor({canisterId, interfaceFactory: idlFactory, agent: plug.agent});
+        console.log('tempPlugActor: ', tempPlugActor);
+        setPlugActor(tempPlugActor);
       } else {
-        setMessage('')
-        setLoading(false)
-        setAlertMessage('Connection failed')
-        return
+        setMessage('');
+        setLoading(false);
+        setAlertMessage('Connection failed');
+        return;
       }
 
-      console.log('plug: ', plug)
-      setConnected(true)
-      setMessage('')
-      setLoading(false)
-    })()
-  }
+      console.log('plug: ', plug);
+      setConnected(true);
+      setMessage('');
+      setLoading(false);
+    })();
+  };
 
   const onStartTrade = async () => {
-    if (!plugActor || !plug.principalId) return
-    setLoading(true)
-    let trade
+    if (!plugActor || !plug.principalId) return;
+    setLoading(true);
+    let trade;
 
     if (localTradeId) {
-      console.log('localTradeId: ', localTradeId)
+      console.log('localTradeId: ', localTradeId);
 
       try {
-        trade = await plugActor.get_trade_by_id(localTradeId)
+        trade = await plugActor.get_trade_by_id(localTradeId);
       } catch (e) {
-        console.log('get_trade_by_id error: ', e)
-        await onCancelTrade()
+        console.log('get_trade_by_id error: ', e);
+        await onCancelTrade();
         if (!alertMessage) {
           if (isCreator) {
           } else {
-            setAlertMessage('The host left the trade')
+            setAlertMessage('The host left the trade');
           }
         }
-        return
+        return;
       }
     }
 
     if (!trade) {
-      trade = await plugActor.create_trade()
+      trade = await plugActor.create_trade();
     }
-    localStorage.setItem('storageTradeId', trade.id)
-    const hostId = getPrincipalId(trade.host)
-    const guestId = getPrincipalId(trade.guest)
+    localStorage.setItem('storageTradeId', trade.id);
+    const hostId = getPrincipalId(trade.host);
+    const guestId = getPrincipalId(trade.guest);
 
     if (hostId === plug.principalId) {
-      setIsCreator(true)
+      setIsCreator(true);
     } else {
       if (!guestId || guestId !== plug.principalId) {
-        trade = await plugActor.join_trade(trade.id)
+        trade = await plugActor.join_trade(trade.id);
       }
       if (getPrincipalId(trade.guest) === plug.principalId) {
-        setIsCreator(false)
+        setIsCreator(false);
       } else {
         // This will never occur if rust is correct, but added for exception
-        setMessage('Trading is incorrect')
-        setLoading(false)
-        return
+        setMessage('Trading is incorrect');
+        setLoading(false);
+        return;
       }
     }
 
-    console.log('trade: ', trade)
-    setTradeData(trade)
-    setLoading(false)
-    return trade
-  }
+    console.log('trade: ', trade);
+    setTradeData(trade);
+    setLoading(false);
+    return trade;
+  };
 
   const onCancelTrade = async () => {
-    setLoading(true)
+    setLoading(true);
 
     if (plugActor && tradeData) {
       try {
-        await plugActor.leave_trade(tradeData.id)
+        await plugActor.leave_trade(tradeData.id);
       } catch (e) {
-        console.log('onCancelTrade error: ', e)
+        console.log('onCancelTrade error: ', e);
       }
     }
 
-    forceStopTrade = true
-    setLoading(false)
-    setTradeData(null)
-    setPartnerId(null)
-    setAccepted(false)
-    setMessage('')
-    setAlertMessage('')
-    localStorage.setItem('storageTradeId', '')
-    tradeId = 0
-  }
+    forceStopTrade = true;
+    setLoading(false);
+    setTradeData(null);
+    setPartnerId(null);
+    setAccepted(false);
+    setMessage('');
+    setAlertMessage('');
+    localStorage.setItem('storageTradeId', '');
+    tradeId = 0;
+  };
 
   const onConfirm = async () => {
-    if (!plugActor || !tradeData) return
-    setLoading(true)
-    await plugActor.accept(tradeData.id)
-    setLoading(false)
-  }
+    if (!plugActor || !tradeData) return;
+    setLoading(true);
+    await plugActor.accept(tradeData.id);
+    setLoading(false);
+  };
 
   const onCancel = async () => {
-    if (!plugActor || !tradeData) return
-    setLoading(true)
-    setAccepted(false)
-    await plugActor.cancel(tradeData.id)
-    setLoading(false)
-  }
+    if (!plugActor || !tradeData) return;
+    setLoading(true);
+    setAccepted(false);
+    await plugActor.cancel(tradeData.id);
+    setLoading(false);
+  };
 
   const waitLoading = async () => {
-    await new Promise(resolve => !loading && resolve())
-  }
+    await new Promise(resolve => !loading && resolve());
+  };
 
   const isConfirmedItem = tokenId => {
-    if (!tradeData) return false
-    const escrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items
-    return !!escrowItems.find(escrowItem => escrowItem.token_id === tokenId)
-  }
+    if (!tradeData) return false;
+    const escrowItems = isCreator ? tradeData.host_escrow_items : tradeData.guest_escrow_items;
+    return !!escrowItems.find(escrowItem => escrowItem.token_id === tokenId);
+  };
 
   return (
     <div style={{
@@ -405,12 +408,12 @@ export const Trade = ({ type }) => {
             display: 'flex',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            padding: '.5em'
+            padding: '.5em',
           }}>
             {inventoryBoxes
               .slice(
                 (curPage - 1) * (mode === 'trade' ? tradePageBoxNum : pageBoxNum),
-                curPage * (mode === 'trade' ? tradePageBoxNum : pageBoxNum)
+                curPage * (mode === 'trade' ? tradePageBoxNum : pageBoxNum),
               )
               .map((box, index) => {
                 return (
@@ -431,7 +434,7 @@ export const Trade = ({ type }) => {
                       isConfirmedItem={isConfirmedItem}
                     />
                   </BagBox>
-                )
+                );
               })}
           </div>
         }
@@ -460,7 +463,7 @@ export const Trade = ({ type }) => {
                 width: '50%',
                 display: 'inline-block',
                 textAlign: 'left',
-                paddingLeft: '.5em'
+                paddingLeft: '.5em',
               }}>
                 {localBoxes.map((box, index) => {
                   return (
@@ -484,14 +487,14 @@ export const Trade = ({ type }) => {
                         />
                       }
                     </BagBox>
-                  )
+                  );
                 })}
               </span>
               <span style={{
                 width: '50%',
                 display: 'inline-block',
                 textAlign: 'right',
-                paddingRight: '.5em'
+                paddingRight: '.5em',
               }}>
                 {remoteBoxes.map((box, index) => {
                   return (
@@ -514,7 +517,7 @@ export const Trade = ({ type }) => {
                         />
                       }
                     </RemoteBox>
-                  )
+                  );
                 })}
               </span>
             </div>
@@ -564,10 +567,10 @@ export const Trade = ({ type }) => {
                 disable: !existItems(localBoxes) || accepted,
                 opacity: (!existItems(localBoxes) || accepted) && 0.5,
               }}
-                onClick={() => {
-                  if (!existItems(localBoxes) || accepted) return
-                  setAccepted(true)
-                }}
+              onClick={() => {
+                if (!existItems(localBoxes) || accepted) return;
+                setAccepted(true);
+              }}
               >
                 Accept
               </button>
@@ -578,7 +581,7 @@ export const Trade = ({ type }) => {
                 disable: !existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
                 opacity: (!existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5,
               }}
-                onClick={onCancel}
+              onClick={onCancel}
               >
                 Cancel
               </button>
@@ -680,7 +683,7 @@ export const Trade = ({ type }) => {
                 backgroundColor: '#2ecc71',
                 borderRadius: '.3em',
                 padding: '.3em 1em',
-              }} onClick={() => { setAlertMessage('') }}>
+              }} onClick={() => { setAlertMessage(''); }}>
                 Ok
               </button>
             </div>
@@ -704,5 +707,5 @@ export const Trade = ({ type }) => {
         <Footer showPagination={connected} loading={loading} curPage={curPage} setCurPage={setCurPage} />
       </DndProvider>
     </div>
-  )
-}
+  );
+};
