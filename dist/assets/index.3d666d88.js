@@ -50041,41 +50041,46 @@ const getInventoryBoxes = (inventoryItems) => {
   });
   return inventoryBoxes;
 };
-const player1TokenId = 143;
-const player2TokenId = 149;
 const getUserTokens = async ({
   agent,
   user
 }) => {
-  {
-    if (user === "6b7jr-gch2d-hjkwd-nwoxa-ilw3z-hj547-nyvll-3ohgd-epuof-7adkv-2qe") {
-      return {
-        [player1TokenId]: {
-          canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-          standard: "DIP721",
-          index: player1TokenId,
-          token_id: player1TokenId,
-          name: "Player 1",
-          collection: "Test",
-          url: "https://local.webaverse.com:3000/src/assets/body1.glb",
-          slot: 0
-        }
+  let collections = [];
+  collections = await dist.getAllUserNFTs({
+    agent,
+    user
+  });
+  console.log("collections: ", collections);
+  const newTokens = {};
+  let slot = 0;
+  collections.forEach((collection) => {
+    collection.tokens.forEach((token2) => {
+      var _a, _b, _c, _d;
+      const token_id = token2.index.toString();
+      let newToken = {
+        canister_id: token2.canister,
+        collection: token2.collection,
+        token_id,
+        slot,
+        standard: token2.standard,
+        index: token2.index
       };
-    } else {
-      return {
-        [player2TokenId]: {
-          canister_id: "6hgw2-nyaaa-aaaai-abkqq-cai",
-          standard: "DIP721",
-          index: player2TokenId,
-          token_id: player2TokenId,
-          name: "Player 2",
-          collection: "Test",
-          url: "https://local.webaverse.com:3000/src/assets/body2.glb",
-          slot: 0
-        }
-      };
-    }
-  }
+      const jsonMetadata = (_b = (_a = token2.metadata) == null ? void 0 : _a.json) == null ? void 0 : _b.value.TextContent;
+      if (jsonMetadata) {
+        const parseMetadata = JSON.parse(jsonMetadata);
+        console.log("parseMetadata: ", parseMetadata);
+        newToken.name = (_c = parseMetadata.name) != null ? _c : token2.collection;
+        newToken.url = (_d = parseMetadata.image) != null ? _d : collection.icon;
+      } else {
+        newToken.name = token2.collection;
+        newToken.url = collection.icon;
+      }
+      newTokens[token_id] = newToken;
+      slot++;
+    });
+  });
+  console.log("newTokens: ", newTokens);
+  return newTokens;
 };
 const getExtension = (url2) => {
   const extension = url2.split(".").pop().toLowerCase();

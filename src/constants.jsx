@@ -11,6 +11,6 @@ export const itemTypes = {
   LAYER1: 'layer1',
 }
 
-export const isDebug = true
+export const isDebug = false
 
 export const isMainNet = true
