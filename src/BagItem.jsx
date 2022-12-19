@@ -1,31 +1,35 @@
-import React from "react";
-import { useDrag, useDrop } from "react-dnd";
-import { GLTFModel } from "react-3d-viewer";
-import { Principal } from "@dfinity/principal"
+import React from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import { GLTFModel } from 'react-3d-viewer';
+import { Principal } from '@dfinity/principal';
 
-import { clone, isImage, isMedia, isModel } from "./utils";
-import { itemTypes } from "./constants";
+import { clone, isImage, isMedia, isModel } from './utils';
+import { itemTypes } from './constants';
 
 export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
   const modelRef = React.useRef(null);
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     switch (event.detail) {
       case 1:
+        console.log('handling single click')
         if (window && window.openInWebaverse) {
-          window.openInWebaverse(item);
+          if (isModel(item?.url)) {
+            console.log('opening in webaverse')
+            window.openInWebaverse(item);
+          }
         } else {
           setSelItem(item);
         }
         break;
       case 2:
-        console.log('handling double click')
+        console.log('handling double click');
         break;
       case 3:
-        console.log('handling triple click')
+        console.log('handling triple click');
         break;
       default:
-        console.log('handling default click')
+        console.log('handling default click');
         break;
     }
   };
@@ -42,46 +46,41 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
     };
   }, []);
 
-  return item && (
+  return item?.url ? (
     <div
       style={{
-        width: "100%",
-        height: "100%",
-        border: "0 !important",
+        width: '100%',
+        height: '100%',
+        border: '0 !important',
         opacity: isDragging ? 0 : 1,
-        cursor: "grab",
+        cursor: 'grab',
         img: {
-          maxWidth: "100%"
+          maxWidth: '100%',
         },
         video: {
-          maxWidth: "100%"
+          maxWidth: '100%',
         },
       }}
       onClick={handleClick}
     >
       {isImage(item?.url) && (
-        <span onClick={handleClick}>
-          <img
-            crossOrigin="anonymous"
-            referrerPolicy="no-referer-on-downgrade"
-            style={{}}
-            src={item.url}
-            onClick={handleClick}
-          />
-        </span>
+        <img
+          crossOrigin='anonymous'
+          referrerPolicy='no-referer-on-downgrade'
+          style={{}}
+          src={item.url}
+        />
       )}
       {isMedia(item?.url) && (
-        <span onClick={handleClick}>
-          <video
-            crossOrigin="anonymous"
-            referrerPolicy="no-referer-on-downgrade"
-            style={{}}
-            src={item.url}
-            autoPlay
-            loop
-            muted
-          />
-        </span>
+        <video
+          crossOrigin='anonymous'
+          referrerPolicy='no-referer-on-downgrade'
+          style={{}}
+          src={item.url}
+          autoPlay
+          loop
+          muted
+        />
       )}
       {isModel(item?.url) && (
         <GLTFModel
@@ -91,11 +90,10 @@ export const PresentationalBagItem = ({ isDragging, item, setSelItem }) => {
           src={item.url}
           enabled={false}
           position={{ x: -0.15, y: -0.3, z: -0.3 }}
-          onClick={handleClick}
         />
       )}
     </div>
-  )
+  ) : <></>;
 };
 
 const BagItem = ({
@@ -115,12 +113,12 @@ const BagItem = ({
   const ref = React.useRef(null);
   if (!item) item = {};
   item.isForTrade = isForTrade;
-  // console.log("item: ", item);
+  // console.log('item: ', item);
 
   const [{ handlerId }, drop] = useDrop({
     accept: itemTypes.LAYER1,
     candrop(dragItem, monitor) {
-      const flag = (tradeLayer !== "remote");
+      const flag = (tradeLayer !== 'remote');
       return flag;
     },
     collect(monitor) {
@@ -129,47 +127,47 @@ const BagItem = ({
       };
     },
     drop(dragEl, monitor) {
-      // console.log("drag item: ", dragEl.item);
-      // console.log("hover item: ", item);
+      // console.log('drag item: ', dragEl.item);
+      // console.log('hover item: ', item);
       if ((dragEl.index === index && dragEl.tradeLayer === tradeLayer) || tradeLayer === 'remote') return;
 
       const dragIndex = dragEl.index;
       const hoverIndex = index;
       const cloneDragTradeItem = clone(dragEl.item);
-      cloneDragTradeItem.slot = hoverIndex
+      cloneDragTradeItem.slot = hoverIndex;
       const cloneDragTradeBoxes = clone(dragEl.tradeBoxes);
       const cloneHoverTradeItem = clone(item);
-      cloneHoverTradeItem.slot = dragIndex
+      cloneHoverTradeItem.slot = dragIndex;
       const cloneHoverTradeBoxes = clone(tradeBoxes);
 
-      console.log("cloneDragTradeItem: ", cloneDragTradeItem);
-      console.log("cloneDragTradeItem canister: ", Principal.fromText(cloneDragTradeItem.canister_id));
+      console.log('cloneDragTradeItem: ', cloneDragTradeItem);
+      console.log('cloneDragTradeItem canister: ', Principal.fromText(cloneDragTradeItem.canister_id));
 
       // Time to combine with ic
-      if (dragEl.tradeLayer === "inventory" && tradeLayer === "local") {
+      if (dragEl.tradeLayer === 'inventory' && tradeLayer === 'local') {
         (async () => {
-          setLoading(true)
+          setLoading(true);
           const canisterItem = {
-            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
-          }
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id),
+          };
           const res = await plugActor.add_item_to_trade(tradeData.id, canisterItem);
-          console.log('add_item_to_trade res: ', res)
-          setLoading(false)
+          console.log('add_item_to_trade res: ', res);
+          setLoading(false);
         })();
       }
 
-      if (dragEl.tradeLayer === "local" && tradeLayer === "inventory") {
+      if (dragEl.tradeLayer === 'local' && tradeLayer === 'inventory') {
         if (isConfirmedItem(cloneDragTradeItem.token_id)) {
-          setMessage('This item is confirmed.')
-          return
+          setMessage('This item is confirmed.');
+          return;
         }
         (async () => {
-          setLoading(true)
+          setLoading(true);
           const res = await plugActor.remove_item_from_trade(tradeData.id, {
-            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id)
+            token_id: parseInt(cloneDragTradeItem.token_id), name: cloneDragTradeItem.name, canister_id: Principal.fromText(cloneDragTradeItem.canister_id),
           });
-          console.log("remove_item_from_trade res: ", res);
-          setLoading(false)
+          console.log('remove_item_from_trade res: ', res);
+          setLoading(false);
         })();
       }
 
@@ -193,8 +191,8 @@ const BagItem = ({
         setTradeBoxes(cloneHoverTradeBoxes);
       }
 
-      dragEl.index = hoverIndex
-      dragEl.tradeLayer = tradeLayer
+      dragEl.index = hoverIndex;
+      dragEl.tradeLayer = tradeLayer;
     },
   });
 
@@ -204,7 +202,7 @@ const BagItem = ({
     item: () => {
       return { index, tradeBoxes, setTradeBoxes, item, tradeLayer };
     },
-    collect: (monitor) => ({
+    collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
   });
@@ -216,7 +214,7 @@ const BagItem = ({
     <div
       style={{
         opacity,
-        display: "inline",
+        display: 'inline',
       }}
       ref={ref}
       data-handler-id={handlerId}

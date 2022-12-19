@@ -36001,7 +36001,7 @@ const PresentationalBagItem = ({
   const s = React.useRef(null), u = (g) => {
     switch (g.detail) {
       case 1:
-        window && window.openInWebaverse ? window.openInWebaverse(n) : A(n);
+        console.log("handling single click"), window && window.openInWebaverse ? isModel(n == null ? void 0 : n.url) && (console.log("opening in webaverse"), window.openInWebaverse(n)) : A(n);
         break;
       case 2:
         console.log("handling double click");
@@ -36022,7 +36022,7 @@ const PresentationalBagItem = ({
     return () => {
       clearInterval(g);
     };
-  }, []), n && /* @__PURE__ */ jsxs("div", {
+  }, []), n != null && n.url ? /* @__PURE__ */ jsxs("div", {
     style: {
       width: "100%",
       height: "100%",
@@ -36037,26 +36037,19 @@ const PresentationalBagItem = ({
       }
     },
     onClick: u,
-    children: [isImage(n == null ? void 0 : n.url) && /* @__PURE__ */ jsx("span", {
-      onClick: u,
-      children: /* @__PURE__ */ jsx("img", {
-        crossOrigin: "anonymous",
-        referrerPolicy: "no-referer-on-downgrade",
-        style: {},
-        src: n.url,
-        onClick: u
-      })
-    }), isMedia(n == null ? void 0 : n.url) && /* @__PURE__ */ jsx("span", {
-      onClick: u,
-      children: /* @__PURE__ */ jsx("video", {
-        crossOrigin: "anonymous",
-        referrerPolicy: "no-referer-on-downgrade",
-        style: {},
-        src: n.url,
-        autoPlay: !0,
-        loop: !0,
-        muted: !0
-      })
+    children: [isImage(n == null ? void 0 : n.url) && /* @__PURE__ */ jsx("img", {
+      crossOrigin: "anonymous",
+      referrerPolicy: "no-referer-on-downgrade",
+      style: {},
+      src: n.url
+    }), isMedia(n == null ? void 0 : n.url) && /* @__PURE__ */ jsx("video", {
+      crossOrigin: "anonymous",
+      referrerPolicy: "no-referer-on-downgrade",
+      style: {},
+      src: n.url,
+      autoPlay: !0,
+      loop: !0,
+      muted: !0
     }), isModel(n == null ? void 0 : n.url) && /* @__PURE__ */ jsx(react3dViewer.exports.GLTFModel, {
       ref: s,
       width: 38,
@@ -36067,10 +36060,9 @@ const PresentationalBagItem = ({
         x: -0.15,
         y: -0.3,
         z: -0.3
-      },
-      onClick: u
+      }
     })]
-  });
+  }) : /* @__PURE__ */ jsx(Fragment, {});
 }, BagItem = ({
   item: t,
   isForTrade: n,
