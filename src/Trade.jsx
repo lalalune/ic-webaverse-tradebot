@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import {DndProvider} from 'react-dnd';
-import {HTML5Backend} from 'react-dnd-html5-backend';
+import React, { useEffect, useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import {inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum, debugMode} from './constants';
-import {canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT} from './utils';
-import {idlFactory} from '../trade_canister/src/declarations/trade_canister/index';
+import { inventoryBoxNum, tradePageBoxNum, pageBoxNum, tradeBoxNum, isMainNet } from './constants';
+import { canisterItemsToTokens, clone, deepEqual, existItems, getInventoryBoxes, getLocalBoxes, getMismatchedItems, getPrincipalId, getRemoteBoxes, getUserTokens, sendNFT } from './utils';
+import { idlFactory } from '../trade_canister/src/declarations/trade_canister/index';
 
-import {ModalBox} from './ModalBox';
+import { ModalBox } from './ModalBox';
 import RemoteBox from './RemoteBox';
 import BagBox from './BagBox';
 import BagItem from './BagItem';
 import Header from './Header';
 import Footer from './Footer';
 
-const {ic} = window;
-const {plug} = ic;
+const { ic } = window;
+const { plug } = ic;
 
-const canisterId = debugMode ? 'rrkah-fqaaa-aaaaa-aaaaq-cai' : 'pjl2v-yiaaa-aaaao-aeksq-cai';
+const canisterId = isMainNet ? 'pjl2v-yiaaa-aaaao-aeksq-cai' : 'rrkah-fqaaa-aaaaa-aaaaq-cai';
 const whitelist = [canisterId, '6hgw2-nyaaa-aaaai-abkqq-cai'];
-const host = debugMode ? 'http://localhost:8000' : 'https://mainnet.dfinity.network';
+const host = isMainNet ? 'https://mainnet.dfinity.network' : 'http://localhost:8000';
 const timeout = 50000;
 let partnerTokens = {};
 let prevTrade = {};
@@ -27,17 +27,17 @@ let forceStopTrade = false;
 const url = new URL(window.location.href);
 let tradeId = url.searchParams.get('tradeId');
 
-export const Trade = ({type}) => {
+export const Trade = ({ type }) => {
   const initRemoteBoxes = [...Array(tradeBoxNum).keys()].map(i => {
-    return {id: i, item: null};
+    return { id: i, item: null };
   });
 
   const initLocalBoxes = [...Array(tradeBoxNum).keys()].map(i => {
-    return {id: i, item: null};
+    return { id: i, item: null };
   });
 
   const initInventoryBoxes = [...Array(inventoryBoxNum).keys()].map(i => {
-    return {id: i, item: null};
+    return { id: i, item: null };
   });
 
   const [plugActor, setPlugActor] = useState(null);
@@ -79,7 +79,7 @@ export const Trade = ({type}) => {
       console.log('connected: ', connected, plug);
       if (!connected || !plug.agent || !plug.principalId) return;
       setLoading(true);
-      const newTokens = await getUserTokens({agent: plug.agent, user: plug.principalId});
+      const newTokens = await getUserTokens({ agent: plug.agent, user: plug.principalId });
       setInventoryBoxes(getInventoryBoxes(newTokens));
       setInventoryTokens(clone(newTokens));
 
@@ -153,7 +153,7 @@ export const Trade = ({type}) => {
 
       // Get partner NFT tokens once
       if (tradeData && ((isCreator && tradeData.guest_items.length) || (!isCreator && tradeData.host_items.length)) && !partnerTokenLen && partnerId) {
-        partnerTokens = await getUserTokens({agent: plug.agent, user: partnerId});
+        partnerTokens = await getUserTokens({ agent: plug.agent, user: partnerId });
         console.log('partnerTokens: ', partnerTokens);
       }
 
@@ -263,7 +263,7 @@ export const Trade = ({type}) => {
 
       if (publicKey) {
         console.log('publicKey: ', publicKey);
-        const tempPlugActor = await plug.createActor({canisterId, interfaceFactory: idlFactory, agent: plug.agent});
+        const tempPlugActor = await plug.createActor({ canisterId, interfaceFactory: idlFactory, agent: plug.agent });
         console.log('tempPlugActor: ', tempPlugActor);
         setPlugActor(tempPlugActor);
       } else {
@@ -569,10 +569,10 @@ export const Trade = ({type}) => {
                 disable: !existItems(localBoxes) || accepted,
                 opacity: (!existItems(localBoxes) || accepted) && 0.5,
               }}
-              onClick={() => {
-                if (!existItems(localBoxes) || accepted) return;
-                setAccepted(true);
-              }}
+                onClick={() => {
+                  if (!existItems(localBoxes) || accepted) return;
+                  setAccepted(true);
+                }}
               >
                 Accept
               </button>
@@ -583,7 +583,7 @@ export const Trade = ({type}) => {
                 disable: !existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept),
                 opacity: (!existItems(localBoxes) || !accepted || (isCreator ? !tradeData.host_accept : !tradeData.guest_accept)) && 0.5,
               }}
-              onClick={onCancel}
+                onClick={onCancel}
               >
                 Cancel
               </button>

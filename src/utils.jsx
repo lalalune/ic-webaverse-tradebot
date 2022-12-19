@@ -1,6 +1,6 @@
 import { getAllUserNFTs, getNFTActor } from "@psychedelic/dab-js"
 import { Principal } from "@dfinity/principal"
-import { inventoryBoxNum, tradeBoxNum, debugMode } from "./constants"
+import { inventoryBoxNum, tradeBoxNum, isDebug } from "./constants"
 
 export const clone = (obj) => {
   // const cloneObj = JSON.parse(JSON.stringify(obj))
@@ -39,10 +39,10 @@ export const getInventoryBoxes = (inventoryItems) => {
 }
 
 const player1TokenId = 143
-const player2TokenId = 145
+const player2TokenId = 149
 
 export const getUserTokens = async ({ agent, user }) => {
-  if (debugMode) {
+  if (isDebug) {
     if (user === '6b7jr-gch2d-hjkwd-nwoxa-ilw3z-hj547-nyvll-3ohgd-epuof-7adkv-2qe') {
       return {
         [player1TokenId]: {
@@ -52,7 +52,7 @@ export const getUserTokens = async ({ agent, user }) => {
           token_id: player1TokenId,
           name: "Player 1",
           collection: "Test",
-          url: "src/assets/armor.png",
+          url: "https://local.webaverse.com:3000/src/assets/body1.glb",
           slot: 0,
         }
       }
@@ -65,7 +65,7 @@ export const getUserTokens = async ({ agent, user }) => {
           token_id: player2TokenId,
           name: "Player 2",
           collection: "Test",
-          url: "src/assets/bastard-sword.png",
+          url: "https://local.webaverse.com:3000/src/assets/body2.glb",
           slot: 0,
         }
       }
